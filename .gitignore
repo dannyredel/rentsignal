@@ -1,0 +1,32 @@
+# Environment
+.env
+venv/
+__pycache__/
+*.pyc
+
+# Data (large files)
+data/raw/
+data/processed/*.parquet
+*.tif
+*.tiff
+*.pbf
+
+# Models (large binaries)
+models/*.joblib
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+*.code-workspace
+
+# Node (frontend)
+frontend/node_modules/
+frontend/.next/
+frontend/dist/
+
+# Misc
+*.log
+.entire/checkpoints/

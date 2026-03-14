@@ -1,0 +1,29 @@
+# API
+fastapi==0.115.*
+uvicorn[standard]==0.34.*
+python-dotenv==1.1.*
+pydantic==2.10.*
+
+# ML
+scikit-learn==1.6.*
+xgboost==2.1.*
+shap==0.46.*
+joblib==1.4.*
+
+# Data
+pandas==2.2.*
+numpy==2.1.*
+pyarrow==18.*
+
+# Spatial
+geopandas==1.0.*
+rasterio==1.4.*
+shapely==2.0.*
+
+# APIs
+google-generativeai==0.8.*       # Gemini SDK
+httpx==0.28.*                     # Async HTTP for Gradium WebSocket
+websockets==14.*                  # Gradium STT streaming
+
+# Utils
+orjson==3.10.*                    # Fast JSON serialization

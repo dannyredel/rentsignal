@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv PROJECT-BRIEF.md docs/PROJECT-BRIEF.md)",
+      "Bash(mv MietOptimal-Prep-Roadmap.md docs/PREP-ROADMAP.md)",
+      "Bash(mv MietOptimal-Data-Sources.md docs/DATA-SOURCES.md)",
+      "Bash(mv MietOptimal-Project-Structure.md docs/PROJECT-STRUCTURE.md)",
+      "Bash(mv RentSignal-Competitive-Teardown.md docs/COMPETITIVE-TEARDOWN.md)",
+      "Bash(mv BACKLOG.md tracking/Backlog.md)",
+      "Bash(mv CHANGELOG.md tracking/Changelog.md)",
+      "Bash(mv DECISIONS.md tracking/Decisions.md)",
+      "Bash(mv MEMORY.md tracking/Memory.md)"
+    ]
+  }
+}
