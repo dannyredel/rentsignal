@@ -1,0 +1,28 @@
+# RentSignal API — deployment dependencies (lean, no notebook/spatial processing deps)
+
+# API
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.34,<1.0
+pydantic>=2.10,<3.0
+
+# ML (needed at runtime for prediction + SHAP)
+scikit-learn>=1.6,<2.0
+xgboost>=2.1,<3.0
+shap>=0.46,<1.0
+joblib>=1.4,<2.0
+
+# Data (pandas for spatial CSV lookup + feature prep)
+pandas>=2.2,<3.0
+numpy>=1.26,<3.0
+
+# Auth (Supabase JWT validation)
+python-jose[cryptography]>=3.3,<4.0
+
+# Database (Supabase client for portfolio CRUD)
+supabase>=2.0,<3.0
+
+# HTTP client (OSM Photon address autocomplete)
+httpx>=0.27,<1.0
+
+# Utils
+orjson>=3.10,<4.0
