@@ -7,10 +7,80 @@ from backend.services.ml_service import predict
 
 router = APIRouter(tags=["predict"])
 
+# Map merged Berlin district names to the bezirk names the model was trained on
+# The model uses pre-2001 individual district names
+DISTRICT_TO_BEZIRK = {
+    "Charlottenburg-Wilmersdorf": "Charlottenburg",
+    "Friedrichshain-Kreuzberg": "Kreuzberg",
+    "Marzahn-Hellersdorf": "Marzahn",
+    "Steglitz-Zehlendorf": "Steglitz",
+    "Tempelhof-Schöneberg": "Tempelhof",
+    "Treptow-Köpenick": "Treptow",
+    # These match directly:
+    "Mitte": "Mitte",
+    "Neukölln": "Neukölln",
+    "Pankow": "Pankow",
+    "Lichtenberg": "Lichtenberg",
+    "Reinickendorf": "Reinickendorf",
+    "Spandau": "Spandau",
+}
+
+# Map frontend condition values to model's expected values
+CONDITION_MAP = {
+    "good": "well_kept",
+    "normal": "well_kept",
+    "simple": "need_of_renovation",
+    "luxury": "mint_condition",
+    "renovated": "refurbished",
+    "fully_renovated": "fully_renovated",
+    "first_time_use": "first_time_use",
+    "needs_renovation": "need_of_renovation",
+    # Pass through if already valid
+    "well_kept": "well_kept",
+    "mint_condition": "mint_condition",
+    "refurbished": "refurbished",
+    "modernized": "modernized",
+    "first_time_use_after_refurbishment": "first_time_use_after_refurbishment",
+    "need_of_renovation": "need_of_renovation",
+    "unknown": "unknown",
+}
+
+
+def _year_to_era(year: int) -> str:
+    """Convert building year to era category."""
+    if year < 1918:
+        return "pre_1918"
+    elif year < 1949:
+        return "1918_1948"
+    elif year < 1965:
+        return "1949_1964"
+    elif year < 1973:
+        return "1965_1972"
+    elif year < 1991:
+        return "1973_1990"
+    elif year < 2003:
+        return "1991_2002"
+    elif year < 2015:
+        return "2003_2014"
+    else:
+        return "post_2014"
+
 
 @router.post("/predict", response_model=PredictionResult)
 def predict_rent(apt: ApartmentInput):
     """Predict market rent for an apartment and explain with SHAP."""
+    # Map district name to model bezirk
+    district = apt.bezirk or apt.district
+    bezirk = DISTRICT_TO_BEZIRK.get(district, district)
+
+    # Map condition to model values
+    condition = CONDITION_MAP.get(apt.condition, apt.condition)
+
+    # Derive building era if not provided
+    building_era = apt.building_era
+    if building_era == "pre_1918" and apt.year_built >= 1918:
+        building_era = _year_to_era(apt.year_built)
+
     # Convert Pydantic model to the dict format ml_service expects
     model_input = {
         "livingSpace": apt.living_space_sqm,
@@ -25,12 +95,12 @@ def predict_rent(apt: ApartmentInput):
         "cellar": int(apt.has_cellar),
         "garden": int(apt.has_garden),
         "newlyConst": int(apt.is_new_construction),
-        "condition": apt.condition,
+        "condition": condition,
         "interiorQual": apt.interior_quality,
         "typeOfFlat": apt.flat_type,
         "heatingType": apt.heating_type,
-        "building_era": apt.building_era,
-        "bezirk": apt.bezirk or apt.district,
+        "building_era": building_era,
+        "bezirk": bezirk,
     }
 
     result = predict(model_input, plz=apt.plz)
