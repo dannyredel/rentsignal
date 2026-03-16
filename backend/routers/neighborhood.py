@@ -4,10 +4,10 @@ from pathlib import Path
 from typing import Optional
 
 import pandas as pd
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query
 
-from backend.auth import User, get_current_user
-from backend.tier import check_tier
+# Auth optional for now — tier gating enforced via frontend blur/lock patterns
+# from backend.auth import User, get_current_user, get_optional_user
 
 router = APIRouter(prefix="/neighborhood", tags=["neighborhood"])
 
@@ -29,13 +29,12 @@ def _get_spatial() -> pd.DataFrame:
 
 
 @router.get("/{plz}")
-async def get_neighborhood(plz: int, user: User = Depends(get_current_user)):
+async def get_neighborhood(plz: int):
     """Get neighborhood intelligence for a PLZ.
 
     Extends the basic spatial endpoint with rent range estimates,
     feature importance at PLZ level, and compliance landscape.
     """
-    await check_tier(user, "pro")
 
     spatial = _get_spatial()
     row = spatial[spatial["plz"] == plz]
@@ -67,9 +66,8 @@ async def get_neighborhood(plz: int, user: User = Depends(get_current_user)):
 
 
 @router.get("/map", name="neighborhood_map")
-async def neighborhood_map(user: User = Depends(get_current_user)):
+async def neighborhood_map():
     """All Berlin PLZs with summary metrics for frontend map rendering."""
-    await check_tier(user, "pro")
 
     spatial = _get_spatial()
     if spatial.empty:
@@ -95,10 +93,8 @@ async def neighborhood_map(user: User = Depends(get_current_user)):
 @router.get("/compare", name="neighborhood_compare")
 async def compare_neighborhoods(
     plz: list[int] = Query(..., description="2-3 PLZs to compare"),
-    user: User = Depends(get_current_user),
 ):
     """Compare 2-3 PLZs side by side."""
-    await check_tier(user, "pro")
 
     if len(plz) < 2 or len(plz) > 3:
         raise HTTPException(400, detail="Provide 2 or 3 PLZs to compare")
