@@ -1,6 +1,10 @@
 """RentSignal API — AI-powered rent optimization for the German rental market."""
 
-from fastapi import FastAPI
+import os
+import base64
+import json as _json
+
+from fastapi import FastAPI, Header
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routers import (
@@ -49,7 +53,6 @@ def health():
 @app.get("/debug/token")
 async def debug_token(authorization: str = Header(default="")):
     """Temporary debug endpoint — shows JWT header info. Remove after debugging."""
-    import base64, json as _json
     if not authorization.startswith("Bearer "):
         return {"error": "no bearer token", "raw_header": authorization[:50] if authorization else "empty"}
     token = authorization.removeprefix("Bearer ")
@@ -74,7 +77,3 @@ async def debug_token(authorization: str = Header(default="")):
         "jwt_secret_configured": bool(os.environ.get("SUPABASE_JWT_SECRET")),
         "jwt_secret_length": len(os.environ.get("SUPABASE_JWT_SECRET", "")),
     }
-
-
-from fastapi import Header
-import os
