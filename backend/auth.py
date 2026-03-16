@@ -33,11 +33,19 @@ async def get_current_user(authorization: str = Header(default="")) -> User:
         raise HTTPException(500, detail="SUPABASE_JWT_SECRET not configured")
 
     try:
-        # Supabase uses HS256 by default, but accept HS384/HS512 too
+        # Decode header first to check algorithm
+        import base64
+        header_b64 = token.split(".")[0]
+        # Add padding
+        header_b64 += "=" * (4 - len(header_b64) % 4)
+        import json as _json
+        header = _json.loads(base64.urlsafe_b64decode(header_b64))
+        alg = header.get("alg", "unknown")
+
         payload = jwt.decode(
             token,
             SUPABASE_JWT_SECRET,
-            algorithms=["HS256", "HS384", "HS512"],
+            algorithms=[alg],
             audience="authenticated",
         )
         user_id = payload.get("sub")
