@@ -1,10 +1,13 @@
 """Supabase JWT authentication middleware for FastAPI."""
 
+import base64
+import hashlib
+import hmac
+import json
 import os
 from typing import Optional
 
 from fastapi import Depends, HTTPException, Header
-import jwt as pyjwt  # use PyJWT instead of python-jose
 
 
 SUPABASE_JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "")
@@ -33,18 +36,45 @@ async def get_current_user(authorization: str = Header(default="")) -> User:
         raise HTTPException(500, detail="SUPABASE_JWT_SECRET not configured")
 
     try:
-        payload = pyjwt.decode(
-            token,
-            SUPABASE_JWT_SECRET,
-            algorithms=["HS256"],
-            audience="authenticated",
-        )
+        payload = _decode_jwt(token, SUPABASE_JWT_SECRET)
         user_id = payload.get("sub")
         if not user_id:
             raise HTTPException(401, detail="Invalid token: no sub claim")
+        # Check audience
+        aud = payload.get("aud")
+        if aud and aud != "authenticated":
+            raise HTTPException(401, detail="Invalid audience")
         return User(user_id=user_id, email=payload.get("email"))
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(401, detail=f"Token validation failed: {e}")
+
+
+def _decode_jwt(token: str, secret: str) -> dict:
+    """Manually decode and verify a HS256 JWT without external libraries."""
+    parts = token.split(".")
+    if len(parts) != 3:
+        raise ValueError("Invalid JWT format")
+
+    header_b64, payload_b64, signature_b64 = parts
+
+    # Verify signature
+    signing_input = f"{header_b64}.{payload_b64}".encode()
+    secret_bytes = secret.encode("utf-8")
+    expected_sig = base64.urlsafe_b64encode(
+        hmac.new(secret_bytes, signing_input, hashlib.sha256).digest()
+    ).rstrip(b"=")
+
+    if not hmac.compare_digest(expected_sig, signature_b64.encode()):
+        raise ValueError("Invalid signature")
+
+    # Decode payload
+    padding = 4 - len(payload_b64) % 4
+    if padding != 4:
+        payload_b64 += "=" * padding
+    payload_json = base64.urlsafe_b64decode(payload_b64)
+    return json.loads(payload_json)
 
 
 async def get_optional_user(
