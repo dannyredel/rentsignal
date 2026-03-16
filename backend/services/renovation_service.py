@@ -5,13 +5,21 @@ from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent.parent.parent
 
-with open(_ROOT / "data" / "processed" / "matching_results.json") as f:
-    _CATE_DATA = json.load(f)
+try:
+    with open(_ROOT / "data" / "processed" / "matching_results.json") as f:
+        _CATE_DATA = json.load(f)
 
-with open(_ROOT / "data" / "processed" / "conjoint_results.json") as f:
-    _WTP_DATA = json.load(f)
+    with open(_ROOT / "data" / "processed" / "conjoint_results.json") as f:
+        _WTP_DATA = json.load(f)
 
-_RENT_INFLATION = _WTP_DATA["rent_inflation_factor"]  # 1.378
+    _RENT_INFLATION = _WTP_DATA["rent_inflation_factor"]  # 1.378
+    _RENOVATION_READY = True
+except Exception as e:
+    import sys
+    print(f"WARNING: Renovation service failed to load: {e}", file=sys.stderr)
+    _CATE_DATA = _WTP_DATA = {}
+    _RENT_INFLATION = 1.378
+    _RENOVATION_READY = False
 
 _RENOVATION_COSTS = {
     "hasKitchen": {"cost_eur": 15000, "label": "Modern Kitchen"},

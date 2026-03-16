@@ -9,18 +9,28 @@ import pandas as pd
 
 _ROOT = Path(__file__).resolve().parent.parent.parent
 
-# Load artifacts once at module level
-_model = joblib.load(_ROOT / "models" / "xgboost_rent.joblib")
-_encoder = joblib.load(_ROOT / "models" / "feature_encoder.joblib")
-_explainer = joblib.load(_ROOT / "models" / "shap_explainer.joblib")
+# Load artifacts once at module level — with graceful fallback
+try:
+    _model = joblib.load(_ROOT / "models" / "xgboost_rent.joblib")
+    _encoder = joblib.load(_ROOT / "models" / "feature_encoder.joblib")
+    # Compute SHAP explainer on-the-fly instead of loading 26MB file
+    import shap
+    _explainer = shap.TreeExplainer(_model)
 
-with open(_ROOT / "models" / "model_config.json") as f:
-    MODEL_CONFIG = json.load(f)
+    with open(_ROOT / "models" / "model_config.json") as f:
+        MODEL_CONFIG = json.load(f)
 
-# Spatial data for PLZ lookup
-_df_osm = pd.read_csv(_ROOT / "data" / "processed" / "spatial_osm_features.csv")
-_df_sat = pd.read_csv(_ROOT / "data" / "processed" / "spatial_satellite_features.csv")
-_df_spatial = _df_osm.merge(_df_sat, on="plz", how="left")
+    # Spatial data for PLZ lookup
+    _df_osm = pd.read_csv(_ROOT / "data" / "processed" / "spatial_osm_features.csv")
+    _df_sat = pd.read_csv(_ROOT / "data" / "processed" / "spatial_satellite_features.csv")
+    _df_spatial = _df_osm.merge(_df_sat, on="plz", how="left")
+    _ML_READY = True
+except Exception as e:
+    import sys
+    print(f"WARNING: ML service failed to load: {e}", file=sys.stderr)
+    _model = _encoder = _explainer = _df_spatial = None
+    MODEL_CONFIG = {}
+    _ML_READY = False
 
 # Human-readable feature labels
 FEATURE_LABELS = {

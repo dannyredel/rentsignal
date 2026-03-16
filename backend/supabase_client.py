@@ -14,9 +14,10 @@ def get_supabase() -> Client:
         url = os.environ.get("SUPABASE_URL", "")
         key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
         if not url or not key:
-            raise RuntimeError(
-                "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set. "
-                "Get these from Supabase Dashboard → Settings → API."
+            from fastapi import HTTPException
+            raise HTTPException(
+                503,
+                detail="Database not configured. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
             )
         _client = create_client(url, key)
     return _client
