@@ -18,15 +18,10 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# CORS — allow Lovable frontend and local dev
+# CORS — allow all origins for now (tighten in production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "https://*.lovable.app",
-        "https://*.vercel.app",
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
