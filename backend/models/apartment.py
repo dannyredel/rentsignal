@@ -34,7 +34,7 @@ class ApartmentInput(BaseModel):
     bezirk: Optional[str] = Field(None, description="Bezirk override (defaults to district)")
 
     # Optional: current rent for gap analysis
-    current_rent_per_sqm: Optional[float] = None
+    current_rent_per_sqm: Optional[float] = Field(None, alias="current_rent_sqm")
 
     model_config = {"populate_by_name": True}
 
