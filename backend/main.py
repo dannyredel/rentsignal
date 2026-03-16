@@ -44,3 +44,37 @@ app.include_router(neighborhood.router)
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "rentsignal-api", "version": "0.1.0"}
+
+
+@app.get("/debug/token")
+async def debug_token(authorization: str = Header(default="")):
+    """Temporary debug endpoint — shows JWT header info. Remove after debugging."""
+    import base64, json as _json
+    if not authorization.startswith("Bearer "):
+        return {"error": "no bearer token", "raw_header": authorization[:50] if authorization else "empty"}
+    token = authorization.removeprefix("Bearer ")
+    parts = token.split(".")
+    if len(parts) != 3:
+        return {"error": "not 3 parts", "parts": len(parts)}
+    # Decode header
+    h = parts[0]
+    h += "=" * (4 - len(h) % 4)
+    header = _json.loads(base64.urlsafe_b64decode(h))
+    # Decode payload (without verification)
+    p = parts[1]
+    p += "=" * (4 - len(p) % 4)
+    payload = _json.loads(base64.urlsafe_b64decode(p))
+    return {
+        "header": header,
+        "payload_sub": payload.get("sub"),
+        "payload_aud": payload.get("aud"),
+        "payload_role": payload.get("role"),
+        "payload_iss": payload.get("iss"),
+        "sig_length": len(parts[2]),
+        "jwt_secret_configured": bool(os.environ.get("SUPABASE_JWT_SECRET")),
+        "jwt_secret_length": len(os.environ.get("SUPABASE_JWT_SECRET", "")),
+    }
+
+
+from fastapi import Header
+import os
