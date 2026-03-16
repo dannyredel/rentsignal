@@ -1,0 +1,114 @@
+{
+  "target": "rent_sqm",
+  "features": [
+    "livingSpace",
+    "noRooms",
+    "yearConstructed",
+    "floor",
+    "numberOfFloors",
+    "thermalChar",
+    "sqm_per_room",
+    "balcony",
+    "hasKitchen",
+    "lift",
+    "cellar",
+    "garden",
+    "newlyConst",
+    "condition",
+    "interiorQual",
+    "typeOfFlat",
+    "heatingType",
+    "building_era",
+    "bezirk",
+    "dist_transit_m",
+    "dist_park_m",
+    "dist_water_m",
+    "dist_school_m",
+    "count_food_500m",
+    "count_shop_500m",
+    "count_food_1000m",
+    "count_shop_1000m",
+    "count_transit_1000m",
+    "ndvi_mean",
+    "ndvi_std",
+    "ndvi_median",
+    "ndwi_mean",
+    "ndwi_std",
+    "ndwi_median",
+    "ndbi_mean",
+    "ndbi_std",
+    "ndbi_median"
+  ],
+  "numeric_features": [
+    "livingSpace",
+    "noRooms",
+    "yearConstructed",
+    "floor",
+    "numberOfFloors",
+    "thermalChar",
+    "sqm_per_room"
+  ],
+  "binary_features": [
+    "balcony",
+    "hasKitchen",
+    "lift",
+    "cellar",
+    "garden",
+    "newlyConst"
+  ],
+  "categorical_features": [
+    "condition",
+    "interiorQual",
+    "typeOfFlat",
+    "heatingType",
+    "building_era",
+    "bezirk"
+  ],
+  "osm_features": [
+    "dist_transit_m",
+    "dist_park_m",
+    "dist_water_m",
+    "dist_school_m",
+    "count_food_500m",
+    "count_shop_500m",
+    "count_food_1000m",
+    "count_shop_1000m",
+    "count_transit_1000m"
+  ],
+  "satellite_features": [
+    "ndvi_mean",
+    "ndvi_std",
+    "ndvi_median",
+    "ndwi_mean",
+    "ndwi_std",
+    "ndwi_median",
+    "ndbi_mean",
+    "ndbi_std",
+    "ndbi_median"
+  ],
+  "best_params": {
+    "colsample_bytree": 0.8,
+    "learning_rate": 0.05,
+    "max_depth": 8,
+    "min_child_weight": 5,
+    "n_estimators": 800,
+    "subsample": 0.8
+  },
+  "train_size": 8179,
+  "test_size": 2045,
+  "metrics": {
+    "r2": 0.7491,
+    "rmse": 2.5923,
+    "mae": 1.7033
+  },
+  "baseline_metrics": {
+    "r2_original": 0.7248,
+    "r2_osm_only": 0.7453
+  },
+  "spatial_improvement": {
+    "r2_delta_total": 0.0243,
+    "r2_delta_osm": 0.0205,
+    "r2_delta_satellite": 0.0038,
+    "rmse_reduction_pct": 4.5
+  }
+}

@@ -62,3 +62,33 @@
 **Decision:** Free tier (single apartment compliance + market estimate), Pro €19-29/month (landlords 1-10 units), Enterprise €2-3/unit/month (property managers 50+ units).
 **Rationale:** Free tier = growth engine (Conny's model, but for landlords). Enterprise per-unit = scales with portfolio size. At €3/unit for Buena's 60k units = €2.16M ARR from one client.
 **Implications:** TAM Germany = €828M/year. SOM Year 2 = €6.7M ARR. European expansion TAM = €2B+.
+
+### 2026-03-15 Decision: Brand name — RentSignal (not MietOptimal)
+**Context:** Needed to choose between German-first (MietOptimal, MietIQ) vs international (RentSignal) brand name. MietOptimal scored highest (40pts) for Germany-only SEO, RentSignal scored 38pts.
+**Decision:** Go with RentSignal.
+**Rationale:** (1) EU expansion is part of the pitch narrative — Austria, Netherlands, France, Sweden all have rent regulation. (2) Hackathon judges are international, English-speaking. (3) BeeSignal brand family adds credibility ("we built BeeSignal for consumer research, now RentSignal for rent"). (4) Conny precedent — they went FROM German (Wenigermiete) TO international. (5) German SEO comes from content language, not brand name.
+**Implications:** Domain: rentsignal.de (€5.93/yr, available). Buy .de for launch, negotiate .com later or use .app. All German SEO content works fine under an English brand name.
+
+### 2026-03-16 Decision: Positioning scope — "Rent intelligence" not "portfolio" or "apartment"
+**Context:** Debated whether to position as "apartment intelligence" (what we built), "portfolio intelligence" (the vision), or "rent intelligence" (neutral).
+**Decision:** Phase 1 = "Rent intelligence platform." Phase 2 = "Portfolio rent intelligence." Phase 3 = "Intelligence layer for regulated rental markets." Documented in `docs/POSITIONING-EVOLUTION.md`.
+**Rationale:** "Apartment" sounds too small, doesn't justify B2B pricing. "Portfolio" overpromises features we haven't built. "Rent" is the core object at any scale. Also: rental vs purchase are fundamentally different products — don't try to do both at launch.
+**Implications:** Landing page hero says "rent intelligence" not "portfolio." Expand language when portfolio features ship.
+
+### 2026-03-16 Decision: Three-pillar framework — Comply · Optimize · Act
+**Context:** Old product structure was Predict/Comply/Explain/Simulate — too feature-centric, no clear narrative for sales.
+**Decision:** Reorganize entire product around three pillars: **Comply** (legal position), **Optimize** (what's the unit worth), **Act** (what to do next). Each pillar scales from unit-level to portfolio to enterprise.
+**Rationale:** Pillars describe the customer's journey, not our tech stack. "Comply" leads because it's the freemium hook (compliance anxiety). "Optimize" is the subscription value (monitoring). "Act" is the premium differentiator (renovation ROI, Mieterhöhung wizard, neighborhood intelligence).
+**Implications:** All docs, landing page, API naming, and pricing tiers restructured around three pillars. Hero updated to "Know what every unit is worth. Stay compliant. Make the right move." PRODUCT.md expanded from 14 to 18 sections with new features: data ingestion (§5), neighborhood intelligence (§7), Mieterhöhung wizard (§8), energy compliance (§9), full API spec (§13).
+
+### 2026-03-16 Decision: Vocabulary source of truth — PRODUCT.md §13
+**Context:** Brand voice and vocabulary rules were split between PRODUCT.md §13 and MARKETING.md §8.
+**Decision:** PRODUCT.md §13 is the single source of truth for voice, vocabulary, and messaging rules. MARKETING.md §8 covers visual identity and tone as it applies to content.
+**Rationale:** Avoids conflicts between two documents. PRODUCT.md is higher in the source of truth hierarchy.
+**Implications:** Any vocabulary rule changes go to PRODUCT.md §13 first.
+
+### 2026-03-15 Decision: Channel strategy — LinkedIn-first, avoid TikTok/Instagram
+**Context:** Conny has heavy paid presence on YouTube, TikTok, Instagram, Google Search targeting tenants. We need a channel strategy that doesn't compete on their budget.
+**Decision:** LinkedIn as primary channel. Don't enter TikTok/Instagram for MVP.
+**Rationale:** Conny targets tenants (B2C) on social video. We target property managers (B2B) who live on LinkedIn. Different audience = different channel. Conny's ad spend actually creates our demand (compliance anxiety → landlords Google solutions → find us). Authority > volume.
+**Implications:** Content cadence: LinkedIn 3×/week, blog 2×/month, YouTube 2×/month. No TikTok/Instagram budget. Revisit social video in Month 6.

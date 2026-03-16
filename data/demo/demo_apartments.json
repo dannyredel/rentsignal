@@ -1,0 +1,476 @@
+{
+  "generated": "2026-03-15",
+  "model_version": "v3_spatial",
+  "model_r2": 0.7491,
+  "n_features": 37,
+  "apartments": [
+    {
+      "id": "kreuzberg_altbau",
+      "name": "Kreuzberg Altbau",
+      "tagline": "The Hidden Gem",
+      "narrative": "Underpriced \u2014 spatial premium not captured by the landlord",
+      "district": "Kreuzberg",
+      "plz": 10997,
+      "specs": {
+        "living_space_sqm": 78,
+        "rooms": 3,
+        "year_built": 1907,
+        "floor": 3,
+        "building_floors": 5,
+        "has_kitchen": false,
+        "has_balcony": true,
+        "has_elevator": false,
+        "has_garden": false,
+        "condition": "well_kept"
+      },
+      "prediction": {
+        "rent_sqm": 11.890000343322754,
+        "current_rent_sqm": 10.5,
+        "gap_sqm": 1.3899999856948853,
+        "gap_pct": 13.300000190734863,
+        "status": "UNDERPRICED"
+      },
+      "compliance": {
+        "legal_max_sqm": 8.5,
+        "is_compliant": false,
+        "mietspiegel_mid": 7.73,
+        "is_exempt": false,
+        "exemption": null
+      },
+      "shap_top_features": {
+        "count_food_1000m": 2.0728,
+        "hasKitchen": -1.2251,
+        "interiorQual": -1.0495,
+        "condition": -0.8582,
+        "yearConstructed": -0.6112,
+        "livingSpace": -0.4428,
+        "sqm_per_room": 0.2846,
+        "building_era": 0.279,
+        "count_food_500m": 0.2087,
+        "ndwi_median": 0.175
+      },
+      "shap_base_value": 14.02,
+      "renovation": {
+        "hasKitchen": {
+          "already_has": false,
+          "label": "Modern Kitchen",
+          "cost_eur": 15000,
+          "cate_sqm": 4.01,
+          "cate_ci": [
+            3.65,
+            4.39
+          ],
+          "wtp_sqm": 4.12,
+          "combined_sqm": 4.07,
+          "monthly_uplift_eur": 317.0,
+          "annual_uplift_eur": 3807.0,
+          "payback_months": 47.0,
+          "legal_passthrough_sqm": 1.28,
+          "roi_annual_pct": 25.4
+        },
+        "balcony": {
+          "already_has": true,
+          "label": "Small Balcony"
+        },
+        "lift": {
+          "already_has": false,
+          "label": "Elevator",
+          "cost_eur": 45000,
+          "cate_sqm": 1.5,
+          "cate_ci": [
+            0.98,
+            1.96
+          ],
+          "wtp_sqm": 1.41,
+          "combined_sqm": 1.45,
+          "monthly_uplift_eur": 113.0,
+          "annual_uplift_eur": 1362.0,
+          "payback_months": 397.0,
+          "legal_passthrough_sqm": 3.85,
+          "roi_annual_pct": 3.0
+        },
+        "garden": {
+          "already_has": false,
+          "label": "Garden Access",
+          "cost_eur": 5000,
+          "cate_sqm": 1.27,
+          "cate_ci": [
+            0.67,
+            1.85
+          ],
+          "wtp_sqm": 0.67,
+          "combined_sqm": 0.97,
+          "monthly_uplift_eur": 76.0,
+          "annual_uplift_eur": 909.0,
+          "payback_months": 66.0,
+          "legal_passthrough_sqm": 0.43,
+          "roi_annual_pct": 18.2
+        }
+      }
+    },
+    {
+      "id": "wedding_altbau",
+      "name": "Wedding Altbau",
+      "tagline": "The Renovation Opportunity",
+      "narrative": "Renovation ROI analysis \u2014 kitchen yes, balcony no",
+      "district": "Wedding",
+      "plz": 13353,
+      "specs": {
+        "living_space_sqm": 65,
+        "rooms": 2,
+        "year_built": 1955,
+        "floor": 2,
+        "building_floors": 5,
+        "has_kitchen": false,
+        "has_balcony": false,
+        "has_elevator": false,
+        "has_garden": false,
+        "condition": "well_kept"
+      },
+      "prediction": {
+        "rent_sqm": 11.789999961853027,
+        "current_rent_sqm": 9.2,
+        "gap_sqm": 2.5899999141693115,
+        "gap_pct": 28.100000381469727,
+        "status": "UNDERPRICED"
+      },
+      "compliance": {
+        "legal_max_sqm": 8.14,
+        "is_compliant": false,
+        "mietspiegel_mid": 7.4,
+        "is_exempt": false,
+        "exemption": null
+      },
+      "shap_top_features": {
+        "count_food_1000m": 1.0981,
+        "hasKitchen": -1.045,
+        "interiorQual": -0.9636,
+        "dist_transit_m": 0.6943,
+        "yearConstructed": -0.627,
+        "condition": -0.5775,
+        "heatingType": -0.3841,
+        "thermalChar": 0.2723,
+        "livingSpace": -0.2363,
+        "ndwi_median": 0.1919
+      },
+      "shap_base_value": 14.02,
+      "renovation": {
+        "hasKitchen": {
+          "already_has": false,
+          "label": "Modern Kitchen",
+          "cost_eur": 15000,
+          "cate_sqm": 4.01,
+          "cate_ci": [
+            3.65,
+            4.39
+          ],
+          "wtp_sqm": 4.12,
+          "combined_sqm": 4.07,
+          "monthly_uplift_eur": 264.0,
+          "annual_uplift_eur": 3173.0,
+          "payback_months": 57.0,
+          "legal_passthrough_sqm": 1.54,
+          "roi_annual_pct": 21.2
+        },
+        "balcony": {
+          "already_has": false,
+          "label": "Small Balcony",
+          "cost_eur": 8000,
+          "cate_sqm": -0.99,
+          "cate_ci": [
+            -1.48,
+            -0.56
+          ],
+          "wtp_sqm": 1.01,
+          "combined_sqm": 0.01,
+          "monthly_uplift_eur": 0.0,
+          "annual_uplift_eur": 5.0,
+          "payback_months": 17478.0,
+          "legal_passthrough_sqm": 0.82,
+          "roi_annual_pct": 0.1
+        },
+        "lift": {
+          "already_has": false,
+          "label": "Elevator",
+          "cost_eur": 45000,
+          "cate_sqm": 1.5,
+          "cate_ci": [
+            0.98,
+            1.96
+          ],
+          "wtp_sqm": 1.41,
+          "combined_sqm": 1.45,
+          "monthly_uplift_eur": 95.0,
+          "annual_uplift_eur": 1135.0,
+          "payback_months": 476.0,
+          "legal_passthrough_sqm": 4.62,
+          "roi_annual_pct": 2.5
+        },
+        "garden": {
+          "already_has": false,
+          "label": "Garden Access",
+          "cost_eur": 5000,
+          "cate_sqm": 1.27,
+          "cate_ci": [
+            0.67,
+            1.85
+          ],
+          "wtp_sqm": 0.67,
+          "combined_sqm": 0.97,
+          "monthly_uplift_eur": 63.0,
+          "annual_uplift_eur": 757.0,
+          "payback_months": 79.0,
+          "legal_passthrough_sqm": 0.51,
+          "roi_annual_pct": 15.1
+        }
+      }
+    },
+    {
+      "id": "mitte_neubau",
+      "name": "Mitte Neubau",
+      "tagline": "The Premium New Build",
+      "narrative": "Correctly priced \u2014 Mietpreisbremse exempt (post-2014 Neubau)",
+      "district": "Mitte",
+      "plz": 10117,
+      "specs": {
+        "living_space_sqm": 85,
+        "rooms": 3,
+        "year_built": 2019,
+        "floor": 4,
+        "building_floors": 6,
+        "has_kitchen": true,
+        "has_balcony": true,
+        "has_elevator": true,
+        "has_garden": false,
+        "condition": "first_time_use"
+      },
+      "prediction": {
+        "rent_sqm": 21.81999969482422,
+        "current_rent_sqm": 18.5,
+        "gap_sqm": 3.319999933242798,
+        "gap_pct": 17.899999618530273,
+        "status": "UNDERPRICED"
+      },
+      "compliance": {
+        "legal_max_sqm": 19.72,
+        "is_compliant": true,
+        "mietspiegel_mid": 15.93,
+        "is_exempt": true,
+        "exemption": "New build exemption: first use and rental after October 1, 2014 (\u00a7556f BGB)"
+      },
+      "shap_top_features": {
+        "count_food_1000m": 2.5826,
+        "yearConstructed": 1.2448,
+        "condition": 1.0247,
+        "dist_water_m": 0.5251,
+        "count_transit_1000m": 0.524,
+        "thermalChar": -0.5202,
+        "hasKitchen": 0.507,
+        "heatingType": 0.3738,
+        "dist_transit_m": 0.3529,
+        "interiorQual": -0.3163
+      },
+      "shap_base_value": 14.02,
+      "renovation": {
+        "hasKitchen": {
+          "already_has": true,
+          "label": "Modern Kitchen"
+        },
+        "balcony": {
+          "already_has": true,
+          "label": "Small Balcony"
+        },
+        "lift": {
+          "already_has": true,
+          "label": "Elevator"
+        },
+        "garden": {
+          "already_has": false,
+          "label": "Garden Access",
+          "cost_eur": 5000,
+          "cate_sqm": 1.27,
+          "cate_ci": [
+            0.67,
+            1.85
+          ],
+          "wtp_sqm": 0.67,
+          "combined_sqm": 0.97,
+          "monthly_uplift_eur": 83.0,
+          "annual_uplift_eur": 990.0,
+          "payback_months": 61.0,
+          "legal_passthrough_sqm": 0.39,
+          "roi_annual_pct": 19.8
+        }
+      }
+    },
+    {
+      "id": "lichtenberg_plattenbau",
+      "name": "Lichtenberg Plattenbau",
+      "tagline": "The Compliance Risk",
+      "narrative": "Overpriced \u2014 compliance risk flagged, weak spatial features",
+      "district": "Lichtenberg",
+      "plz": 10315,
+      "specs": {
+        "living_space_sqm": 58,
+        "rooms": 2,
+        "year_built": 1972,
+        "floor": 8,
+        "building_floors": 11,
+        "has_kitchen": false,
+        "has_balcony": true,
+        "has_elevator": true,
+        "has_garden": false,
+        "condition": "well_kept"
+      },
+      "prediction": {
+        "rent_sqm": 8.3100004196167,
+        "current_rent_sqm": 12.8,
+        "gap_sqm": -4.489999771118164,
+        "gap_pct": -35.0,
+        "status": "OVERPRICED"
+      },
+      "compliance": {
+        "legal_max_sqm": 7.81,
+        "is_compliant": false,
+        "mietspiegel_mid": 7.1,
+        "is_exempt": false,
+        "exemption": null
+      },
+      "shap_top_features": {
+        "count_food_1000m": -1.9556,
+        "hasKitchen": -0.8245,
+        "interiorQual": -0.6241,
+        "building_era": -0.6117,
+        "condition": -0.5997,
+        "yearConstructed": -0.5193,
+        "thermalChar": -0.3398,
+        "ndwi_median": -0.286,
+        "floor": 0.2467,
+        "dist_school_m": 0.1726
+      },
+      "shap_base_value": 14.02,
+      "renovation": {
+        "hasKitchen": {
+          "already_has": false,
+          "label": "Modern Kitchen",
+          "cost_eur": 15000,
+          "cate_sqm": 4.01,
+          "cate_ci": [
+            3.65,
+            4.39
+          ],
+          "wtp_sqm": 4.12,
+          "combined_sqm": 4.07,
+          "monthly_uplift_eur": 236.0,
+          "annual_uplift_eur": 2831.0,
+          "payback_months": 64.0,
+          "legal_passthrough_sqm": 1.72,
+          "roi_annual_pct": 18.9
+        },
+        "balcony": {
+          "already_has": true,
+          "label": "Small Balcony"
+        },
+        "lift": {
+          "already_has": true,
+          "label": "Elevator"
+        },
+        "garden": {
+          "already_has": false,
+          "label": "Garden Access",
+          "cost_eur": 5000,
+          "cate_sqm": 1.27,
+          "cate_ci": [
+            0.67,
+            1.85
+          ],
+          "wtp_sqm": 0.67,
+          "combined_sqm": 0.97,
+          "monthly_uplift_eur": 56.0,
+          "annual_uplift_eur": 676.0,
+          "payback_months": 89.0,
+          "legal_passthrough_sqm": 0.57,
+          "roi_annual_pct": 13.5
+        }
+      }
+    },
+    {
+      "id": "pberg_renovated",
+      "name": "Prenzlauer Berg Renovated",
+      "tagline": "The Gentrification Signal",
+      "narrative": "Post-modernization \u2014 category shift + spatial gentrification premium",
+      "district": "Berg",
+      "plz": 10435,
+      "specs": {
+        "living_space_sqm": 92,
+        "rooms": 4,
+        "year_built": 1905,
+        "floor": 2,
+        "building_floors": 5,
+        "has_kitchen": true,
+        "has_balcony": true,
+        "has_elevator": false,
+        "has_garden": true,
+        "condition": "fully_renovated"
+      },
+      "prediction": {
+        "rent_sqm": 16.59000015258789,
+        "current_rent_sqm": 14.0,
+        "gap_sqm": 2.5899999141693115,
+        "gap_pct": 18.5,
+        "status": "UNDERPRICED"
+      },
+      "compliance": {
+        "legal_max_sqm": 8.46,
+        "is_compliant": false,
+        "mietspiegel_mid": 7.69,
+        "is_exempt": false,
+        "exemption": null
+      },
+      "shap_top_features": {
+        "count_food_1000m": 2.2127,
+        "sqm_per_room": 0.7725,
+        "livingSpace": -0.5095,
+        "bezirk": 0.4984,
+        "hasKitchen": 0.494,
+        "count_food_500m": 0.4491,
+        "ndwi_median": 0.3351,
+        "thermalChar": -0.2907,
+        "condition": -0.2782,
+        "lift": -0.2464
+      },
+      "shap_base_value": 14.02,
+      "renovation": {
+        "hasKitchen": {
+          "already_has": true,
+          "label": "Modern Kitchen"
+        },
+        "balcony": {
+          "already_has": true,
+          "label": "Small Balcony"
+        },
+        "lift": {
+          "already_has": false,
+          "label": "Elevator",
+          "cost_eur": 45000,
+          "cate_sqm": 1.5,
+          "cate_ci": [
+            0.98,
+            1.96
+          ],
+          "wtp_sqm": 1.41,
+          "combined_sqm": 1.45,
+          "monthly_uplift_eur": 134.0,
+          "annual_uplift_eur": 1606.0,
+          "payback_months": 336.0,
+          "legal_passthrough_sqm": 3.26,
+          "roi_annual_pct": 3.6
+        },
+        "garden": {
+          "already_has": true,
+          "label": "Garden Access"
+        }
+      }
+    }
+  ]
+}

@@ -1,11 +1,11 @@
 # CLAUDE.md
-## MietOptimal — Claude Code Project Guide
+## RentSignal — Claude Code Project Guide
 
 ---
 
 ## Project Overview
 
-**MietOptimal** is an AI-powered rent optimization engine for the German rental market, being built for the Big Berlin Hack (April 25-26, 2026, Buena track).
+**RentSignal** is a Regulated Rent Intelligence platform for the German rental market, built around three pillars: **Comply · Optimize · Act**.
 
 It combines Mietpreisbremse compliance checking, ML-powered rent prediction (XGBoost + SHAP), satellite-derived spatial features (Sentinel-2 NDVI + Gemini multimodal), and dual-method renovation impact estimation (observational matching + synthetic conjoint via BeeSignal engine).
 
@@ -19,10 +19,14 @@ Read these before starting any work session:
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| Project Brief | `docs/PROJECT-BRIEF.md` | Full project specification — architecture, UVP, MVP scope, pitch narrative, Q&A prep |
-| Prep Roadmap | `docs/PREP-ROADMAP.md` | Prioritized pre-hackathon task list with dependencies and time estimates |
-| Data Sources | `docs/DATA-SOURCES.md` | Every dataset, URL, API, and field spec needed for the project |
-| Project Structure | `docs/PROJECT-STRUCTURE.md` | Folder layout, dependency flows, API endpoints, quick start |
+| Product Strategy | `docs/PRODUCT.md` | **Source of truth** — three pillars, tiers, pricing, roadmap, API spec, brand voice |
+| Positioning | `docs/POSITIONING-EVOLUTION.md` | Phase 1→2→3 positioning, hero copy, taglines |
+| Project Brief | `docs/PROJECT-BRIEF.md` | Founding brief — problem statement, Q&A prep, pitch narrative |
+| Project Structure | `docs/PROJECT-STRUCTURE.md` | Folder layout, dependency flows, quick start |
+| Backlog | `tracking/Backlog.md` | P0→P4 task queue with dependencies |
+| Technical: Compliance | `docs/technical/COMPLIANCE-ENGINE.md` | §556d/§559 BGB rules engine spec |
+| Technical: Spatial | `docs/technical/SPATIAL-TECHNICAL-NOTES.md` | Sentinel-2 + OSM pipeline |
+| Technical: Data | `docs/technical/DATA-SOURCES.md` | All datasets, URLs, APIs |
 
 ---
 

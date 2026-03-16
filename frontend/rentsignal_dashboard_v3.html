@@ -1,0 +1,302 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#004746;--green:#00BC72;--green-l:#E6F9F0;--red:#DC2626;--red-l:#FEF2F2;--amber:#E8913A;--amber-l:#FFF7ED;--text:var(--color-text-primary,#111827);--text2:var(--color-text-secondary,#6B7280);--bg:var(--color-background-primary,#fff);--bg2:var(--color-background-secondary,#f9fafb);--brd:var(--color-border-tertiary,#E5E7EB);--radius:var(--border-radius-md,8px)}
+body{font-family:var(--font-sans,"Inter",sans-serif);font-size:13px;color:var(--text);line-height:1.5}
+.dash{display:grid;grid-template-columns:200px 1fr;min-height:720px;border:0.5px solid var(--brd);border-radius:var(--border-radius-lg,12px);overflow:hidden;background:var(--bg)}
+.side{background:var(--teal);padding:16px 0;display:flex;flex-direction:column;gap:1px}
+.side-brand{display:flex;align-items:center;gap:7px;padding:0 16px 16px;font-weight:500;font-size:14px;color:#fff}
+.side-brand svg{color:var(--green)}
+.side a{display:flex;align-items:center;gap:8px;padding:8px 16px;font-size:12px;color:rgba(255,255,255,.55);cursor:pointer;text-decoration:none;border-left:3px solid transparent;transition:.15s}
+.side a:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.04)}
+.side a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:var(--green)}
+.side a svg{width:15px;height:15px;opacity:.7}
+.side a.active svg{opacity:1}
+.side-sep{height:1px;background:rgba(255,255,255,.08);margin:6px 16px}
+.main{background:var(--bg2);overflow-y:auto;max-height:720px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--bg);border-bottom:0.5px solid var(--brd)}
+.topbar-title{font-weight:500;font-size:14px}
+.topbar-actions{display:flex;gap:6px}
+.btn-g{background:var(--green);color:#fff;border:none;padding:6px 14px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(0,188,114,.25)}
+.btn-o{background:transparent;color:var(--teal);border:1px solid var(--teal);padding:6px 14px;border-radius:16px;font-size:11px;font-weight:500;cursor:pointer}
+.btn-o:hover{background:var(--teal);color:#fff}
+.content{padding:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:var(--bg);border:0.5px solid var(--brd);border-radius:var(--radius);padding:12px}
+.stat-label{font-size:11px;color:var(--text2);margin-bottom:2px}
+.stat-val{font-size:20px;font-weight:500;font-family:var(--font-mono,"JetBrains Mono",monospace)}
+.stat-val.green{color:var(--green)}.stat-val.red{color:var(--red)}
+.section-title{font-size:13px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.alert-bar{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--amber-l);border:0.5px solid #FDE68A;border-radius:var(--radius);margin-bottom:16px;font-size:12px;color:#92400E}
+.table-wrap{background:var(--bg);border:0.5px solid var(--brd);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:8px 10px;font-weight:500;font-size:11px;color:var(--text2);background:var(--bg2);border-bottom:0.5px solid var(--brd)}
+td{padding:8px 10px;border-bottom:0.5px solid var(--brd)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f9fafb}
+.badge{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:500}
+.badge-green{background:var(--green-l);color:#065F46}
+.badge-red{background:var(--red-l);color:#991B1B}
+.mono{font-family:var(--font-mono,"JetBrains Mono",monospace);font-size:11px}
+.gap-pos{color:var(--green)}.gap-neg{color:var(--red)}
+.page{display:none}.page.visible{display:block}
+.map-container{border:0.5px solid var(--brd);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.map-legend{display:flex;gap:12px;padding:7px 12px;font-size:10px;color:var(--text2);border-top:0.5px solid var(--brd);background:var(--bg)}
+.map-legend-item{display:flex;align-items:center;gap:4px}
+.map-legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.gap-chart{background:var(--bg);border:0.5px solid var(--brd);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.gap-chart-title{font-size:12px;font-weight:500;margin-bottom:14px;display:flex;justify-content:space-between}
+.gap-row{display:flex;align-items:center;gap:0;margin-bottom:8px;font-size:11px;cursor:pointer;transition:opacity .15s}
+.gap-row:hover{opacity:.8}
+.gap-label{width:130px;text-align:right;padding-right:10px;color:var(--text2);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gap-bar-area{flex:1;display:flex;align-items:center;position:relative;height:18px}
+.gap-zero{position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--brd)}
+.gap-bar{height:14px;border-radius:2px;position:absolute;display:flex;align-items:center;transition:width .6s ease}
+.gap-bar.pos{left:50%;background:var(--green)}
+.gap-bar.neg{right:50%;background:var(--red);direction:rtl}
+.gap-val{position:absolute;font-family:var(--font-mono);font-size:10px;font-weight:500;white-space:nowrap}
+.gap-val.pos{color:var(--green)}.gap-val.neg{color:var(--red)}
+.gap-footer{margin-top:12px;padding-top:10px;border-top:0.5px solid var(--brd);font-size:11px;color:var(--text2)}
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--brd);margin-bottom:16px}
+.tab{padding:8px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
+.tab.active{color:var(--teal);border-bottom-color:var(--green)}
+.tab:hover{color:var(--text)}
+.result-card{background:var(--bg);border:0.5px solid var(--brd);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.feature-bar{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:11px}
+.feature-bar-name{width:100px;text-align:right;color:var(--text2);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feature-bar-track{flex:1;height:7px;background:#f3f4f6;border-radius:3px;overflow:hidden}
+.feature-bar-fill{height:100%;border-radius:3px}
+.feature-bar-val{width:50px;font-family:var(--font-mono);font-size:10px;flex-shrink:0}
+.big-num{font-family:var(--font-mono);font-size:28px;font-weight:500}
+.compliance-banner{padding:12px;border-radius:var(--radius);margin-bottom:12px;display:flex;align-items:center;gap:10px;font-weight:500;font-size:13px}
+.compliance-banner.bad{background:var(--red-l);color:#991B1B}
+.range-bar{position:relative;height:20px;background:#f3f4f6;border-radius:4px;margin:10px 0}
+.range-bar-fill{position:absolute;top:0;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green-l),#BBF7D0)}
+.range-bar-marker{position:absolute;top:-3px;width:2px;height:26px;background:var(--red);border-radius:1px}
+.range-bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text2);font-family:var(--font-mono)}
+.unit-detail{display:grid;grid-template-columns:220px 1fr;gap:16px}
+.unit-specs{background:var(--bg);border:0.5px solid var(--brd);border-radius:var(--radius);padding:16px}
+.unit-specs h3{font-size:13px;font-weight:500;margin-bottom:10px}
+.spec-row{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:0.5px solid var(--brd)}
+.spec-row:last-child{border:none}
+.spec-label{color:var(--text2)}
+.neighborhood-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hidden{display:none}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+
+<div class="dash">
+  <nav class="side">
+    <div class="side-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>RentSignal</div>
+    <a class="active" onclick="showPage('portfolio')" id="nav-portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Portfolio</a>
+    <a onclick="showPage('add')" id="nav-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Add units</a>
+    <div class="side-sep"></div>
+    <a onclick="showPage('comply')" id="nav-comply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Comply</a>
+    <a onclick="showPage('optimize')" id="nav-optimize"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Optimize</a>
+    <a onclick="showPage('act')" id="nav-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Act</a>
+    <a onclick="showPage('neighborhoods')" id="nav-neighborhoods"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Neighborhoods</a>
+    <div class="side-sep"></div>
+    <a onclick="showPage('unit-detail')" id="nav-unit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Unit detail</a>
+  </nav>
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="page-title">Portfolio</span>
+      <div class="topbar-actions"><button class="btn-o" onclick="showPage('add')">Import CSV</button><button class="btn-g" onclick="showPage('add')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add unit</button></div>
+    </div>
+
+    <!-- ═══ PORTFOLIO ═══ -->
+    <div class="content page visible" id="page-portfolio">
+      <div class="stats">
+        <div class="stat-card"><div class="stat-label">Total units</div><div class="stat-val">23</div></div>
+        <div class="stat-card"><div class="stat-label">Avg predicted rent</div><div class="stat-val">€11.42<span style="font-size:12px;color:var(--text2)">/m²</span></div></div>
+        <div class="stat-card"><div class="stat-label">Compliance exposure</div><div class="stat-val red">€8,340<span style="font-size:12px">/yr</span></div></div>
+        <div class="stat-card"><div class="stat-label">Revenue gap</div><div class="stat-val green">+€2,180<span style="font-size:12px">/mo</span></div></div>
+      </div>
+      <div class="alert-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        3 units drifted above legal max since last week — <strong style="cursor:pointer;text-decoration:underline" onclick="showPage('comply')">review risk</strong>
+      </div>
+      <div class="section-title"><span>Portfolio map</span><span style="font-size:10px;color:var(--text2)">Color = compliance status</span></div>
+      <div class="map-container">
+        <div id="map-portfolio" style="width:100%;height:200px"></div>
+        <div class="map-legend">
+          <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--green)"></div>Compliant</div>
+          <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--red)"></div>Non-compliant</div>
+          <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--amber)"></div>Exempt</div>
+        </div>
+      </div>
+      <div class="section-title"><span>All units</span><span style="font-size:10px;color:var(--text2)">Click row for details</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Address</th><th>PLZ</th><th>m²</th><th>Current</th><th>Predicted</th><th>Gap</th><th>Status</th></tr></thead><tbody>
+        <tr style="cursor:pointer" onclick="showPage('unit-detail')"><td>Bergmannstr. 14</td><td class="mono">10961</td><td>78</td><td class="mono">€14.50</td><td class="mono">€12.31</td><td class="mono gap-neg">-€2.19</td><td><span class="badge badge-red">Non-compliant</span></td></tr>
+        <tr style="cursor:pointer"><td>Kastanienallee 7</td><td class="mono">10435</td><td>62</td><td class="mono">€13.20</td><td class="mono">€13.85</td><td class="mono gap-pos">+€0.65</td><td><span class="badge badge-green">Compliant</span></td></tr>
+        <tr style="cursor:pointer"><td>Karl-Marx-Allee 90</td><td class="mono">10243</td><td>95</td><td class="mono">€9.80</td><td class="mono">€11.47</td><td class="mono gap-pos">+€1.67</td><td><span class="badge badge-green">Compliant</span></td></tr>
+        <tr style="cursor:pointer"><td>Sonnenallee 112</td><td class="mono">12045</td><td>55</td><td class="mono">€12.90</td><td class="mono">€10.80</td><td class="mono gap-neg">-€2.10</td><td><span class="badge badge-red">Non-compliant</span></td></tr>
+        <tr style="cursor:pointer"><td>Danziger Str. 45</td><td class="mono">10435</td><td>84</td><td class="mono">€11.00</td><td class="mono">€12.60</td><td class="mono gap-pos">+€1.60</td><td><span class="badge badge-green">Compliant</span></td></tr>
+        <tr style="cursor:pointer"><td>Greifswalder Str. 5</td><td class="mono">10405</td><td>45</td><td class="mono">€15.20</td><td class="mono">€13.10</td><td class="mono gap-neg">-€2.10</td><td><span class="badge badge-red">Non-compliant</span></td></tr>
+      </tbody></table></div>
+
+      <!-- REVENUE GAP BREAKDOWN CHART -->
+      <div class="gap-chart">
+        <div class="gap-chart-title"><span>Where the money is — and where the risk is</span><span style="font-size:10px;color:var(--text2);font-weight:400">€/m² rent gap by unit</span></div>
+        <div id="gap-bars"></div>
+        <div class="gap-footer">
+          <span style="color:var(--green);font-weight:500">+€2,180/month</span> total revenue gap across 4 underpriced units · <span style="color:var(--red);font-weight:500">€8,340/year</span> compliance exposure across 3 overpriced units
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ UNIT DETAIL ═══ -->
+    <div class="content page" id="page-unit-detail">
+      <div style="margin-bottom:12px"><button onclick="showPage('portfolio')" style="background:none;border:none;font-size:12px;color:var(--text2);cursor:pointer">← Back to portfolio</button></div>
+      <div style="margin-bottom:16px"><h3 style="font-size:16px;font-weight:500">Bergmannstr. 14</h3><span style="font-size:12px;color:var(--text2)">10961 Kreuzberg · 78 m² · 3 rooms · Built 1912</span></div>
+      <div class="tabs">
+        <div class="tab active" onclick="showUnitTab(this,'utab-opt')">Optimize</div>
+        <div class="tab" onclick="showUnitTab(this,'utab-comply')">Comply</div>
+        <div class="tab" onclick="showUnitTab(this,'utab-act')">Act</div>
+        <div class="tab" onclick="showUnitTab(this,'utab-spatial')">Spatial</div>
+      </div>
+      <div id="utab-opt">
+        <div class="unit-detail">
+          <div class="unit-specs"><h3>Specs</h3>
+            <div class="spec-row"><span class="spec-label">m²</span><span>78</span></div>
+            <div class="spec-row"><span class="spec-label">Rooms</span><span>3</span></div>
+            <div class="spec-row"><span class="spec-label">Year</span><span>1912</span></div>
+            <div class="spec-row"><span class="spec-label">Floor</span><span>3/5</span></div>
+            <div class="spec-row"><span class="spec-label">Condition</span><span>Well kept</span></div>
+            <div class="spec-row"><span class="spec-label">Kitchen</span><span>Yes</span></div>
+            <div class="spec-row"><span class="spec-label">Balcony</span><span>No</span></div>
+            <div class="spec-row"><span class="spec-label">Current</span><span class="mono">€14.50</span></div>
+          </div>
+          <div style="min-width:0">
+            <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:2px">Predicted market rent</div><div class="big-num" style="color:var(--teal)">€12.31<span style="font-size:13px;color:var(--text2)">/m²</span></div><div style="margin-top:3px;font-size:12px"><span style="color:var(--red);font-weight:500">−€2.19/m² overpriced</span> <span style="color:var(--text2)">· €961/mo</span></div></div>
+            <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:10px">Feature contribution breakdown</div>
+              <div class="feature-bar"><span class="feature-bar-name">Living space</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:65%;background:var(--green)"></div></div><span class="feature-bar-val gap-pos">+€1.82</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">Location</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:55%;background:var(--green)"></div></div><span class="feature-bar-val gap-pos">+€1.54</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">Restaurants</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:40%;background:var(--green)"></div></div><span class="feature-bar-val gap-pos">+€1.12</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">Transit</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:30%;background:var(--green)"></div></div><span class="feature-bar-val gap-pos">+€0.84</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">Kitchen</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:25%;background:var(--green)"></div></div><span class="feature-bar-val gap-pos">+€0.71</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">Building year</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:35%;background:var(--red)"></div></div><span class="feature-bar-val gap-neg">−€0.98</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">No elevator</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:20%;background:var(--red)"></div></div><span class="feature-bar-val gap-neg">−€0.56</span></div>
+              <div class="feature-bar"><span class="feature-bar-name">NDVI</span><div class="feature-bar-track"><div class="feature-bar-fill" style="width:15%;background:var(--red)"></div></div><span class="feature-bar-val gap-neg">−€0.42</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="utab-comply" style="display:none">
+        <div class="compliance-banner bad"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Non-compliant — exceeds legal max by €2.19/m²</div>
+        <div class="stats"><div class="stat-card"><div class="stat-label">Legal max</div><div class="stat-val">€12.31</div></div><div class="stat-card"><div class="stat-label">Your rent</div><div class="stat-val">€14.50</div></div><div class="stat-card"><div class="stat-label">Overpayment</div><div class="stat-val red">€2.19</div></div><div class="stat-card"><div class="stat-label">Exposure</div><div class="stat-val red">€2,050/yr</div></div></div>
+        <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:6px">Mietspiegel — Pre-1918, 60-90m², mittlere Wohnlage</div><div class="range-bar"><div class="range-bar-fill" style="left:0;width:100%"></div><div class="range-bar-marker" style="left:78%"></div></div><div class="range-bar-labels"><span>€5.88</span><span>€7.57 (mid)</span><span>€10.03</span><span style="color:var(--red)">€12.31 (max)</span></div></div>
+      </div>
+      <div id="utab-act" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="result-card" style="border-left:3px solid var(--green)"><div style="font-size:12px;font-weight:500;margin-bottom:3px">Kitchen</div><div class="mono" style="font-size:18px;color:var(--green)">+€4.01/m²</div><div style="font-size:11px;color:var(--text2)">54mo payback · 26% ROI · ~€12k</div></div>
+          <div class="result-card" style="border-left:3px solid var(--red);opacity:.7"><div style="font-size:12px;font-weight:500;margin-bottom:3px">Balcony</div><div class="mono" style="font-size:18px;color:var(--red)">−€0.72/m²</div><div style="font-size:11px;color:var(--text2)">Negative impact · ~€25k</div></div>
+          <div class="result-card" style="border-left:3px solid var(--green)"><div style="font-size:12px;font-weight:500;margin-bottom:3px">Elevator</div><div class="mono" style="font-size:18px;color:var(--green)">+€1.87/m²</div><div style="font-size:11px;color:var(--text2)">88mo · 14% ROI · ~€45k</div></div>
+          <div class="result-card" style="border-left:3px solid var(--green)"><div style="font-size:12px;font-weight:500;margin-bottom:3px">Garden</div><div class="mono" style="font-size:18px;color:var(--green)">+€0.65/m²</div><div style="font-size:11px;color:var(--text2)">102mo · 12% ROI · ~€8k</div></div>
+        </div>
+      </div>
+      <div id="utab-spatial" style="display:none">
+        <div class="section-title"><span>Neighborhood — Bergmannstr. 14</span><span style="font-size:10px;color:var(--text2)">1km radius</span></div>
+        <div class="map-container">
+          <div id="map-spatial" style="width:100%;height:240px"></div>
+          <div class="map-legend">
+            <div class="map-legend-item"><div class="map-legend-dot" style="background:#3B82F6"></div>Transit</div>
+            <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--amber)"></div>Restaurants</div>
+            <div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:7px;background:rgba(0,188,114,.25);border:0.5px solid var(--green);border-radius:2px"></div><span>NDVI</span></div>
+          </div>
+        </div>
+        <div class="neighborhood-grid">
+          <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:3px">Transit (1km)</div><div style="font-size:16px;font-weight:500">12 stations</div><div style="font-size:11px;color:var(--text2)">Nearest: 180m</div></div>
+          <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:3px">Restaurants (1km)</div><div style="font-size:16px;font-weight:500">87</div><div style="font-size:11px;color:var(--green)">92nd percentile</div></div>
+          <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:3px">NDVI (vegetation)</div><div style="font-size:16px;font-weight:500">0.31</div><div style="font-size:11px;color:var(--amber)">Below avg (0.38)</div></div>
+          <div class="result-card"><div style="font-size:11px;color:var(--text2);margin-bottom:3px">NDBI (built-up)</div><div style="font-size:16px;font-weight:500">0.42</div><div style="font-size:11px;color:var(--text2)">Dense urban</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- placeholder pages -->
+    <div class="content page" id="page-add"><div style="text-align:center;padding:40px;color:var(--text2);font-size:12px">Quick add form + CSV import wizard</div></div>
+    <div class="content page" id="page-comply"><div style="text-align:center;padding:40px;color:var(--text2);font-size:12px">Compliance risk table — ranked by exposure</div></div>
+    <div class="content page" id="page-optimize"><div style="text-align:center;padding:40px;color:var(--text2);font-size:12px">Revenue gaps table — ranked by underpriced</div></div>
+    <div class="content page" id="page-act"><div style="text-align:center;padding:40px;color:var(--text2);font-size:12px">Act: renovation simulator, Mieterhöhung wizard, neighborhoods</div></div>
+    <div class="content page" id="page-neighborhoods"><div style="text-align:center;padding:40px;color:var(--text2);font-size:12px">Neighborhood intelligence + comparison map</div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+var maps={};
+var units=[
+  {name:"Karl-Marx-Allee 90",lat:52.5159,lng:13.4320,status:"green",gap:1.67,sqm:95},
+  {name:"Danziger Str. 45",lat:52.5345,lng:13.4210,status:"green",gap:1.60,sqm:84},
+  {name:"Kastanienallee 7",lat:52.5387,lng:13.4130,status:"green",gap:0.65,sqm:62},
+  {name:"Warschauer Str. 22",lat:52.5065,lng:13.4490,status:"green",gap:0.42,sqm:48},
+  {name:"Bergmannstr. 14",lat:52.4892,lng:13.3890,status:"red",gap:-2.19,sqm:78},
+  {name:"Sonnenallee 112",lat:52.4740,lng:13.4410,status:"red",gap:-2.10,sqm:55},
+  {name:"Greifswalder Str. 5",lat:52.5290,lng:13.4380,status:"red",gap:-2.10,sqm:45}
+];
+var sc={green:"#00BC72",red:"#DC2626",amber:"#E8913A"};
+
+function buildGapChart(){
+  var sorted=units.slice().sort(function(a,b){return b.gap-a.gap});
+  var maxAbs=Math.max.apply(null,sorted.map(function(u){return Math.abs(u.gap)}));
+  var html='';
+  sorted.forEach(function(u){
+    var pct=Math.round((Math.abs(u.gap)/maxAbs)*45);
+    var isPos=u.gap>=0;
+    var barStyle=isPos?'left:50%;width:'+pct+'%':'right:50%;width:'+pct+'%';
+    var valStyle=isPos?'left:calc(50% + '+pct+'% + 6px)':'right:calc(50% + '+pct+'% + 6px)';
+    var cls=isPos?'pos':'neg';
+    var monthly=Math.abs(Math.round(u.gap*u.sqm));
+    html+='<div class="gap-row" onclick="showPage(\'unit-detail\')">';
+    html+='<div class="gap-label" title="'+u.name+'">'+u.name+'</div>';
+    html+='<div class="gap-bar-area"><div class="gap-zero"></div>';
+    html+='<div class="gap-bar '+cls+'" style="'+barStyle+'"></div>';
+    html+='<div class="gap-val '+cls+'" style="position:absolute;'+valStyle+'">'+(isPos?'+':'')+u.gap.toFixed(2)+' (€'+monthly+'/mo)</div>';
+    html+='</div></div>';
+  });
+  document.getElementById('gap-bars').innerHTML=html;
+}
+
+function initMap(id,center,zoom){
+  if(maps[id])maps[id].remove();
+  var m=L.map(id,{zoomControl:false,attributionControl:false,scrollWheelZoom:false}).setView(center,zoom);
+  L.control.zoom({position:'topright'}).addTo(m);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18}).addTo(m);
+  maps[id]=m;return m;
+}
+function initPortfolioMap(){
+  var m=initMap('map-portfolio',[52.5100,13.4050],11);
+  units.forEach(function(u){
+    L.circleMarker([u.lat,u.lng],{radius:6,fillColor:sc[u.status],color:"#fff",weight:2,fillOpacity:0.9}).addTo(m).bindTooltip("<b style='font-size:11px'>"+u.name+"</b><br><span style='font-family:monospace;font-size:10px'>Gap: "+(u.gap>=0?"+":"")+u.gap.toFixed(2)+"€/m²</span>",{direction:'top',offset:[0,-6]});
+  });
+}
+function initSpatialMap(){
+  var c=[52.4892,13.3890];var m=initMap('map-spatial',c,15);
+  L.marker(c,{icon:L.divIcon({className:'',html:'<div style="width:12px;height:12px;background:#004746;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>',iconSize:[12,12],iconAnchor:[6,6]})}).addTo(m).bindTooltip("Bergmannstr. 14",{permanent:true,direction:'top',offset:[0,-8],className:'leaflet-tooltip'});
+  L.circle(c,{radius:1000,color:'#004746',weight:0.5,fillColor:'#004746',fillOpacity:0.02,dashArray:'6 4'}).addTo(m);
+  var transit=[[52.4913,13.3875],[52.4870,13.3920],[52.4935,13.3830],[52.4855,13.3960],[52.4940,13.3950],[52.4880,13.3810],[52.4860,13.3850],[52.4920,13.3960],[52.4950,13.3880],[52.4830,13.3900],[52.4900,13.3800],[52.4875,13.3940]];
+  transit.forEach(function(p){L.circleMarker(p,{radius:3.5,fillColor:'#3B82F6',color:'#fff',weight:1,fillOpacity:0.8}).addTo(m);});
+  for(var i=0;i<35;i++){L.circleMarker([c[0]+(Math.random()-.5)*.014,c[1]+(Math.random()-.5)*.022],{radius:2,fillColor:'#E8913A',color:'transparent',fillOpacity:0.45}).addTo(m);}
+  for(var x=-4;x<=4;x++)for(var y=-4;y<=4;y++){var lat=c[0]+y*0.0015,lng=c[1]+x*0.002,ndvi=0.2+Math.random()*0.3;L.rectangle([[lat-0.0007,lng-0.001],[lat+0.0007,lng+0.001]],{color:'transparent',fillColor:'#00BC72',fillOpacity:ndvi*0.35,weight:0}).addTo(m);}
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('visible')});
+  document.querySelectorAll('.side a').forEach(function(a){a.classList.remove('active')});
+  var pg=document.getElementById('page-'+id);if(pg)pg.classList.add('visible');
+  var nv=document.getElementById('nav-'+id);if(nv)nv.classList.add('active');
+  var t={'portfolio':'Portfolio','add':'Add units','comply':'Compliance risk','optimize':'Revenue gaps','act':'Act','neighborhoods':'Neighborhoods','unit-detail':'Unit detail'};
+  document.getElementById('page-title').textContent=t[id]||id;
+  setTimeout(function(){
+    if(id==='portfolio'){if(!maps['map-portfolio'])initPortfolioMap();else maps['map-portfolio'].invalidateSize();}
+  },100);
+}
+function showUnitTab(el,tabId){
+  el.parentElement.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});el.classList.add('active');
+  ['utab-opt','utab-comply','utab-act','utab-spatial'].forEach(function(t){var e=document.getElementById(t);if(e)e.style.display=t===tabId?'block':'none';});
+  if(tabId==='utab-spatial')setTimeout(function(){if(!maps['map-spatial'])initSpatialMap();else maps['map-spatial'].invalidateSize();},150);
+}
+
+buildGapChart();
+setTimeout(initPortfolioMap,300);
+</script>

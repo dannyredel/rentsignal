@@ -1,0 +1,107 @@
+{
+  "method": "Propensity Score Matching (1:1 NN, caliper=0.2 SD)",
+  "dataset": "Kaggle ImmoScout24 Berlin (10,275 listings, 2018-2020)",
+  "confounders": [
+    "livingSpace",
+    "noRooms",
+    "yearConstructed",
+    "floor",
+    "numberOfFloors",
+    "thermalChar",
+    "sqm_per_room",
+    "building_era",
+    "bezirk",
+    "condition",
+    "interiorQual"
+  ],
+  "results": {
+    "hasKitchen": {
+      "att": 2.91,
+      "ci_low": 2.647,
+      "ci_high": 3.184,
+      "se": 0.132,
+      "n_pairs": 2288,
+      "raw_premium": 3.949
+    },
+    "balcony": {
+      "att": -0.722,
+      "ci_low": -1.073,
+      "ci_high": -0.404,
+      "se": 0.168,
+      "n_pairs": 1764,
+      "raw_premium": -0.075
+    },
+    "lift": {
+      "att": 1.089,
+      "ci_low": 0.714,
+      "ci_high": 1.422,
+      "se": 0.179,
+      "n_pairs": 1480,
+      "raw_premium": 2.738
+    },
+    "garden": {
+      "att": 0.925,
+      "ci_low": 0.484,
+      "ci_high": 1.346,
+      "se": 0.22,
+      "n_pairs": 1120,
+      "raw_premium": 1.399
+    }
+  },
+  "heterogeneous_kitchen": {
+    "2003_2014": {
+      "att": 0.288,
+      "ci_low": -1.426,
+      "ci_high": 1.834,
+      "n_pairs": 51
+    },
+    "1991_2002": {
+      "att": 1.098,
+      "ci_low": 0.445,
+      "ci_high": 1.681,
+      "n_pairs": 209
+    },
+    "unknown": {
+      "att": 1.601,
+      "ci_low": 0.676,
+      "ci_high": 2.415,
+      "n_pairs": 252
+    },
+    "pre_1918": {
+      "att": 1.877,
+      "ci_low": 1.496,
+      "ci_high": 2.301,
+      "n_pairs": 627
+    },
+    "2015_plus": {
+      "att": 2.845,
+      "ci_low": 2.189,
+      "ci_high": 3.441,
+      "n_pairs": 404
+    },
+    "1973_1990": {
+      "att": 2.987,
+      "ci_low": 2.25,
+      "ci_high": 3.762,
+      "n_pairs": 178
+    },
+    "1919_1949": {
+      "att": 3.051,
+      "ci_low": 2.327,
+      "ci_high": 3.806,
+      "n_pairs": 139
+    },
+    "1950_1964": {
+      "att": 3.865,
+      "ci_low": 2.827,
+      "ci_high": 4.868,
+      "n_pairs": 111
+    },
+    "1965_1972": {
+      "att": 4.471,
+      "ci_low": 3.319,
+      "ci_high": 5.673,
+      "n_pairs": 93
+    }
+  }
+}

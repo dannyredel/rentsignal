@@ -4,15 +4,14 @@ venv/
 __pycache__/
 *.pyc
 
-# Data (large files)
+# Data (large raw files — processed gets committed for deployment)
 data/raw/
-data/processed/*.parquet
 *.tif
 *.tiff
 *.pbf
 
-# Models (large binaries)
-models/*.joblib
+# Models — committed for API deployment
+# shap_explainer.joblib is 26MB (under GitHub 100MB limit)
 
 # OS
 .DS_Store

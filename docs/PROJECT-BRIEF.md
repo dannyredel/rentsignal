@@ -1,6 +1,7 @@
-# MietOptimal v2 — Project Brief
-## Big Berlin Hack | Buena Track | Solo Build
-## "AI-powered rent optimization with satellite intelligence"
+# RentSignal — Project Brief
+## Origin: Big Berlin Hack (April 2026) | Buena Track | Solo Build
+
+*Note: This is the founding project brief. For current product strategy, see `PRODUCT.md`. For positioning, see `POSITIONING-EVOLUTION.md`. For marketing, see `MARKETING.md`. The problem statement, Q&A prep, pitch narrative, and BeeSignal connection in this doc remain the canonical references.*
 
 ---
 
@@ -46,10 +47,10 @@
 5. **Landlord optimization (vs. tenant protection).** Conny is tenant-side. The official calculator is neutral. Nobody explicitly helps landlords optimize within legal bounds.
 6. **Causal counterfactual analysis.** Nobody handles the "what if I change X" question with proper causal identification. This is the deepest technical moat.
 
-**MietOptimal fills all six gaps in a single product.**
+**RentSignal fills all six gaps in a single product.**
 
 ### Positioning Statement (for pitch)
-"Existing tools give you either legal compliance OR market averages. MietOptimal gives you both — plus spatial intelligence, feature-level price decomposition, and renovation simulations with causal inference. It's the first rent optimization engine that treats pricing as an analytical problem, not a lookup."
+"Existing tools give you either legal compliance OR market averages. RentSignal gives you both — plus spatial intelligence, feature-level price decomposition, and renovation simulations with causal inference. It's the first rent optimization engine that treats pricing as an analytical problem, not a lookup."
 
 ---
 
@@ -71,7 +72,7 @@
 "Before: you guess your rent, risk violating the Mietpreisbremse, and have no idea if renovations are worth it. After: you see your exact legal maximum, where your apartment sits in the market based on satellite-derived neighborhood intelligence, and which renovations give the highest rent uplift per euro — backed by causal inference, not guesswork."
 
 **For the README (technical):**
-"MietOptimal combines Mietpreisbremse compliance checking with ML-powered rent prediction, satellite-derived spatial features, and dual-method renovation impact estimation (observational matching + synthetic conjoint). Four layers: XGBoost for prediction accuracy, SHAP for explainability, causal matching for observational treatment effects, and BeeSignal-style conjoint simulation for WTP estimation. No existing Berlin rent tool offers any of these capabilities."
+"RentSignal combines Mietpreisbremse compliance checking with ML-powered rent prediction, satellite-derived spatial features, and dual-method renovation impact estimation (observational matching + synthetic conjoint). Four layers: XGBoost for prediction accuracy, SHAP for explainability, causal matching for observational treatment effects, and BeeSignal-style conjoint simulation for WTP estimation. No existing Berlin rent tool offers any of these capabilities."
 
 ---
 
@@ -160,7 +161,7 @@ When both methods agree, it's powerful validation. When they disagree, it reveal
 
 ## The Spatial Intelligence Layer (Your Differentiator)
 
-This is what makes MietOptimal unique — nobody else at the hackathon will have this.
+This is what makes RentSignal unique — nobody else at the hackathon will have this.
 
 ### What it does:
 Feed Gemini satellite/aerial imagery of a Berlin neighborhood and extract quantitative spatial features that the Mietspiegel doesn't capture:
@@ -230,7 +231,7 @@ If confirmed, this demonstrates that the current system underprices location qua
 6. User toggles renovation scenarios → causal estimator shows impact + ROI
 
 **The wow moment:**
-Landlord inputs a Wedding apartment. MietOptimal shows: "Your legal max is €11.90/m². Market prediction: €10.80/m². But our satellite analysis shows your block has a green space ratio of 0.42 (above Berlin median) and active construction 200m away — gentrification signal. Your apartment is underpriced by ~€0.70/m²."
+Landlord inputs a Wedding apartment. RentSignal shows: "Your legal max is €11.90/m². Market prediction: €10.80/m². But our satellite analysis shows your block has a green space ratio of 0.42 (above Berlin median) and active construction 200m away — gentrification signal. Your apartment is underpriced by ~€0.70/m²."
 
 Then they toggle "modernize kitchen" → "Legal ceiling shifts to €13.10/m². Market WTP uplift: €1.30/m² (CI: €0.80–€1.70). Effective uplift: €1.20/m². Payback: 54 months. Compare: 'add balcony' → ceiling shift €0.40/m², market uplift €0.50/m², payback: 312 months. **Don't build the balcony.**"
 
@@ -327,7 +328,7 @@ Pre-computed spatial features for each neighborhood. Pre-trained XGBoost on Berl
 ## Prize Strategy
 
 **Primary target:** Buena track — "Prosperity through Property"
-- Frame: "MietOptimal helps your property managers set compliant, optimized rents across 60,000+ units — with spatial intelligence no competitor has."
+- Frame: "RentSignal helps your property managers set compliant, optimized rents across 60,000+ units — with spatial intelligence no competitor has."
 
 **Secondary target:** Google DeepMind infrastructure prize
 - Frame: "We use Gemini's multimodal capabilities to extract neighborhood quality signals from satellite imagery — a novel spatial AI pipeline that outperforms traditional location categories."
@@ -363,7 +364,7 @@ Under the hood: XGBoost for prediction, SHAP for explainability, and dual causal
 "We built this with Gemini for spatial and multimodal intelligence, Gradium for voice input, Lovable for the frontend, and Entire to track our build process. Four partner integrations, built solo in 24 hours."
 
 **[2:55–3:00] CLOSE**
-"MietOptimal: the rent optimization engine that sees what the Mietspiegel can't. Thank you."
+"RentSignal: the rent optimization engine that sees what the Mietspiegel can't. Thank you."
 
 ---
 
@@ -532,41 +533,30 @@ Predium raised €13M for ESG alone. We deliver rent optimization AND ESG intell
 
 ## Revenue Model
 
-### Pricing tiers
-| Tier | Target | Price | What they get |
-|------|--------|-------|---------------|
-| Free | Any landlord/tenant | €0 | Single apartment: legal max + market estimate + basic SHAP |
-| Pro | Landlords (1-10 units) | €19-29/month | Unlimited analyses, renovation simulator, spatial intelligence, demand curves, letter generation |
-| Enterprise | Property managers (50+ units) | €2-3/unit/month | API access, portfolio dashboard, batch analysis, custom model training, integration |
+*See `PRODUCT.md` §6 for current tier structure and §15 for revenue projections.*
 
-### Revenue scenarios
-| Scenario | Year | Units covered | ARR |
-|----------|------|---------------|-----|
-| Conservative | Year 2 | 190,000 | €6.7M |
-| Ambitious | Year 3-4 | 815,000 | €26.3M |
-
-### Key client examples at €3/unit/month
-| Company | Units | Annual revenue |
-|---------|-------|---------------|
-| Buena (hackathon sponsor) | 60,000 | €2.16M |
-| Gewobag Berlin | 74,000 | €2.66M |
-| Grand City Properties | 61,000 | €2.20M |
-| 50× small Hausverwaltungen (avg 1k) | 50,000 | €1.20M |
+### Current Pricing (updated 2026-03-16)
+| Tier | Target | Price | Units |
+|------|--------|-------|-------|
+| Free | Small landlords (1-3 units) | €0 | Max 3 |
+| Pro | Professional landlords (5-15 units) | €29/month | Max 15 |
+| Business | Property managers (15-500 units) | €99/month or €2/unit/month | Unlimited |
+| Enterprise | Large managers + platforms (500+) | Custom (min €500/month) | Unlimited |
 
 ### TAM/SAM/SOM
 - **TAM (Germany):** 23M rental apartments × €3/unit/month = **€828M/year**
 - **SAM:** ~5M units in firms actively digitizing = **€180M/year**
 - **SOM (Year 2):** 190k units = **€6.7M/year** (0.8% market penetration)
-- **European expansion:** Austria, Switzerland, Netherlands = **TAM €2B+**
+- **European expansion:** Austria, Netherlands, France, Sweden = **TAM €2B+**
 
 ---
 
 ## BeeSignal Connection — The Bigger Picture
 
-MietOptimal is not just a hackathon project. It's a vertical proof-of-concept for BeeSignal's core methodology applied to real estate.
+RentSignal is not just a hackathon project. It's a vertical proof-of-concept for BeeSignal's core methodology applied to real estate.
 
 ### What transfers from BeeSignal:
-- **Synthetic conjoint engine** — Same AI-powered WTP estimation, different domain. PriceShift did it for SaaS pricing; MietOptimal does it for apartment features.
+- **Synthetic conjoint engine** — Same AI-powered WTP estimation, different domain. PriceShift did it for SaaS pricing; RentSignal does it for apartment features.
 - **Causal pricing intelligence** — The dual-method approach (observational + simulated) is the BeeSignal philosophy: don't guess what a price change will do, estimate it with rigor.
 - **Feature-level price decomposition** — SHAP waterfall for apartments is the same concept as showing which SaaS features drive WTP.
 
@@ -577,7 +567,7 @@ MietOptimal is not just a hackathon project. It's a vertical proof-of-concept fo
 
 ### Post-hackathon path:
 1. **LinkedIn content:** "We built an AI rent optimizer at a hackathon — here's what we learned about causal pricing in regulated markets" (fits BeeSignal content calendar)
-2. **BeeSignal product:** The synthetic conjoint engine built for MietOptimal becomes a reusable module in BeeSignal's toolkit
+2. **BeeSignal product:** The synthetic conjoint engine built for RentSignal becomes a reusable module in BeeSignal's toolkit
 3. **Vertical expansion narrative:** "BeeSignal started in SaaS pricing. We've proven the methodology in real estate. Next: insurance, energy, financial products."
 
 ---

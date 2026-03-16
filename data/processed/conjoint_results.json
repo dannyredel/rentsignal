@@ -1,0 +1,92 @@
+{
+  "method": "CBC Conjoint (75 LLM respondents, 10 tasks, dual_response)",
+  "model": "gpt-5-mini",
+  "price_levels_eur": [
+    900,
+    1050,
+    1200,
+    1350
+  ],
+  "reference_apartment_sqm": 65,
+  "wtp_results": {
+    "kitchen": {
+      "renovated": {
+        "wtp_eur_month": 268.13,
+        "wtp_eur_sqm": 4.125,
+        "ci_lower_eur_month": 172.53,
+        "ci_upper_eur_month": 363.73
+      }
+    },
+    "balcony": {
+      "small": {
+        "wtp_eur_month": 65.59,
+        "wtp_eur_sqm": 1.009,
+        "ci_lower_eur_month": 21.54,
+        "ci_upper_eur_month": 109.65
+      }
+    },
+    "elevator": {
+      "yes": {
+        "wtp_eur_month": 91.59,
+        "wtp_eur_sqm": 1.409,
+        "ci_lower_eur_month": 43.09,
+        "ci_upper_eur_month": 140.08
+      }
+    },
+    "garden": {
+      "yes": {
+        "wtp_eur_month": 43.35,
+        "wtp_eur_sqm": 0.667,
+        "ci_lower_eur_month": -2.87,
+        "ci_upper_eur_month": 89.57
+      }
+    },
+    "condition": {
+      "well_maintained": {
+        "wtp_eur_month": 133.78,
+        "wtp_eur_sqm": 2.058,
+        "ci_lower_eur_month": 79.36,
+        "ci_upper_eur_month": 188.21
+      }
+    }
+  },
+  "convergence": [
+    {
+      "Feature": "Kitchen",
+      "CATE 2019": "+2.91",
+      "CATE 2025 (adj.)": "+4.01",
+      "CATE CI": "[3.65, 4.39]",
+      "Conjoint WTP": "+4.13",
+      "WTP CI": "[2.65, 5.60]",
+      "Direction Match": "Yes"
+    },
+    {
+      "Feature": "Balcony",
+      "CATE 2019": "-0.72",
+      "CATE 2025 (adj.)": "-1.00",
+      "CATE CI": "[-1.48, -0.56]",
+      "Conjoint WTP": "+1.01",
+      "WTP CI": "[0.33, 1.69]",
+      "Direction Match": "No"
+    },
+    {
+      "Feature": "Elevator",
+      "CATE 2019": "+1.09",
+      "CATE 2025 (adj.)": "+1.50",
+      "CATE CI": "[0.98, 1.96]",
+      "Conjoint WTP": "+1.41",
+      "WTP CI": "[0.66, 2.16]",
+      "Direction Match": "Yes"
+    },
+    {
+      "Feature": "Garden",
+      "CATE 2019": "+0.93",
+      "CATE 2025 (adj.)": "+1.27",
+      "CATE CI": "[0.67, 1.86]",
+      "Conjoint WTP": "+0.67",
+      "WTP CI": "[-0.04, 1.38]",
+      "Direction Match": "Yes"
+    }
+  ],
+  "rent_inflation_factor": 1.378
+}
