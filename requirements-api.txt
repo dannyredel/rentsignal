@@ -16,7 +16,7 @@ pandas>=2.2,<3.0
 numpy>=1.26,<3.0
 
 # Auth (Supabase JWT validation)
-python-jose[cryptography]>=3.3,<4.0
+PyJWT>=2.8,<3.0
 
 # Database (Supabase client for portfolio CRUD)
 supabase>=2.0,<3.0
