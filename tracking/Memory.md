@@ -28,9 +28,9 @@
 | Positioning evolution | ✅ Complete | `docs/POSITIONING-EVOLUTION.md` — 3 phases with **Comply · Optimize · Act** pillars scaling across each. Hero: "Know what every unit is worth. Stay compliant. Make the right move." Copy reference section for landing page, investor, demo contexts. |
 | Railway deployment files | ✅ Ready | `requirements-api.txt`, `Procfile`, `railway.toml`, `nixpacks.toml` created. Need to push to GitHub + connect Railway. Consider computing SHAP explainer on-the-fly to avoid committing 26MB file. |
 | Backend API | ✅ Complete | FastAPI with 8 endpoints (health, demo×2, predict, comply, renovate, spatial×2). Tested on localhost:8000. |
-| Backend deployment | ❌ Not started | Need Railway deployment (Dockerfile + env vars). Required for Lovable to connect. |
+| Backend deployment | ✅ Live | Railway: `https://web-production-f2b2f.up.railway.app` · Python 3.11.15 · Auto-deploys from GitHub `dannyredel/rentsignal` main branch · Supabase env vars set |
 | Lovable prompt | ✅ Complete | `docs/LOVABLE-PROMPT.md` — landing page + 5 dashboard pages + Supabase auth. Ready to paste. |
-| Frontend | ❌ Not started | Will use Lovable at hackathon with the prompt |
+| Frontend | ✅ Live | Lovable-generated React dashboard at `rentsignal.de`. Portfolio + Unit detail (4 tabs) + Comply + Optimize + Act + Neighborhoods all working with live API. Google OAuth working. Add units form works (predict + comply) but doesn't save to DB yet. |
 | Pitch deck | ❌ Not started | Narrative arc defined in brief |
 
 ### API Keys Status

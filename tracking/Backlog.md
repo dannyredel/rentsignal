@@ -1,222 +1,223 @@
 # Backlog
 ## RentSignal — Task Queue
 
-*Organized by product roadmap priority (P0→P4). See `docs/PRODUCT.md` §12-13 for full roadmap and API spec.*
+*Restructured around MVP milestones. See `docs/PRODUCT.md` for full product spec.*
 
 ---
 
-## ✅ Completed (Foundation)
-
-These tasks built the core ML + compliance + causal engine that everything else depends on.
+## ✅ Completed (Foundation + Infrastructure)
 
 - [x] **Source Berlin rental listing data** ✅ 2026-03-15
   - 10,275 clean Berlin listings → `data/processed/listings_clean.parquet`
 - [x] **Train XGBoost rent prediction model** ✅ 2026-03-15
   - R²=0.749, RMSE=2.59 €/m², 37 features (19 structural + 9 OSM + 9 satellite)
 - [x] **Spatial feature pipeline (OSM + Sentinel-2)** ✅ 2026-03-15
-  - 18 spatial features for 190 Berlin PLZs
 - [x] **Mietpreisbremse compliance engine** ✅ 2026-03-15
-  - §556d + §559 + §559e BGB, Berlin Mietspiegel 2024, 3 exemptions
 - [x] **Matching estimator (observational CATE)** ✅ 2026-03-15
-  - PSM: Kitchen +2.91, Balcony -0.72 €/m²
 - [x] **BeeSignal conjoint calibration** ✅ 2026-03-15
-  - Kitchen WTP +€4.13/m², 3% convergence with CATE
 - [x] **Demo apartments + narratives** ✅ 2026-03-15
-  - 5 apartments, charts, JSON, speaker notes
-- [x] **FastAPI backend v1 (unit-level endpoints)** ✅ 2026-03-15
-  - 8 endpoints: health, demo×2, predict, comply, renovate, spatial×2
-- [x] **Product strategy (PRODUCT.md)** ✅ 2026-03-16
-  - 18 sections, Comply · Optimize · Act framework
-- [x] **Marketing strategy (MARKETING.md)** ✅ 2026-03-15
-  - SEO, channels, Conny positioning, brand name locked: RentSignal
-- [x] **Positioning evolution** ✅ 2026-03-16
-  - 3-phase positioning with copy reference
+- [x] **Product strategy, Marketing, Positioning** ✅ 2026-03-16
+- [x] **FastAPI backend — 28 endpoints** ✅ 2026-03-16
+  - predict, comply, renovate, spatial, demo, portfolio CRUD, batch analysis, CSV import, address autocomplete, rent-increase, energy, neighborhood
+- [x] **Supabase schema — 8 migrations deployed** ✅ 2026-03-16
+  - profiles, units, analyses, import_jobs, alerts, batch_jobs + views + functions
+- [x] **Railway deployment** ✅ 2026-03-16
+  - `https://web-production-f2b2f.up.railway.app` · Python 3.11 · Auto-deploy from GitHub
+- [x] **Google OAuth + Supabase auth** ✅ 2026-03-16
+- [x] **Lovable frontend — dashboard + landing page** ✅ 2026-03-16
+  - Portfolio, Unit detail (4 tabs), Comply, Optimize, Act, Neighborhoods all working with live API
+  - Domain: `rentsignal.de`
+- [x] **Notebooks 09 (Mieterhöhung), 10 (CO2), 11 (Neighborhoods)** ✅ 2026-03-16
+- [x] **Pitch deck content (Gamma-ready)** ✅ 2026-03-16
+- [x] **Docs reorg** ✅ 2026-03-16
+  - core / technical / strategy / _archive / blog
 
 ---
 
-## 🔴 P0 — Nothing Else Works Without These
+## 🔴 MVP v1 — "A real user can sign up, add units, and see results"
 
-### Infrastructure
+*Minimum to launch and get first users. Everything below must work end-to-end.*
 
-- [ ] **Deploy backend to Railway** (~1h)
-  - Push to GitHub, connect Railway, set env vars, test live endpoints
-  - Deployment files ready: `Procfile`, `railway.toml`, `nixpacks.toml`, `requirements-api.txt`
-  - Consider computing SHAP explainer on-the-fly to avoid 26MB file in repo
+### Data
 
-- [ ] **Supabase schema: users, units, analyses, import_jobs** (~2h)
-  - `units` table: user_id, address, plz, living_space, building_year, features JSON, created_at
-  - `analyses` table: unit_id, type (predict/comply/renovate), result JSON, analyzed_at
-  - `import_jobs` table: user_id, status, row_count, error_log, created_at
-  - Row-level security policies per user
-  - Dependencies: none
+- [ ] **Scrape current listing data (Apify ImmoScout24)** (~3h)
+  - Replace 2018-2019 Kaggle data with current Berlin listings
+  - Retrain XGBoost model on fresh data (removes inflation adjustment hack)
+  - Re-run spatial pipeline for new PLZs if needed
+  - See `docs/technical/DATA-SOURCES.md` for Apify actor URLs
 
-### Portfolio CRUD
+- [ ] **Design ML training workflow** (~2h)
+  - Define train/test/validation split strategy
+  - Prevent data contamination (never predict on training data)
+  - Define retraining cadence (quarterly? on new data arrival?)
+  - Document data lineage: which data → which model version → which predictions
+  - Version control for model artifacts (model_config.json tracks this)
 
-- [ ] **Portfolio unit endpoints** (~3h)
-  - `POST /portfolio/units` — create unit
-  - `GET /portfolio/units` — list all for authenticated user
-  - `GET /portfolio/units/{unit_id}` — get with latest cached analysis
-  - `PUT /portfolio/units/{unit_id}` — update
-  - `DELETE /portfolio/units/{unit_id}` — remove
-  - Dependencies: Supabase schema
+### Frontend → Backend Integration
 
-- [ ] **CSV import pipeline** (~3h)
-  - `POST /portfolio/import/csv` — upload CSV, return detected columns
-  - `POST /portfolio/import/confirm` — submit column mapping, start async job
-  - `GET /portfolio/import/{job_id}` — poll job status
-  - Dependencies: Portfolio CRUD
+- [ ] **Onboarding flow** (~2h)
+  - First login → redirect to Add units page (not empty Portfolio)
+  - "Welcome to RentSignal" state with "Add your first apartment" CTA
+  - Option: "Try with demo data" button loads 5 demo apartments into view (not saved to DB)
 
-- [ ] **Batch analysis job** (~2h)
-  - `POST /portfolio/analyze` — trigger predict+comply on all/selected units
-  - `GET /portfolio/analyze/{job_id}` — poll status
-  - Reuses existing predict + comply logic, runs async
-  - Dependencies: Portfolio CRUD, existing predict/comply endpoints
+- [ ] **Real CRUD — Add units saves to Supabase** (~2h)
+  - Add units form submits to `POST /portfolio/units` (backend already built)
+  - Lovable sends auth token with request
+  - Form shows success/error state
+  - After save, redirect to unit detail page
 
-### Address Resolution
+- [ ] **Auto-analysis on unit creation** (~2h)
+  - After `POST /portfolio/units`, auto-call `POST /predict` + `POST /compliance` + `POST /renovate`
+  - Store results in `analyses` table via backend
+  - Unit detail page shows live results immediately
 
-- [ ] **Address autocomplete endpoint** (~2h)
-  - `GET /address/autocomplete?q=` — wraps OSM Photon API (free, self-hostable)
-  - `POST /address/resolve` — full address → PLZ, district, lat/lon, inferred building year
-  - Dependencies: none
+- [ ] **Portfolio shows real user data** (~1h)
+  - Portfolio page calls `GET /portfolio/units` (not `/demo/apartments`)
+  - Stats, table, revenue gap chart all use real data
+  - If 0 units → show empty state with CTA
+
+- [ ] **Empty states for all pages** (~1h)
+  - Portfolio: "No units yet — add your first apartment"
+  - Comply: "Add units to see compliance risk"
+  - Optimize: "Add units to see revenue gaps"
+
+### Admin & Demo
+
+- [ ] **Admin role for Daniel** (~15min)
+  - Set `plan_tier = 'enterprise'` in Supabase profiles table for your user_id
+  - Full access to all features, no limits
+
+- [ ] **Demo mode toggle** (~1h)
+  - "Try demo data" button on Portfolio loads 5 demo apartments in read-only view
+  - Separate from real portfolio — doesn't pollute user data
+  - Demo badge visible when in demo mode
+
+### Bug Fixes
+
+- [x] **Address autocomplete fix** ✅ 2026-03-16 (pushed, deploying)
+  - Removed osm_tag filter, added error handling
+- [ ] **Inflation adjustment on demo endpoint** (~30min)
+  - Demo apartments show raw 2019 prices — apply ×1.378 in demo router
+- [ ] **Optimize page Gap % display** (~15min)
+  - Currently shows 1790% instead of 17.9% — Lovable display bug
+
+### Basic Tier Enforcement
+
+- [ ] **Unit counter in Add units** (~30min)
+  - Show "1/3 units" for Free, "5/15 units" for Pro
+  - Disable "Add unit" button when at limit
+- [ ] **Prediction counter** (~30min)
+  - Show "2 of 3 predictions remaining" for Free tier
 
 ---
 
-## 🟡 P1 — Core Value (Delivers the Three-Pillar UVP)
+## 🟡 MVP v2 — "Polish + Conversion"
 
-### Comply Pillar
+*Makes users want to stay and upgrade.*
 
-- [ ] **Mieterhöhung calculator** (~3h)
-  - `POST /rent-increase/calculate` — §558 BGB: can I increase? by how much? earliest legal date?
-  - Rules: Mietspiegel mid cap, 15-20% Kappungsgrenze over 3 years, formal requirements
-  - Dependencies: existing compliance service (reuse Mietspiegel lookup)
+### Tier Gating UI
+
+- [ ] **Full tier gating per TIER-GATING-SPEC.md** (~4h)
+  - Lock icons + "Pro" badge on Act and Neighborhoods for Free users
+  - Blurred feature breakdown below top 3 features
+  - Locked page with preview for Act (show "don't build the balcony" chart)
+  - Upgrade prompt cards with contextual value messaging
+  - Pro trial (14 days, no credit card)
+  - Downgrade handling (units archived, not deleted)
+
+### UI Polish
+
+- [ ] **Portfolio map (Leaflet)** (~2h)
+  - Compliance-colored pins on Berlin map
+  - Click pin → navigate to unit detail
+- [ ] **CSV import UI** (~2h)
+  - Drag-and-drop upload zone
+  - Column mapping interface (German column auto-detection)
+- [ ] **Settings page** (~1h)
+  - Profile info (name, email, company)
+  - Current plan tier + upgrade CTA
+  - Logout button
+- [ ] **Landing page refinement** (~1h)
+  - Match final brand colors (Nano Banana round 2)
+  - Responsive mobile optimization
+
+### New Features
 
 - [ ] **Mieterhöhung letter PDF** (~2h)
-  - `POST /rent-increase/letter` — same input + tenant details → formal Mieterhöhungsverlangen PDF
-  - Must meet §558a BGB formal requirements
-  - **Needs one-time legal review before launch (budget €200-500)**
-  - Dependencies: Mieterhöhung calculator
-
-- [ ] **CO2KostAufG energy compliance** (~2h)
-  - `POST /compliance/energy` — building energy class + specs → landlord CO2 share % + annual € exposure
-  - CO2 price: €55/tonne (2025), €65/tonne (2026)
-  - Dependencies: none (new rules engine)
-
-### Optimize Pillar
-
-- [ ] **Portfolio summary endpoint** (~1h)
-  - `GET /portfolio/summary` — total units, avg rent gap, total compliance exposure €/year
-  - Dependencies: batch analysis
-
-- [ ] **Compliance risk ranking** (~1h)
-  - `GET /portfolio/compliance-risk` — all units with status + €/year exposure, sorted by risk
-  - Dependencies: batch analysis
-
-- [ ] **Revenue gap ranking** (~1h)
-  - `GET /portfolio/revenue-gaps` — units sorted by rent gap (underpriced first)
-  - Dependencies: batch analysis
-
-### Act Pillar
-
-- [ ] **Neighborhood Intelligence endpoints** (~3h)
-  - `GET /neighborhood/{plz}` — extends existing `/spatial/{plz}`: add rent range, SHAP by PLZ, renovation ROI by area, compliance landscape
-  - `GET /neighborhood/map` — all Berlin PLZs with summary metrics for map rendering
-  - `GET /neighborhood/compare?plz=12049,10119` — side-by-side PLZ comparison
-  - Dependencies: existing spatial data + model
+  - `POST /rent-increase/letter` → formal §558a BGB letter
+  - Needs one-time legal review (budget €200-500)
+- [ ] **CO2 compliance in unit detail Comply tab** (~1h)
+  - Show CO2KostAufG exposure on the Comply tab when energy data available
 
 ---
 
-## 🟢 P2 — Retention (Drives Subscription Stickiness)
+## 🟢 P1 — Growth & Retention
 
-- [ ] **Portfolio Monitor — nightly watchdog** (~4h)
-  - Background job: re-runs predict+comply on all monitored units
-  - Writes alerts when rent gap or compliance status changes beyond threshold
-  - `POST /monitor/subscribe` — subscribe units
-  - `GET /monitor/alerts` — get pending alerts
-  - `POST /monitor/alerts/{id}/dismiss` — mark seen
-  - Dependencies: batch analysis, Supabase alerts table
+### SEO & Promotion Launch
 
+- [ ] **SEO content — first 3 blog posts** (~3h)
+  - "Mietpreisbremse Rechner 2026 — Kostenlos prüfen" (DE)
+  - "Berlin Rent Brake Calculator — Free Check" (EN)
+  - "Lohnt sich die Küchenrenovierung? Daten statt Bauchgefühl" (DE)
+- [ ] **LinkedIn company page + first 5 posts** (~2h)
+  - Data insights from our analysis (restaurant density, balcony ROI, CO2 stats)
+- [ ] **Product Hunt launch** (~1h)
+  - "Rent Intelligence for Germany" listing
+- [ ] **Landlord forum posts** (~1h)
+  - vermieter-forum.com, immobilienscout24.de community
+- [ ] **Newsletter setup (Substack)** (~1h)
+  - "Berlin Rent Intelligence" weekly brief
+
+### Retention Features
+
+- [ ] **Portfolio monitoring — nightly watchdog** (~4h)
+  - Background job: re-run predict+comply on all monitored units
+  - Alert system (compliance_change, rent_gap_change, mieterhoehung_eligible)
 - [ ] **Weekly digest email** (~2h)
-  - Background job: Monday 8:00 AM CET
-  - `GET /monitor/digest` — preview digest content
-  - Dependencies: monitor alerts, email service (Resend / SendGrid)
-
+  - Monday 8:00 AM CET, Resend/SendGrid
 - [ ] **Monthly portfolio PDF report** (~3h)
-  - `GET /portfolio/report/monthly` — generate client-ready PDF
-  - Compliance summary, revenue gaps, renovation opportunities, market changes
-  - Dependencies: portfolio summary endpoints
+  - Client-ready, brandable PDF
 
-- [ ] **Intelligent CSV mapper** (~3h)
-  - Upgrade CSV import: auto-detect column headers from any format (objego, DOMUS, custom spreadsheets)
-  - Visual mapping UI: "Your column 'Wohnfläche' → Living Space (m²)"
-  - Dependencies: CSV import pipeline (P0)
+### Expansion
 
-- [ ] **City expansion: Hamburg, Munich** (~4h per city)
-  - New Mietspiegel lookup tables (JSON)
-  - Retrain model or transfer-learn with new city data
-  - Spatial features: run OSM + satellite pipelines for new city
-  - Dependencies: parameterized compliance engine
+- [ ] **City expansion: Hamburg** (~4h)
+  - New Mietspiegel lookup table
+  - Retrain/transfer model
+  - Spatial pipeline for Hamburg PLZs
+- [ ] **City expansion: Munich** (~4h)
+  - Same as Hamburg
 
----
+### Billing
 
-## ⚪ P3 — Differentiation
-
-- [ ] **Acquisition analysis endpoints** (~3h)
-  - `POST /acquisition/analyze` — full unit assessment (predict + comply + renovate + neighborhood)
-  - `POST /acquisition/compare` — list of addresses + budget → ranked by yield, budget-optimal subset
-  - Dependencies: all P1 endpoints
-
-- [ ] **Listing URL auto-fill** (~2h)
-  - `POST /address/from-url` — ImmoScout24 listing URL → pre-populated ApartmentInput
-  - Implement defensively with fallback to manual entry
-  - Dependencies: none
-
-- [ ] **Public API with docs + pricing page** (~2h)
-  - API key management, rate limiting, usage tracking
-  - Swagger/Redoc public docs
-  - Dependencies: all P1 endpoints stable
+- [ ] **Stripe integration** (~4h)
+  - Pro (€29/month) and Business (€99/month) plans
+  - Webhook → update plan_tier in Supabase profiles
+  - 14-day trial flow
 
 ---
 
-## 🔵 P4 — Phase 2+ (Deferred — requires new data or significant compute)
+## ⚪ P2+ — Differentiation & Scale
 
-- [ ] **Neighborhood trend analysis** — requires historical listing time-series data
-- [ ] **Portfolio renovation budget allocation** — integer programming, requires client data at scale
-- [ ] **EU EPBD deadline flags + ESG scoring** — requires EPC data pipeline
-- [ ] **objego PM software integration** — requires partnership/API access
-- [ ] **Cross-unit pricing (IO/BLP demand models)** — crown jewel, requires client portfolio data
-- [ ] **Upgrade spatial features to per-listing lat/lon** — requires listing data with coordinates
+- [ ] Acquisition analysis endpoints (compare properties by yield)
+- [ ] Listing URL auto-fill (ImmoScout24 → pre-populate form)
+- [ ] Public API with docs + API key management
+- [ ] Intelligent CSV mapper (auto-detect any spreadsheet format)
+- [ ] Neighborhood trend analysis (requires historical time-series data)
+- [ ] Portfolio renovation budget allocation (integer programming)
+- [ ] EU EPBD deadline flags + ESG scoring
+- [ ] objego PM software integration
+- [ ] Cross-unit pricing (IO/BLP demand models)
+- [ ] Per-listing lat/lon spatial features (requires coordinate data)
+- [ ] European expansion (Austria, Netherlands, France, Sweden)
 
 ---
 
 ## 🎯 Hackathon-Specific (April 25-26, 2026)
 
-*These are hackathon-day tasks, not product backlog. Separate track.*
+*Separate track — these enhance the demo, not the product.*
 
 - [ ] Gemini API integration (spatial extraction + NL→structured)
 - [ ] Gradium API integration (German STT voice input)
 - [ ] Entire CLI setup (build process tracking)
-- [ ] Gemini visual extraction for 5 demo neighborhoods
-- [ ] Pitch deck content (Gamma-ready slides + speaker notes)
+- [ ] Pitch deck in Gamma (content ready at `pitch/PITCH-DECK.md`)
 - [ ] Record backup demo video
-- [ ] "Scale with Buena" Q&A slide
-
----
-
-## 📊 Scripts & Analysis Needed
-
-*New notebooks/scripts required by the expanded product scope.*
-
-- [ ] **`notebooks/09_mieterhoehung_rules.ipynb`** — Validate §558 BGB rules engine against edge cases (Kappungsgrenze, Staffelmiete exclusion, timing calculations)
-- [ ] **`notebooks/10_co2_cost_sharing.ipynb`** — CO2KostAufG calculation validation (energy class → landlord share %, CO2 price schedule, annual cost)
-- [ ] **`notebooks/11_neighborhood_intelligence.ipynb`** — PLZ-level aggregations: rent range, SHAP by PLZ, renovation ROI variation, compliance landscape
-- [ ] **`backend/services/rent_increase_service.py`** — §558 BGB rules engine (Mieterhöhung wizard)
-- [ ] **`backend/services/energy_compliance_service.py`** — CO2KostAufG + GEG compliance
-- [ ] **`backend/services/neighborhood_service.py`** — PLZ-level intelligence aggregation
-- [ ] **`backend/services/portfolio_service.py`** — Portfolio CRUD, batch analysis, CSV import
-- [ ] **`backend/services/monitor_service.py`** — Nightly watchdog, alert generation, digest composition
-- [ ] **`backend/routers/portfolio.py`** — All /portfolio/* endpoints
-- [ ] **`backend/routers/neighborhood.py`** — All /neighborhood/* endpoints
-- [ ] **`backend/routers/rent_increase.py`** — Mieterhöhung calculator + letter
-- [ ] **`backend/routers/monitor.py`** — Monitoring + alerts
-- [ ] **`backend/routers/acquisition.py`** — Acquisition analysis (P3)
-- [ ] **`backend/routers/address.py`** — Autocomplete + resolve

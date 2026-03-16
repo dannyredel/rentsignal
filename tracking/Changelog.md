@@ -524,3 +524,54 @@
 - Supabase schema ready to apply (8 migrations)
 - Docs cleaned up and reorganized (core / technical / strategy / archive)
 - Next: build P0 backend endpoints (auth middleware, portfolio CRUD, address autocomplete), deploy to Railway
+
+---
+
+### 2026-03-16 Session 9c: P0+P1 Endpoints + CO2 Feature + Deploy
+**Duration:** ~3h
+**Type:** Backend engineering + data analysis + deployment
+
+**Tasks completed:**
+- **All P0 + P1 backend endpoints built** (10 new files, 28 total routes):
+  - `backend/auth.py` — Supabase JWT validation (get_current_user, get_optional_user)
+  - `backend/tier.py` — Tier checks (check_tier, check_can_add_unit, check_can_predict)
+  - `backend/supabase_client.py` — Supabase client singleton
+  - `backend/models/portfolio.py` — Pydantic schemas for units, summary, batch, CSV import
+  - `backend/routers/address.py` — GET /address/autocomplete, POST /address/resolve (OSM Photon)
+  - `backend/routers/portfolio.py` — CRUD + summary + compliance-risk + revenue-gaps + batch analyze
+  - `backend/routers/csv_import.py` — CSV upload → detect columns → confirm mapping → import (with German column alias detection)
+  - `backend/routers/rent_increase.py` — POST /rent-increase/calculate (§558 BGB)
+  - `backend/routers/energy.py` — POST /compliance/energy (CO2KostAufG with proper emission factors)
+  - `backend/routers/neighborhood.py` — GET /neighborhood/{plz}, /map, /compare
+- **CO2KostAufG feature discovery:**
+  - Dataset has `thermalChar` (kWh/m²/year) for all 10,275 listings + `heatingType`
+  - Built `notebooks/10_co2_cost_sharing.ipynb` — full analysis with energy class derivation, emission factors by heating type (UBA 2024), sharing table, cost calculations
+  - Key stats: 84% of Berlin apartments trigger CO2 sharing, 10% in high-impact zone (≥50%), avg €31/year per unit, €1.88M/year at Buena scale
+  - Updated energy endpoint to accept `thermal_char` directly and derive energy class + use proper emission factors per heating type
+- **Updated `docs/technical/COMPLIANCE-ENGINE.md`** — added Part 4 (§558 BGB Mieterhöhung) and Part 5 (CO2KostAufG) with full sharing table, emission factors, energy class table, key numbers
+- **Supabase deployed:**
+  - Created project "RentSignal" (Europe region, project ID: khdzomkynurcawnkrxjx)
+  - Ran all 8 SQL migrations successfully — 6 tables + 2 views + 5 functions + RLS
+  - Google OAuth setup documented in `frontend/AUTH-SETUP-GUIDE.md`
+- **GitHub repo created:** `dannyredel/rentsignal` (private)
+  - Pushed 125 files, all project code + docs + models + data
+  - .gitignore updated to allow model files + parquet data (needed for deployment)
+- **Railway deployed successfully:**
+  - URL: `https://web-production-f2b2f.up.railway.app`
+  - Python 3.11.15, auto-deploys from GitHub main branch
+  - Fixed: nixpacks config, python-multipart dependency, graceful model loading fallback
+  - All env vars set (SUPABASE_URL, SERVICE_ROLE_KEY, JWT_SECRET)
+  - /health and /demo/apartments confirmed working live
+
+**Artifacts produced:**
+- 10 new backend files (auth, tier, supabase_client, models/portfolio, 6 routers)
+- `notebooks/10_co2_cost_sharing.ipynb` — CO2 cost analysis (executed)
+- `data/processed/energy_class_distribution.png`, `co2_cost_by_class_and_district.png`
+- `.python-version` — pins Python 3.11 for Railway
+- `requirements.txt` — copy of requirements-api.txt for Railway auto-detection
+
+**State at end of session:**
+- API live at `https://web-production-f2b2f.up.railway.app` with 28 endpoints
+- Supabase schema deployed with 6 tables + RLS
+- GitHub repo at `github.com/dannyredel/rentsignal`
+- Next: Google OAuth setup, Lovable frontend generation, Task 9 (pitch deck)
