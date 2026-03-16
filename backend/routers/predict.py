@@ -47,13 +47,13 @@ CONDITION_MAP = {
 
 
 def _year_to_era(year: int) -> str:
-    """Convert building year to era category."""
+    """Convert building year to era category matching OrdinalEncoder categories."""
     if year < 1918:
         return "pre_1918"
-    elif year < 1949:
-        return "1918_1948"
+    elif year < 1950:
+        return "1919_1949"
     elif year < 1965:
-        return "1949_1964"
+        return "1950_1964"
     elif year < 1973:
         return "1965_1972"
     elif year < 1991:
@@ -63,7 +63,7 @@ def _year_to_era(year: int) -> str:
     elif year < 2015:
         return "2003_2014"
     else:
-        return "post_2014"
+        return "2015_plus"
 
 
 @router.post("/predict", response_model=PredictionResult)
