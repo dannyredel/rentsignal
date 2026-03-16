@@ -252,7 +252,7 @@ Install: `npm install leaflet react-leaflet @types/leaflet`
 
 ### API CONNECTION
 
-Same as existing setup — all API calls to `VITE_API_URL` (default `http://localhost:8000`).
+All API calls to `VITE_API_URL`. Production: `https://web-production-f2b2f.up.railway.app`. Local dev: `http://localhost:8000`.
 
 **New endpoints to connect:**
 
@@ -275,6 +275,8 @@ Same as existing setup — all API calls to `VITE_API_URL` (default `http://loca
 | POST | `/address/resolve` | Address → PLZ/district |
 | POST | `/rent-increase/calculate` | §558 calculation |
 | POST | `/rent-increase/letter` | Generate PDF letter |
+| POST | `/compliance/energy` | CO2KostAufG calculation |
+| GET | `/neighborhood/{plz}` | PLZ detail + benchmarks |
 | GET | `/monitor/alerts` | Portfolio alerts |
 | POST | `/monitor/alerts/{id}/dismiss` | Dismiss alert |
 | GET | `/neighborhood/map` | All PLZs for map |
@@ -288,71 +290,11 @@ Same as existing setup — all API calls to `VITE_API_URL` (default `http://loca
 
 ---
 
-### SUPABASE TABLES (add to existing)
+### SUPABASE TABLES (already deployed)
 
-Add these tables for portfolio persistence:
+The database schema is already live. Tables: `profiles`, `units`, `analyses`, `import_jobs`, `alerts`, `batch_jobs`. Views: `units_with_latest_analysis`, `portfolio_summary`. All with RLS enabled.
 
-```sql
--- Units in user's portfolio
-CREATE TABLE portfolio_units (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users NOT NULL,
-  name TEXT, -- friendly name (optional)
-  address TEXT NOT NULL,
-  plz TEXT,
-  district TEXT,
-  lat FLOAT,
-  lon FLOAT,
-  living_space FLOAT,
-  rooms INT,
-  year_built INT,
-  floor INT,
-  building_floors INT,
-  condition TEXT,
-  interior_quality TEXT,
-  heating_type TEXT,
-  energy_kwh FLOAT,
-  flat_type TEXT,
-  building_era TEXT,
-  has_kitchen BOOLEAN DEFAULT FALSE,
-  has_balcony BOOLEAN DEFAULT FALSE,
-  has_elevator BOOLEAN DEFAULT FALSE,
-  has_cellar BOOLEAN DEFAULT FALSE,
-  has_garden BOOLEAN DEFAULT FALSE,
-  is_new_construction BOOLEAN DEFAULT FALSE,
-  current_rent FLOAT, -- €/m² nettokalt
-  -- Cached analysis results
-  predicted_rent FLOAT,
-  compliance_status TEXT, -- compliant, non_compliant, exempt
-  legal_max_rent FLOAT,
-  rent_gap FLOAT,
-  annual_exposure FLOAT,
-  last_analyzed_at TIMESTAMPTZ,
-  analysis_json JSONB, -- full API response cached
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Row Level Security
-ALTER TABLE portfolio_units ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users see own units" ON portfolio_units FOR ALL USING (auth.uid() = user_id);
-
--- Import jobs
-CREATE TABLE import_jobs (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users NOT NULL,
-  status TEXT DEFAULT 'pending', -- pending, mapping, processing, completed, failed
-  file_name TEXT,
-  detected_columns JSONB,
-  column_mapping JSONB,
-  total_rows INT,
-  processed_rows INT DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-ALTER TABLE import_jobs ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users see own jobs" ON import_jobs FOR ALL USING (auth.uid() = user_id);
-```
+See `supabase/migrations/` for the full schema. The frontend should use Supabase client for auth (Google OAuth) and the FastAPI backend for all data operations (the backend uses the service_role key to bypass RLS).
 
 ---
 

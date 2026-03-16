@@ -27,7 +27,7 @@ docs/
 ├── MARKETING.md                  # SEO, channels, Conny positioning, brand identity
 ├── PROJECT-BRIEF.md              # Founding brief: problem, persona, Q&A prep, pitch narrative
 ├── PROJECT-STRUCTURE.md          # This file
-├── LOVABLE-PROMPT.md             # Lovable frontend generation prompt
+├── (Lovable prompts are in frontend/*.md — old prompt archived)
 ├── blog-synthetic-users-validation.md  # Blog draft: "We Ran the Same Experiment Two Ways"
 │
 ├── technical/                    # Implementation specs
