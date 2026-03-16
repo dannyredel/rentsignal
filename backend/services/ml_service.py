@@ -13,9 +13,8 @@ _ROOT = Path(__file__).resolve().parent.parent.parent
 try:
     _model = joblib.load(_ROOT / "models" / "xgboost_rent.joblib")
     _encoder = joblib.load(_ROOT / "models" / "feature_encoder.joblib")
-    # Compute SHAP explainer on-the-fly instead of loading 26MB file
-    import shap
-    _explainer = shap.TreeExplainer(_model)
+    # Load pre-computed SHAP explainer (26MB but ensures correct expected_value)
+    _explainer = joblib.load(_ROOT / "models" / "shap_explainer.joblib")
 
     with open(_ROOT / "models" / "model_config.json") as f:
         MODEL_CONFIG = json.load(f)
