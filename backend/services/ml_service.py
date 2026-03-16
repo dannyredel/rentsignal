@@ -32,6 +32,10 @@ except Exception as e:
     MODEL_CONFIG = {}
     _ML_READY = False
 
+# Inflation adjustment: model trained on 2018-2019 data
+# IBB Wohnungsmarktbericht Berlin rent index: 2019→2024 = +37.8%
+INFLATION_FACTOR = 1.378
+
 # Human-readable feature labels
 FEATURE_LABELS = {
     "livingSpace": "Living Space (m²)",
@@ -124,18 +128,22 @@ def predict(apt: dict, plz: int | None = None) -> dict:
         dict with predicted_rent_sqm, base_value, shap_top_features
     """
     X = prepare_features(apt, plz)
-    pred = float(_model.predict(X)[0])
+    pred_raw = float(_model.predict(X)[0])
     shap_values = _explainer.shap_values(X)[0]
-    base_value = float(_explainer.expected_value)
+    base_raw = float(_explainer.expected_value)
 
-    # Top 10 features by |SHAP|
+    # Apply inflation adjustment (2019 → 2024 prices)
+    pred = pred_raw * INFLATION_FACTOR
+    base_value = base_raw * INFLATION_FACTOR
+
+    # Top 10 features by |SHAP|, inflation-adjusted
     feat_shap = list(zip(MODEL_CONFIG["features"], shap_values))
     feat_shap.sort(key=lambda x: abs(x[1]), reverse=True)
     top_features = [
         {
             "feature": f,
             "label": FEATURE_LABELS.get(f, f),
-            "value": round(float(v), 4),
+            "value": round(float(v) * INFLATION_FACTOR, 4),
         }
         for f, v in feat_shap[:10]
     ]
