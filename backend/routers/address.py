@@ -24,19 +24,23 @@ async def autocomplete(
     Returns suggestions with PLZ, district, and coordinates.
     Biased toward Berlin results.
     """
-    async with httpx.AsyncClient(timeout=5.0) as client:
-        resp = await client.get(
-            PHOTON_URL,
-            params={
-                "q": q,
-                "lat": BERLIN_LAT,
-                "lon": BERLIN_LON,
-                "limit": limit,
-                "lang": "de",
-                "osm_tag": "place:house",
-            },
-        )
-        resp.raise_for_status()
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(
+                PHOTON_URL,
+                params={
+                    "q": q,
+                    "lat": BERLIN_LAT,
+                    "lon": BERLIN_LON,
+                    "limit": limit,
+                    "lang": "de",
+                },
+            )
+            resp.raise_for_status()
+    except httpx.HTTPStatusError:
+        return {"query": q, "results": []}
+    except httpx.RequestError:
+        return {"query": q, "results": []}
 
     features = resp.json().get("features", [])
     results = []
