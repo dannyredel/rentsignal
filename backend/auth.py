@@ -59,12 +59,24 @@ def _decode_jwt(token: str, secret: str) -> dict:
 
     header_b64, payload_b64, signature_b64 = parts
 
-    # Verify signature
+    # Verify signature — try secret as-is first, then base64-decoded
     signing_input = f"{header_b64}.{payload_b64}".encode()
+
+    # Try raw secret (UTF-8 encoded)
     secret_bytes = secret.encode("utf-8")
     expected_sig = base64.urlsafe_b64encode(
         hmac.new(secret_bytes, signing_input, hashlib.sha256).digest()
     ).rstrip(b"=")
+
+    if not hmac.compare_digest(expected_sig, signature_b64.encode()):
+        # Try base64-decoded secret (Supabase sometimes base64-encodes the secret)
+        try:
+            secret_decoded = base64.b64decode(secret)
+            expected_sig = base64.urlsafe_b64encode(
+                hmac.new(secret_decoded, signing_input, hashlib.sha256).digest()
+            ).rstrip(b"=")
+        except Exception:
+            pass
 
     if not hmac.compare_digest(expected_sig, signature_b64.encode()):
         raise ValueError("Invalid signature")
