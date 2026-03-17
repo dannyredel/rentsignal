@@ -10,8 +10,27 @@ router = APIRouter(prefix="/demo", tags=["demo"])
 _ROOT = Path(__file__).resolve().parent.parent.parent
 _DEMO_PATH = _ROOT / "data" / "demo" / "demo_apartments.json"
 
+# Inflation adjustment: demo data uses 2019 prices, adjust to 2024
+INFLATION_FACTOR = 1.378
+
 with open(_DEMO_PATH) as f:
     _DEMO_DATA = json.load(f)
+
+# Apply inflation to all rent-related fields
+for apt in _DEMO_DATA["apartments"]:
+    p = apt["prediction"]
+    p["rent_sqm"] = round(p["rent_sqm"] * INFLATION_FACTOR, 2)
+    if p.get("current_rent_sqm"):
+        p["current_rent_sqm"] = round(p["current_rent_sqm"] * INFLATION_FACTOR, 2)
+    if p.get("gap_sqm"):
+        p["gap_sqm"] = round(p["rent_sqm"] - p["current_rent_sqm"], 2)
+        p["gap_pct"] = round((p["gap_sqm"] / p["current_rent_sqm"]) * 100, 1) if p["current_rent_sqm"] else None
+    # SHAP base value
+    if apt.get("shap_base_value"):
+        apt["shap_base_value"] = round(apt["shap_base_value"] * INFLATION_FACTOR, 2)
+    # SHAP feature values
+    for feat in apt.get("shap_top_features", []):
+        feat["value"] = round(feat["value"] * INFLATION_FACTOR, 4)
 
 _APARTMENTS = {apt["id"]: apt for apt in _DEMO_DATA["apartments"]}
 
