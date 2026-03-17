@@ -42,8 +42,7 @@ website:
 
 format:
   html:
-    theme:
-      light: cosmo
+    theme: cosmo
     css: assets/custom.css
     toc: true
     toc-depth: 3
