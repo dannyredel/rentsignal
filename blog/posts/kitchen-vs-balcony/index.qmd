@@ -5,7 +5,7 @@ description: "Datenanalyse von 10.000+ Berliner Mietwohnungen zeigt: Eine modern
 author: "Daniel Redel"
 date: "2026-03-17"
 categories: [Renovation, ROI, Berlin, Data Analysis]
-# image: kitchen-vs-balcony.png
+image: kitchen-vs-balcony.png
 lang: de
 
 keywords:

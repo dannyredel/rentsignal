@@ -5,6 +5,7 @@ description: "Free Berlin rent brake calculator. Check if your apartment rent ex
 author: "Daniel Redel"
 date: "2026-03-18"
 categories: [Compliance, Tools, Berlin, English]
+image: berlin-rent-brake.png
 lang: en
 
 keywords:
