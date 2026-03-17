@@ -81,10 +81,8 @@
 - [x] **Admin role for Daniel** ✅ 2026-03-17
   - Set `plan_tier = 'enterprise'` in Supabase profiles table
 
-- [ ] **Demo mode toggle** (~1h)
-  - "Try demo data" button on Portfolio loads 5 demo apartments in read-only view
-  - Separate from real portfolio — doesn't pollute user data
-  - Demo badge visible when in demo mode
+- [x] **Demo mode toggle** ✅ 2026-03-17
+  - "Try demo data" link on empty Portfolio, DEMO banner, read-only mode
 
 ### Bug Fixes
 
@@ -99,9 +97,9 @@
 
 ### Basic Tier Enforcement
 
-- [ ] **Unit counter in Add units** (~30min)
-  - Show "1/3 units" for Free, "5/15 units" for Pro
-  - Disable "Add unit" button when at limit
+- [x] **Unit counter in Add units** ✅ 2026-03-17
+  - Shows "1 of 3 units (free)" / "Unlimited (enterprise)" from real /profile API
+  - Disabled submit + upgrade CTA when at limit
 - [ ] **Prediction counter** (~30min)
   - Show "2 of 3 predictions remaining" for Free tier
 
@@ -123,9 +121,11 @@
 
 ### UI Polish
 
-- [ ] **Portfolio map (Leaflet)** (~2h)
-  - Compliance-colored pins on Berlin map
-  - Click pin → navigate to unit detail
+- [~] **Portfolio map (Leaflet)** (~1h remaining)
+  - Map tiles + zoom rendering, boundaries + data loading (200 OK)
+  - **Bug:** choropleth polygons not visually colored, markers not appearing
+  - Likely frontend rendering issue (data joins work server-side)
+  - Debug: inspect SVG/Canvas layer in browser dev tools
 - [ ] **CSV import UI** (~2h)
   - Drag-and-drop upload zone
   - Column mapping interface (German column auto-detection)
@@ -151,10 +151,14 @@
 
 ### SEO & Promotion Launch
 
-- [ ] **SEO content — first 3 blog posts** (~3h)
+- [x] **Blog infrastructure** ✅ 2026-03-17
+  - Quarto blog at `blog.rentsignal.de`, GitHub Pages + GitHub Actions auto-deploy
+  - First article: "Küche oder Balkon?" published
+- [~] **SEO strategy** — in progress on Claude.ai (keyword research, content calendar)
+- [ ] **SEO content — next blog posts** (~2h each)
   - "Mietpreisbremse Rechner 2026 — Kostenlos prüfen" (DE)
   - "Berlin Rent Brake Calculator — Free Check" (EN)
-  - "Lohnt sich die Küchenrenovierung? Daten statt Bauchgefühl" (DE)
+  - Move SEO strategy docs from Claude.ai to `docs/strategy/SEO-STRATEGY.md`
 - [ ] **LinkedIn company page + first 5 posts** (~2h)
   - Data insights from our analysis (restaurant density, balcony ROI, CO2 stats)
 - [ ] **Product Hunt launch** (~1h)

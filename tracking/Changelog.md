@@ -676,3 +676,47 @@
 - Tier enforcement live (Free=3 units, Enterprise=unlimited)
 - Railway deployed and healthy
 - Next: MVP v2 (portfolio map, CSV import UI, settings page, landing page, tier gating UI)
+
+---
+
+### 2026-03-17 Session 11b: Blog Infrastructure + Maps + Polish
+**Duration:** ~3h
+**Type:** Blog setup + frontend maps + polish
+
+**Tasks completed:**
+- **Quarto blog scaffold** — full blog infrastructure at `blog.rentsignal.de`:
+  - `blog/_quarto.yml` — site config with SEO (Open Graph, sitemap, RSS feed, search)
+  - `blog/index.qmd` — listing page with categories
+  - `blog/assets/custom.css` — RentSignal brand colors
+  - `.github/workflows/blog.yml` — GitHub Actions auto-deploy to GitHub Pages
+  - DNS CNAME configured in Namecheap (`blog` → `dannyredel.github.io`)
+  - Blog live and rendering at `blog.rentsignal.de`
+- **First blog article:** "Küche oder Balkon?" (kitchen vs balcony ROI) — data-driven German article using real matching/conjoint/SHAP results. SEO keywords targeted: Küchenrenovierung Mietwohnung, Balkon Mietsteigerung, Renovierung ROI Vermieter
+- **GET /profile endpoint** — returns user's plan_tier, display_name, limits (max_units, max_predictions_month). Frontend now uses real tier from API instead of hardcoded "free"
+- **GET /neighborhood/boundaries endpoint** — serves Berlin PLZ GeoJSON (190 polygons, 26KB) from backend instead of broken CDN
+- **PLZ type fix** — boundaries and map endpoints now both return PLZ as integers (was string/float mismatch)
+- **Demo inflation fix** — `shap_top_features` is a dict not a list in demo data, handled both formats
+- **Leaflet maps (partial)** — Portfolio map and Neighborhoods choropleth rendering with tiles + zoom controls. Boundaries and map data loading (200 OK) but polygons not visually colored yet — pushed to backlog
+- **Frontend polish (via Lovable):**
+  - Logout button (Settings + header dropdown)
+  - Unit counter with real tier ("1 of 3 units (free)" / "Unlimited (enterprise)")
+  - Tier limit enforcement (disabled submit + upgrade CTA at cap)
+  - Demo mode link on empty portfolio
+  - Map containers with zoom controls
+  - Leaflet marker icon fix attempted
+- **Repo made public** — `github.com/dannyredel/rentsignal` now public (required for GitHub Pages)
+
+**Artifacts produced:**
+- `blog/_quarto.yml`, `blog/index.qmd`, `blog/assets/custom.css`, `blog/.env`
+- `blog/posts/kitchen-vs-balcony/index.qmd` — first article
+- `.github/workflows/blog.yml` — CI/CD for blog
+- `backend/routers/profile.py` — profile endpoint
+- `backend/routers/neighborhood.py` — updated with boundaries endpoint + PLZ int fix
+- `supabase/migrations/010_view_add_renovate.sql`
+
+**State at end of session:**
+- MVP v1 complete + blog live + maps partially working
+- Blog workflow: write `.qmd` → push → auto-deploys in ~42s
+- Maps need choropleth fill debugging (data loads, polygons don't color)
+- SEO strategy being developed in parallel on Claude.ai
+- Next: fix map choropleth, SEO content calendar, MVP v2 polish
