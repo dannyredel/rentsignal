@@ -37,7 +37,13 @@ async def neighborhood_boundaries():
         return {"type": "FeatureCollection", "features": []}
     import json as _json
     with open(geojson_path) as f:
-        return _json.load(f)
+        data = _json.load(f)
+    # Ensure PLZ is always an integer (source has strings)
+    for feat in data.get("features", []):
+        plz = feat.get("properties", {}).get("plz")
+        if plz is not None:
+            feat["properties"]["plz"] = int(plz)
+    return data
 
 
 @router.get("/map", name="neighborhood_map")
@@ -54,6 +60,9 @@ async def neighborhood_map():
 
     result = spatial[cols].to_dict(orient="records")
     for row in result:
+        # Ensure PLZ is int (pandas int64 serializes as float)
+        if "plz" in row:
+            row["plz"] = int(row["plz"])
         for k, v in row.items():
             if pd.isna(v):
                 row[k] = None
