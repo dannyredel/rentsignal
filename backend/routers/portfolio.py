@@ -326,13 +326,26 @@ def _map_view_to_response(row: dict) -> dict:
         "living_space_sqm": row.get("living_space_sqm"),
         "rooms": row.get("rooms", 0),
         "year_built": row.get("year_built"),
+        "floor": row.get("floor", 0),
+        "building_floors": row.get("building_floors", 1),
+        "has_kitchen": row.get("has_kitchen", False),
+        "has_balcony": row.get("has_balcony", False),
+        "has_elevator": row.get("has_elevator", False),
+        "has_garden": row.get("has_garden", False),
+        "has_cellar": row.get("has_cellar", False),
+        "condition": row.get("condition", "well_kept"),
         "current_rent_per_sqm": row.get("current_rent_per_sqm"),
         "is_monitored": row.get("is_monitored", False),
+        # Analysis results
         "predicted_rent_sqm": row.get("predicted_rent_sqm"),
         "rent_gap_pct": row.get("rent_gap_pct"),
         "is_compliant": row.get("is_compliant"),
         "overpayment_annual": row.get("overpayment_annual"),
         "legal_max_rent_sqm": row.get("legal_max_rent_sqm"),
+        # Full analysis JSONBs for detail views
+        "predict_result": row.get("predict_result"),
+        "comply_result": row.get("comply_result"),
+        "renovate_result": row.get("renovate_result"),
         "created_at": row.get("unit_created_at"),
         "updated_at": row.get("unit_created_at"),  # view doesn't expose updated_at
     }

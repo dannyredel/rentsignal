@@ -131,6 +131,14 @@ class UnitResponse(BaseModel):
     living_space_sqm: float
     rooms: float
     year_built: int
+    floor: int = 0
+    building_floors: int = 1
+    has_kitchen: bool = False
+    has_balcony: bool = False
+    has_elevator: bool = False
+    has_garden: bool = False
+    has_cellar: bool = False
+    condition: str = "well_kept"
     current_rent_per_sqm: Optional[float] = None
     is_monitored: bool = False
 
@@ -140,6 +148,11 @@ class UnitResponse(BaseModel):
     is_compliant: Optional[bool] = None
     overpayment_annual: Optional[float] = None
     legal_max_rent_sqm: Optional[float] = None
+
+    # Full analysis results (JSONB from view)
+    predict_result: Optional[Any] = None
+    comply_result: Optional[Any] = None
+    renovate_result: Optional[Any] = None
 
     created_at: datetime
     updated_at: datetime
