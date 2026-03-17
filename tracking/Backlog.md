@@ -55,37 +55,31 @@
 
 ### Frontend → Backend Integration
 
-- [ ] **Onboarding flow** (~2h)
-  - First login → redirect to Add units page (not empty Portfolio)
-  - "Welcome to RentSignal" state with "Add your first apartment" CTA
-  - Option: "Try with demo data" button loads 5 demo apartments into view (not saved to DB)
+- [x] **Onboarding flow** ✅ 2026-03-17
+  - Empty state on Portfolio serves as onboarding: "Welcome to RentSignal" + "Add your first apartment" CTA
+  - "Try demo data" link also available
 
-- [ ] **Real CRUD — Add units saves to Supabase** (~2h)
-  - Add units form submits to `POST /portfolio/units` (backend already built)
-  - Lovable sends auth token with request
-  - Form shows success/error state
-  - After save, redirect to unit detail page
+- [x] **Real CRUD — Add units saves to Supabase** ✅ 2026-03-17
+  - Add units form submits to `POST /portfolio/units` with auth token
+  - Redirects to unit detail page after save
+  - Toast notification shows prediction + compliance status
 
-- [ ] **Auto-analysis on unit creation** (~2h)
-  - After `POST /portfolio/units`, auto-call `POST /predict` + `POST /compliance` + `POST /renovate`
-  - Store results in `analyses` table via backend
-  - Unit detail page shows live results immediately
+- [x] **Auto-analysis on unit creation** ✅ 2026-03-17
+  - Backend auto-runs predict + comply + renovate on `POST /portfolio/units`
+  - Results stored in `analyses` table with denormalized metrics
+  - `POST /portfolio/units/{id}/analyze` endpoint for re-running
 
-- [ ] **Portfolio shows real user data** (~1h)
-  - Portfolio page calls `GET /portfolio/units` (not `/demo/apartments`)
-  - Stats, table, revenue gap chart all use real data
-  - If 0 units → show empty state with CTA
+- [x] **Portfolio shows real user data** ✅ 2026-03-17
+  - All pages (Portfolio, Comply, Optimize, Act) use `GET /portfolio/units`
+  - Stats, table, gap %, compliance status all from real data
 
-- [ ] **Empty states for all pages** (~1h)
-  - Portfolio: "No units yet — add your first apartment"
-  - Comply: "Add units to see compliance risk"
-  - Optimize: "Add units to see revenue gaps"
+- [x] **Empty states for all pages** ✅ 2026-03-17
+  - Shared EmptyState component across Portfolio, Comply, Optimize, Act
 
 ### Admin & Demo
 
-- [ ] **Admin role for Daniel** (~15min)
-  - Set `plan_tier = 'enterprise'` in Supabase profiles table for your user_id
-  - Full access to all features, no limits
+- [x] **Admin role for Daniel** ✅ 2026-03-17
+  - Set `plan_tier = 'enterprise'` in Supabase profiles table
 
 - [ ] **Demo mode toggle** (~1h)
   - "Try demo data" button on Portfolio loads 5 demo apartments in read-only view
@@ -96,10 +90,12 @@
 
 - [x] **Address autocomplete fix** ✅ 2026-03-16 (pushed, deploying)
   - Removed osm_tag filter, added error handling
-- [ ] **Inflation adjustment on demo endpoint** (~30min)
-  - Demo apartments show raw 2019 prices — apply ×1.378 in demo router
-- [ ] **Optimize page Gap % display** (~15min)
-  - Currently shows 1790% instead of 17.9% — Lovable display bug
+- [x] **Inflation adjustment on demo endpoint** ✅ 2026-03-17
+  - Applied ×1.378 to all rent/SHAP values in demo router
+- [x] **Optimize page Gap % display** ✅ 2026-03-17
+  - Fixed by switching to `rent_gap_pct` from analyses table
+- [x] **Debug endpoint removed** ✅ 2026-03-17
+  - Removed `/debug/token` from main.py
 
 ### Basic Tier Enforcement
 
