@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - robots.txt
 
 website:
   title: "RentSignal Blog"
@@ -33,6 +35,9 @@ website:
   search:
     location: navbar
     type: textbox
+
+  # SEO: canonical URLs auto-generated from site-url
+  page-navigation: true
 
 
 format:
