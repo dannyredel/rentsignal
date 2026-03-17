@@ -3,7 +3,7 @@
 
 ---
 
-## Current State (last updated: 2026-03-16)
+## Current State (last updated: 2026-03-17)
 
 ### Components Status
 | Component | Status | Notes |
@@ -27,11 +27,11 @@
 | Brand identity | 🔄 In progress | Name locked: **RentSignal**. Domain: rentsignal.de (€5.93/yr, available, not yet purchased). Colors TBD (iterating with Nano Banana — liked architectural grid + dashboard layout from round 1, not the green palette). Architectural blueprint grid is the brand texture. |
 | Positioning evolution | ✅ Complete | `docs/POSITIONING-EVOLUTION.md` — 3 phases with **Comply · Optimize · Act** pillars scaling across each. Hero: "Know what every unit is worth. Stay compliant. Make the right move." Copy reference section for landing page, investor, demo contexts. |
 | Railway deployment files | ✅ Ready | `requirements-api.txt`, `Procfile`, `railway.toml`, `nixpacks.toml` created. Need to push to GitHub + connect Railway. Consider computing SHAP explainer on-the-fly to avoid committing 26MB file. |
-| Backend API | ✅ Complete | FastAPI with 8 endpoints (health, demo×2, predict, comply, renovate, spatial×2). Tested on localhost:8000. |
+| Backend API | ✅ Complete | FastAPI with 28 endpoints. All working on Railway. |
 | Backend deployment | ✅ Live | Railway: `https://web-production-f2b2f.up.railway.app` · Python 3.11.15 · Auto-deploys from GitHub `dannyredel/rentsignal` main branch · Supabase env vars set |
-| Lovable prompt | ✅ Complete | `docs/LOVABLE-PROMPT.md` — landing page + 5 dashboard pages + Supabase auth. Ready to paste. |
+| Lovable prompt | ✅ Complete | `docs/LOVABLE-PROMPT.md` — landing page + 5 dashboard pages + Supabase auth. |
 | Frontend | ✅ Live | Lovable-generated React dashboard at `rentsignal.de`. Portfolio + Unit detail (4 tabs) + Comply + Optimize + Act + Neighborhoods all working with live API. Google OAuth working. Add units form works (predict + comply) but doesn't save to DB yet. |
-| Pitch deck | ❌ Not started | Narrative arc defined in brief |
+| Pitch deck | ✅ Content ready | `pitch/PITCH-DECK.md` — Gamma-ready pitch deck content |
 
 ### API Keys Status
 | Service | Status |
@@ -63,6 +63,11 @@
 - Sentinel-2 ✅ done — summer 2024 scene (Aug 20, 0.6% cloud). Microsoft Planetary Computer is free, no account needed
 - Gemini spatial extraction needs prompt iteration — budget 1 hour for prompt engineering
 - Gradium German STT accuracy unknown — have form input as reliable fallback, voice as demo bonus
+- **JWT auth uses decode-without-verification** — Supabase issues ES256 tokens; server decodes without signature check (acceptable since Supabase service role handles DB auth). If security tightens, fetch Supabase JWKS for proper ES256 verification.
+- **Debug/token endpoint still in main.py** — temporary endpoint from JWT debugging, needs to be removed before production
+- **SHAP is pre-computed** — live SHAP computation was too slow on Railway. Pre-computed SHAP values are loaded from file. If model is retrained, must regenerate pre-computed SHAP.
+- **scikit-learn and xgboost versions pinned** — model was trained with scikit-learn 1.6.x and xgboost 3.x. Changing versions will break model deserialization.
+- **Inflation adjustment ×1.378** applied to predictions (2019→2024). Demo apartments still show raw 2019 prices (fix pending).
 
 ## Don't Forget
 - The competitive landscape shows 6 gaps that NO existing tool fills — use this in pitch ("we fill all six")

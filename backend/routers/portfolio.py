@@ -1,5 +1,6 @@
 """Portfolio CRUD endpoints — the core portfolio entity management."""
 
+import logging
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -13,8 +14,11 @@ from backend.models.portfolio import (
     UnitResponse,
     UnitUpdate,
 )
+from backend.services.analysis_service import run_full_analysis
 from backend.supabase_client import get_supabase
 from backend.tier import check_can_add_unit, check_tier
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
@@ -24,7 +28,7 @@ router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
 @router.post("/units", response_model=UnitResponse, status_code=201)
 async def create_unit(data: UnitCreate, user: User = Depends(get_current_user)):
-    """Create a new unit in the user's portfolio."""
+    """Create a new unit in the user's portfolio, then auto-run analysis."""
     await check_can_add_unit(user)
 
     sb = get_supabase()
@@ -36,7 +40,27 @@ async def create_unit(data: UnitCreate, user: User = Depends(get_current_user)):
         row["building_era"] = _year_to_era(row["year_built"])
 
     result = sb.table("units").insert(row).execute()
-    return result.data[0]
+    unit = result.data[0]
+
+    # Auto-run predict + comply + renovate and store in analyses table
+    try:
+        run_full_analysis(unit, user.user_id)
+    except Exception as e:
+        logger.warning(f"Auto-analysis failed for unit {unit['id']}: {e}")
+        # Don't fail the unit creation — analysis can be retried
+
+    # Re-fetch from the view to include analysis results in response
+    view_result = (
+        sb.table("units_with_latest_analysis")
+        .select("*")
+        .eq("unit_id", unit["id"])
+        .eq("user_id", user.user_id)
+        .maybe_single()
+        .execute()
+    )
+    if view_result.data:
+        return _map_view_to_response(view_result.data)
+    return unit
 
 
 @router.get("/units", response_model=list[UnitResponse])
@@ -120,6 +144,28 @@ async def delete_unit(unit_id: UUID, user: User = Depends(get_current_user)):
     )
     if not result.data:
         raise HTTPException(404, detail="Unit not found")
+
+
+# ── Re-analyze ──
+
+
+@router.post("/units/{unit_id}/analyze")
+async def analyze_unit(unit_id: UUID, user: User = Depends(get_current_user)):
+    """Re-run predict + comply + renovate on an existing unit."""
+    sb = get_supabase()
+    result = (
+        sb.table("units")
+        .select("*")
+        .eq("id", str(unit_id))
+        .eq("user_id", user.user_id)
+        .maybe_single()
+        .execute()
+    )
+    if not result.data:
+        raise HTTPException(404, detail="Unit not found")
+
+    analysis = run_full_analysis(result.data, user.user_id)
+    return analysis
 
 
 # ── Portfolio Summary ──

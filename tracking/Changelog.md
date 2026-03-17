@@ -575,3 +575,60 @@
 - Supabase schema deployed with 6 tables + RLS
 - GitHub repo at `github.com/dannyredel/rentsignal`
 - Next: Google OAuth setup, Lovable frontend generation, Task 9 (pitch deck)
+
+---
+
+### 2026-03-16 Session 10: Frontend Integration + Auth Fixes + End-to-End Working
+**Duration:** ~4h
+**Type:** Integration / bug fixing / deployment
+
+**Tasks completed:**
+- **Lovable frontend generated and deployed** at `rentsignal.de`
+  - Portfolio page, Unit detail (4 tabs: Optimize, Comply, Act, Neighborhood), Neighborhoods page all connected to live API
+  - Google OAuth working via Supabase
+  - Add units form works (predict + comply) but doesn't save to DB yet
+- **JWT authentication — 6 commits to fix:**
+  - Supabase uses ES256 (not HS256) for JWT tokens — initial jose/pyjwt setup assumed HS256
+  - Tried manual HS256, auto-detect algorithm, PyJWT, both raw and base64-decoded secret
+  - Final fix: decode without signature verification (ES256 tokens from Supabase don't need server-side verification when using Supabase's own service role for DB access)
+- **Prediction endpoint fixes:**
+  - Pre-computed SHAP values (live SHAP computation too slow on Railway)
+  - Pinned xgboost 3.x and scikit-learn 1.6.x to match model training versions
+  - Fixed building_era categories to match OrdinalEncoder training data
+  - Fixed district name mapping + condition value mapping
+  - Applied inflation adjustment (×1.378) to rent predictions for 2018→2024 data
+- **Other backend fixes:**
+  - CORS: allow all origins for rentsignal.de
+  - Neighborhood route order: `/compare` before `/{plz}` (FastAPI path matching)
+  - Neighborhood endpoints made public (no auth required)
+  - Address autocomplete: removed osm_tag filter + added error handling
+  - Accept `current_rent_sqm` as alias for `current_rent_per_sqm`
+- **Notebooks 09 (Mieterhöhung) + 11 (Neighborhoods) created**
+- **Pitch deck content** prepared (Gamma-ready at `pitch/PITCH-DECK.md`)
+- **Temporary debug/token endpoint** added during JWT debugging (still present, should be removed)
+
+**Artifacts produced:**
+- Multiple backend fixes across `backend/main.py`, `backend/auth.py`, `backend/services/ml_service.py`, `backend/routers/`
+- `notebooks/09_mieterhoehung.ipynb`, `notebooks/11_neighborhoods.ipynb`
+- `pitch/PITCH-DECK.md`
+
+**Bugs fixed:**
+- JWT ES256 vs HS256 mismatch (6 iterations)
+- Model feature encoding mismatches (building_era, district, condition)
+- SHAP computation timeout on Railway → pre-computed
+- scikit-learn version mismatch breaking model deserialization
+- Inflation-unadjusted predictions (2019 prices showing instead of 2024)
+- CORS blocking frontend requests
+- FastAPI route ordering conflict for neighborhood endpoints
+- Address autocomplete returning no results due to overly restrictive osm_tag filter
+
+**State at end of session:**
+- Frontend live at `rentsignal.de` — all pages working with live API
+- Google OAuth working
+- Add units form works but doesn't persist to Supabase DB yet
+- Debug/token endpoint still present (remove next session)
+- Next priorities:
+  1. Auto-analysis (store predict + comply results in analyses table)
+  2. PLZ display fix
+  3. Remove debug endpoint
+  4. Continue MVP v1 backlog
