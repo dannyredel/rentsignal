@@ -1,55 +1,56 @@
-/* RentSignal Blog — match rentsignal.de dashboard aesthetic */
+/* RentSignal Blog — matches rentsignal.de landing page */
 
-/* ── Brand tokens ── */
+/* ── Brand tokens (from frontend/rentsignal-landing.html) ── */
 :root {
-  --rs-primary: #0d9488;
-  --rs-primary-hover: #0f766e;
-  --rs-primary-light: #ccfbf1;
-  --rs-dark: #0f172a;
-  --rs-dark-secondary: #1e293b;
-  --rs-gray: #64748b;
-  --rs-gray-light: #94a3b8;
-  --rs-border: #e2e8f0;
-  --rs-bg: #f8fafc;
-  --rs-card: #ffffff;
-  --rs-text: #1e293b;
-  --rs-text-muted: #64748b;
-  --rs-red: #dc2626;
-  --rs-green: #0d9488;
+  --rs-teal: #004746;
+  --rs-green: #00BC72;
+  --rs-green-light: #E6F9F0;
+  --rs-green-hover: #00A864;
+  --rs-accent: #E8913A;
+  --rs-fg: #1A1F2B;
+  --rs-fg-muted: #6B7280;
+  --rs-fg-light: #9CA3AF;
+  --rs-bg: #FAFAFA;
+  --rs-bg-warm: #F5F3EF;
+  --rs-card: #FFFFFF;
+  --rs-border: #E5E7EB;
+  --rs-danger: #DC2626;
 }
 
-/* ── Typography — Inter to match dashboard ── */
+/* ── Typography ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: var(--rs-text);
-  background-color: var(--rs-bg);
+  color: var(--rs-fg);
+  background: var(--rs-bg);
   font-size: 0.95rem;
   line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   font-weight: 600;
-  color: var(--rs-dark);
-  letter-spacing: -0.02em;
+  color: var(--rs-fg);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 h1 { font-weight: 700; }
 
 code, pre, .sourceCode {
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-family: 'JetBrains Mono', monospace;
 }
 
-/* ── Navbar — dark slate like dashboard sidebar ── */
+/* ── Navbar — dark teal like landing page ── */
 .navbar {
-  background-color: var(--rs-dark) !important;
-  border-bottom: 1px solid var(--rs-dark-secondary);
+  background-color: var(--rs-teal) !important;
+  border-bottom: none;
 }
 
 .navbar-brand {
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
   font-size: 1.1rem;
 }
@@ -62,16 +63,16 @@ code, pre, .sourceCode {
 /* ── Article listing ── */
 .quarto-listing-default .listing-title {
   font-weight: 600;
-  color: var(--rs-dark);
+  color: var(--rs-fg);
   font-size: 1.15rem;
 }
 
 .quarto-listing-default .listing-title:hover {
-  color: var(--rs-primary);
+  color: var(--rs-green);
 }
 
 .quarto-listing-default .listing-description {
-  color: var(--rs-text-muted);
+  color: var(--rs-fg-muted);
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -79,19 +80,19 @@ code, pre, .sourceCode {
 .quarto-listing-default .listing-date,
 .quarto-listing-default .listing-author {
   font-size: 0.8rem;
-  color: var(--rs-gray-light);
+  color: var(--rs-fg-light);
 }
 
-/* Category badges */
+/* Category badges — green accent like landing page buttons */
 .quarto-listing-default .listing-categories .listing-category {
-  background-color: var(--rs-primary-light);
-  color: var(--rs-primary);
-  border: 1px solid var(--rs-primary);
+  background-color: var(--rs-green-light);
+  color: var(--rs-teal);
+  border: 1px solid var(--rs-green);
   border-radius: 2px;
   font-size: 0.7rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   padding: 2px 8px;
 }
 
@@ -100,18 +101,18 @@ code, pre, .sourceCode {
   max-width: 780px;
 }
 
-/* Links — teal accent */
+/* Links — green accent */
 a {
-  color: var(--rs-primary);
+  color: var(--rs-green);
   text-decoration: none;
 }
 
 a:hover {
-  color: var(--rs-primary-hover);
+  color: var(--rs-green-hover);
   text-decoration: underline;
 }
 
-/* Tables — clean, bordered like dashboard */
+/* ── Tables — clean, matching dashboard ── */
 table {
   font-size: 0.88rem;
   border-collapse: collapse;
@@ -119,13 +120,14 @@ table {
 }
 
 table thead th {
-  background-color: var(--rs-bg);
+  background-color: var(--rs-bg-warm);
   border-bottom: 2px solid var(--rs-border);
-  font-weight: 600;
-  font-size: 0.82rem;
-  color: var(--rs-text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: var(--rs-fg-muted);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.1em;
   padding: 10px 12px;
 }
 
@@ -135,13 +137,18 @@ table tbody td {
 }
 
 table tbody tr:hover {
-  background-color: rgba(13, 148, 136, 0.04);
+  background-color: rgba(0, 188, 114, 0.04);
 }
 
-/* ── Code blocks ── */
+/* Bold values in tables */
+table tbody td strong {
+  color: var(--rs-fg);
+}
+
+/* ── Code blocks — dark with green accent ── */
 pre.sourceCode {
-  border-left: 3px solid var(--rs-primary);
-  background-color: var(--rs-dark);
+  border-left: 3px solid var(--rs-green);
+  background-color: var(--rs-teal);
   color: #e2e8f0;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -153,45 +160,66 @@ div.sourceCode {
 
 /* Inline code */
 p code, li code {
-  background-color: var(--rs-primary-light);
-  color: var(--rs-primary-hover);
+  background-color: var(--rs-green-light);
+  color: var(--rs-teal);
   padding: 1px 5px;
   border-radius: 3px;
   font-size: 0.88em;
 }
 
-/* ── Callout boxes (cross-language summaries) ── */
+/* ── Callout boxes — green accent ── */
 .callout-note {
-  border-left: 4px solid var(--rs-primary);
-  background-color: var(--rs-primary-light);
+  border-left: 4px solid var(--rs-green);
+  background-color: var(--rs-green-light);
 }
 
 .callout-note .callout-title {
-  color: var(--rs-primary-hover);
+  color: var(--rs-teal);
   font-weight: 600;
 }
 
-/* ── CTA links — make them pop ── */
+/* ── Section labels — mono uppercase like landing page ── */
+.quarto-title-meta-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--rs-fg-muted);
+}
+
+/* ── Subtitle ── */
+.quarto-title .quarto-title-subtitle {
+  color: var(--rs-fg-muted);
+  font-size: 1.05rem;
+}
+
+/* ── CTA links — make them pop with green ── */
 a[href*="rentsignal.de/"] {
   font-weight: 600;
+  color: var(--rs-green);
 }
 
-/* ── Footer ── */
+a[href*="rentsignal.de/"]:hover {
+  color: var(--rs-green-hover);
+}
+
+/* ── Footer — dark teal ── */
 .nav-footer {
-  background-color: var(--rs-dark);
-  color: var(--rs-gray-light);
-  border-top: 1px solid var(--rs-dark-secondary);
+  background-color: var(--rs-teal);
+  color: var(--rs-fg-light);
+  border-top: none;
   font-size: 0.82rem;
 }
 
 /* ── Sidebar (TOC + categories) ── */
 .sidebar nav[role="doc-toc"] .active {
-  border-left-color: var(--rs-primary);
-  color: var(--rs-primary);
+  border-left-color: var(--rs-green);
+  color: var(--rs-green);
 }
 
 .sidebar .quarto-category {
-  color: var(--rs-text-muted);
+  color: var(--rs-fg-muted);
   font-size: 0.85rem;
 }
 
