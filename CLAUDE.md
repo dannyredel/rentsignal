@@ -112,6 +112,7 @@ The `.claude/` folder contains reusable skills and agent configurations that ass
 | **compliance-rules** | `.claude/skills/compliance-rules.md` | When implementing the Mietpreisbremse engine. Contains §556d BGB rules, §559 BGB modernization rules, Mietspiegel lookup logic, and exception handling. |
 | **gemini-integration** | `.claude/skills/gemini-integration.md` | When calling Gemini API for spatial extraction, apartment photo analysis, or NL→structured feature parsing. Contains tested prompts and structured output schemas. |
 | **demo-prep** | `.claude/skills/demo-prep.md` | When preparing demo apartments, pre-computing outputs, or assembling demo data JSONs. Contains the 5 demo apartment specs and expected outputs. |
+| **blog-content** | `.claude/skills/blog-content.md` | When writing blog articles for blog.rentsignal.de. Contains SEO checklist (title tags, meta descriptions, OG tags, UTM links, internal linking), content formula, brand voice rules, FAQ schema template, and post-writing verification steps. References the full SEO strategy in `docs/strategy/rentsignal-seo-strategy.md`. |
 
 ### `.claude/agents/`
 

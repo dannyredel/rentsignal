@@ -178,6 +178,15 @@
 - [ ] **Wk 6:** "How We Predict Rents: 37 Features" (EN, technical) + "CO2 Kostenaufteilung" (DE)
 - [ ] **Wk 7-12:** See `docs/strategy/rentsignal-seo-strategy.md` §2
 
+#### SEO Polish
+- [ ] **Article hero images (og:image)** (~2h)
+  - Generate branded OG images for each article (Quarto `image:` frontmatter)
+  - Needed for social sharing previews (LinkedIn, Twitter)
+- [ ] **FAQ schema (JSON-LD)** per compliance article (~30min each)
+  - Enables Google rich snippets (FAQ dropdowns in search results)
+  - Add to Mietpreisbremse Rechner + Berlin Rent Brake Calculator first
+- [ ] **Hreflang tags** for DE/EN article pairs (~30min)
+
 #### Promotion
 - [ ] **LinkedIn company page + first 5 posts** (~2h)
 - [ ] **Product Hunt launch** (~1h)

@@ -18,6 +18,11 @@ keywords:
 open-graph:
   title: "Mietpreisbremse Rechner 2026 — Kostenlos prüfen | RentSignal"
   description: "Ist deine Miete legal? Kostenloser Rechner für Berlin. Ergebnis in 10 Sekunden."
+
+format:
+  html:
+    include-after-body:
+      - ../../_includes/faq-mietpreisbremse-rechner.html
 ---
 
 ## Das Wichtigste in 30 Sekunden

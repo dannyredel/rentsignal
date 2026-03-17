@@ -18,6 +18,11 @@ keywords:
 open-graph:
   title: "Berlin Rent Brake Calculator — Free | RentSignal"
   description: "Is your Berlin rent legal? Free calculator based on the official Mietspiegel 2024. Result in 10 seconds."
+
+format:
+  html:
+    include-after-body:
+      - ../../_includes/faq-berlin-rent-brake.html
 ---
 
 ## The Short Version
