@@ -34,13 +34,6 @@ website:
     location: navbar
     type: textbox
 
-listing:
-  - id: blog-listing
-    contents: posts/*/index.qmd
-    sort: "date desc"
-    type: default
-    categories: true
-    feed: true
 
 format:
   html:
