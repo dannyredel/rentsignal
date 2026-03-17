@@ -53,11 +53,37 @@ code, pre, .sourceCode {
   font-weight: 600;
   letter-spacing: -0.02em;
   font-size: 1.1rem;
+  color: #ffffff !important;
 }
 
 .navbar .nav-link {
   font-size: 0.85rem;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--rs-green) !important;
+}
+
+.navbar .navbar-nav .nav-link.active {
+  color: var(--rs-green) !important;
+}
+
+/* Search icon in navbar */
+.navbar .bi-search,
+.navbar .navbar-search {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* GitHub icon */
+.navbar .bi-github {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.navbar .bi-github:hover {
+  color: var(--rs-green) !important;
 }
 
 /* ── Article listing ── */
