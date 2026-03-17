@@ -13,6 +13,10 @@ data/raw/
 # Models — committed for API deployment
 # shap_explainer.joblib is 26MB (under GitHub 100MB limit)
 
+# Quarto build output
+blog/_site/
+blog/.quarto/
+
 # OS
 .DS_Store
 Thumbs.db

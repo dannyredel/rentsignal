@@ -1,0 +1,16 @@
+---
+title: "RentSignal Blog"
+subtitle: "Data-driven insights on the German rental market"
+listing:
+  id: blog-listing
+  contents: posts/*/index.qmd
+  sort: "date desc"
+  type: default
+  categories: true
+  feed: true
+  fields: [title, subtitle, date, author, categories, description, image]
+page-layout: full
+---
+
+::: {#blog-listing}
+:::

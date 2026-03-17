@@ -1,0 +1,58 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "RentSignal Blog"
+  description: "Data-driven insights on the German rental market. Mietpreisbremse compliance, rent prediction, renovation ROI, and spatial analytics."
+  site-url: https://blog.rentsignal.de
+  favicon: assets/favicon.ico
+
+  navbar:
+    background: "#0f172a"
+    foreground: "#ffffff"
+    logo: assets/logo.svg
+    left:
+      - text: "Articles"
+        href: index.qmd
+      - text: "RentSignal"
+        href: https://rentsignal.de
+        target: _blank
+    right:
+      - icon: github
+        href: https://github.com/dannyredel/rentsignal
+        target: _blank
+
+  page-footer:
+    center: |
+      &copy; 2026 RentSignal &middot; [rentsignal.de](https://rentsignal.de)
+
+  open-graph: true
+  twitter-card: true
+
+  search:
+    location: navbar
+    type: textbox
+
+listing:
+  - id: blog-listing
+    contents: posts/*/index.qmd
+    sort: "date desc"
+    type: default
+    categories: true
+    feed: true
+
+format:
+  html:
+    theme:
+      light: cosmo
+    css: assets/custom.css
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    lang: de
+    author-meta: "Daniel Redel"
+
+execute:
+  freeze: auto

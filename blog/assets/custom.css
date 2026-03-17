@@ -1,0 +1,48 @@
+/* RentSignal Blog — custom theme overrides */
+
+:root {
+  --rs-primary: #0d9488;
+  --rs-dark: #0f172a;
+  --rs-gray: #64748b;
+}
+
+/* Navbar brand */
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Article cards */
+.quarto-listing-default .listing-title {
+  font-weight: 600;
+  color: var(--rs-dark);
+}
+
+.quarto-listing-default .listing-description {
+  color: var(--rs-gray);
+}
+
+/* Code blocks */
+pre.sourceCode {
+  border-left: 3px solid var(--rs-primary);
+}
+
+/* Links */
+a {
+  color: var(--rs-primary);
+}
+
+a:hover {
+  color: #0f766e;
+}
+
+/* Tables */
+table {
+  font-size: 0.9em;
+}
+
+/* Footer */
+.nav-footer {
+  background-color: var(--rs-dark);
+  color: #94a3b8;
+}

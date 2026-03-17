@@ -1,0 +1,105 @@
+---
+title: "Küche oder Balkon? Was sich für Vermieter wirklich lohnt"
+subtitle: "Drei unabhängige Methoden, ein klares Ergebnis: Die Küchenrenovierung schlägt den Balkonanbau — und zwar deutlich."
+description: "Datenanalyse von 10.000+ Berliner Mietwohnungen zeigt: Eine moderne Küche steigert die Miete um +2,91 €/m², ein Balkon senkt sie um -0,72 €/m². Wir erklären warum."
+author: "Daniel Redel"
+date: "2026-03-17"
+categories: [Renovation, ROI, Berlin, Data Analysis]
+image: kitchen-vs-balcony.png
+lang: de
+
+keywords:
+  - Küchenrenovierung Mietwohnung
+  - Balkon Mietsteigerung
+  - Renovierung ROI Vermieter
+  - Berlin Mietrendite
+  - Wohnungsrenovierung lohnt sich
+
+open-graph:
+  title: "Küche oder Balkon? Datenanalyse für Vermieter"
+  description: "10.000+ Berliner Wohnungen analysiert. Küche: +2,91 €/m². Balkon: -0,72 €/m²."
+---
+
+## TL;DR
+
+| Renovierung | Mieteffekt (€/m²) | Payback | ROI/Jahr |
+|---|---|---|---|
+| **Moderne Küche** | **+2,91** | ~57 Monate | 25% |
+| Aufzug | +1,09 | ~370 Monate | 3,3% |
+| Gartenzugang | +0,93 | ~61 Monate | 19,6% |
+| Balkon | **-0,72** | ∞ | negativ |
+
+: Kausaleffekte auf die Kaltmiete, basierend auf Propensity Score Matching (10.275 Berliner Wohnungen). {.striped}
+
+## Die Frage
+
+Jeder Vermieter steht irgendwann vor der Entscheidung: Wo investiere ich? Die üblichen Verdächtigen — Küche modernisieren, Balkon anbauen, Aufzug nachrüsten — kosten unterschiedlich viel. Aber welche Investition bringt tatsächlich mehr Miete?
+
+Die meisten Antworten basieren auf Bauchgefühl, Maklerweisheiten oder bestenfalls auf Korrelationen aus Immobilienportalen. Das Problem: **Korrelation ist nicht Kausalität.** Wohnungen mit Balkon sind im Schnitt teurer — aber liegt das am Balkon, oder daran, dass Balkone häufiger in besseren Lagen vorkommen?
+
+## Unsere Methode
+
+Wir haben drei unabhängige Analysemethoden auf denselben Datensatz angewandt:
+
+### 1. SHAP-Analyse (Machine Learning)
+
+Ein XGBoost-Modell (R²=0,75, 37 Features) wurde auf 10.275 Berliner Mietwohnungen trainiert. Die SHAP-Werte zeigen den marginalen Beitrag jedes Features zur Mietprognose:
+
+- **Küche (hasKitchen):** SHAP = +0,96 €/m²
+- **Balkon:** SHAP = +0,06 €/m²
+
+Der Unterschied: **16×** zugunsten der Küche.
+
+### 2. Propensity Score Matching (Kausalinferenz)
+
+Um den kausalen Effekt zu isolieren, haben wir ein Propensity Score Matching durchgeführt. Das Verfahren:
+
+1. Für jede Wohnung *mit* Küche wird eine möglichst ähnliche Wohnung *ohne* Küche gesucht
+2. Matching auf 14 Confounders (Größe, Lage, Baujahr, Zustand, etc.)
+3. 1:1 Nearest-Neighbor, Caliper = 0,2 SD, 1.000 Bootstrap-Iterationen
+
+**Ergebnisse:**
+
+- **Küche: +2,91 €/m²** [95% KI: 2,65 — 3,18], 2.288 Paare, alle 14 Confounder balanciert
+- **Balkon: -0,72 €/m²** [95% KI: -1,07 — -0,40], 1.764 Paare
+
+Ja, Sie lesen richtig: Der Balkon hat einen **negativen** kausalen Effekt. Der beobachtete Preisaufschlag (+0,85 €/m²) verschwindet nach Kontrolle für Selektionseffekte.
+
+### 3. Synthetische Conjoint-Analyse (Stated Preferences)
+
+Zusätzlich haben wir eine Choice-Based Conjoint-Studie mit 75 kalibrierten Berliner Mieterprofilen durchgeführt (basierend auf IBB Wohnungsmarktbericht 2025). Die Willingness-to-Pay (WTP):
+
+- **Küche: +4,13 €/m²** — stärkstes Feature
+- **Balkon: +1,01 €/m²** — Mieter *sagen*, sie würden zahlen...
+
+## Die Konvergenz
+
+Das Bemerkenswerte: Matching und Conjoint liefern für die Küche fast identische Ergebnisse:
+
+| Methode | Küche (€/m²) | Balkon (€/m²) |
+|---|---|---|
+| SHAP | +0,96 | +0,06 |
+| Matching (CATE) | +2,91 | -0,72 |
+| Conjoint (WTP) | +4,13 | +1,01 |
+
+Beim Balkon zeigt sich eine klassische **Stated-Revealed Preference Gap**: Mieter *behaupten*, für einen Balkon zu zahlen. Am Markt tun sie es nicht.
+
+## Was bedeutet das für Vermieter?
+
+**1. Investieren Sie in die Küche.** Bei einer 65-m²-Wohnung bedeuten +2,91 €/m² ca. 189 €/Monat Mehmiete. Bei Renovierungskosten von ~15.000 € ergibt das einen Payback von unter 5 Jahren.
+
+**2. Bauen Sie keinen Balkon.** Die Investition (8.000-15.000 €) rechnet sich nach unseren Daten nie. Der Markt preist Balkone nicht ein — der beobachtete Aufschlag ist ein Selektionseffekt, kein kausaler Effekt.
+
+**3. Gartenzugang als Alternative.** Mit +0,93 €/m² und nur ~5.000 € Kosten hat der Gartenzugang den zweitbesten ROI nach der Küche.
+
+## Methodik-Details
+
+- **Datensatz:** 10.275 Berliner Mietwohnungen (ImmoScout24, 2018-2019), inflationsbereinigt auf 2024
+- **Modell:** XGBoost mit 37 Features (19 strukturell + 9 OSM-Spatial + 9 Satellit)
+- **Matching:** Logistisches PS-Modell, 1:1 NN ohne Zurücklegen, Caliper 0,2 SD, robust über 0,1-0,5 SD
+- **Conjoint:** D-optimales Design, 6 Attribute, 10 Tasks, Dual-Response, MNL-Schätzung (Pseudo-R²=0,43)
+- **Alle Analysen reproduzierbar** auf [github.com/dannyredel/rentsignal](https://github.com/dannyredel/rentsignal)
+
+---
+
+*Dieser Artikel basiert auf der Analysepipeline von [RentSignal](https://rentsignal.de) — der Plattform für datengetriebene Mietentscheidungen. Testen Sie kostenlos, was Ihre Wohnungen wert sind.*
