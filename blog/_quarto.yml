@@ -39,6 +39,17 @@ website:
   # SEO: canonical URLs auto-generated from site-url
   page-navigation: true
 
+  # Google Analytics 4
+  google-analytics:
+    tracking-id: "G-85X4K34WMV"
+    anonymize-ip: true
+
+  # GDPR cookie consent
+  cookie-consent:
+    type: express
+    style: headline
+    palette: dark
+
 
 format:
   html:
