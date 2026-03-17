@@ -159,18 +159,20 @@
   - `docs/strategy/rentsignal-seo-tracking-setup.md` — GA4, GSC, UTM, schema markup, GDPR
 
 #### SEO Technical Setup
-- [ ] **Google Analytics 4** (~30min)
-  - Create property, add to Quarto blog (`_quarto.yml`) + Lovable app
-  - Cookie consent banner (GDPR)
-- [ ] **Google Search Console** (~20min)
-  - Domain property for `rentsignal.de`, DNS TXT verification
-  - Submit sitemaps (blog + main site)
-- [ ] **robots.txt** for both properties (~10min)
-- [ ] **Request indexing** for landing page + first articles (~10min)
+- [x] **Google Analytics 4** ✅ 2026-03-18
+  - Property: RentSignal, Measurement ID: G-85X4K34WMV
+  - Blog: Quarto cookie-consent + google-analytics in _quarto.yml
+  - Main site: Lovable added react-ga4 with GDPR consent banner
+- [x] **Google Search Console** ✅ 2026-03-18
+  - Domain property `rentsignal.de` verified via DNS TXT
+  - Blog sitemap submitted (4 pages discovered)
+  - Indexing requested for landing page + 3 blog articles
+- [x] **robots.txt** ✅ 2026-03-17 (blog)
+- [x] **Request indexing** ✅ 2026-03-18 (5 URLs submitted)
 
 #### SEO Content — 12-Week Calendar
 - [x] **Wk 0:** "Küche oder Balkon?" (data insight) ✅ 2026-03-17
-- [ ] **Wk 1:** "Mietpreisbremse Rechner 2026" (DE, P0) + "Berlin Rent Brake Calculator" (EN, P0)
+- [x] **Wk 1:** "Mietpreisbremse Rechner 2026" (DE) + "Berlin Rent Brake Calculator" (EN) ✅ 2026-03-18
 - [ ] **Wk 2:** "Mietspiegel Berlin 2024 erklärt" (DE) + "Lohnt sich Küchenrenovierung?" (DE, expanded)
 - [ ] **Wk 3:** "Berlin Mietspiegel Explained" (EN) + "Mietpreisbremse Ausnahmen" (DE)
 - [ ] **Wk 4:** "Mieterhöhung berechnen 2026" (DE) + "§559 Modernisierung" (DE)

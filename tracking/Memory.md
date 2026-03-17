@@ -33,7 +33,7 @@
 | Frontend | ✅ Live | Lovable-generated React dashboard at `rentsignal.de`. Full CRUD with auto-analysis. All 4 unit detail tabs (Optimize/Comply/Act/Spatial) working. Google OAuth + logout. Tier enforcement (unit counter + limits). Empty states. Demo mode link. |
 | Pitch deck | ✅ Content ready | `pitch/PITCH-DECK.md` — Gamma-ready pitch deck content |
 | Blog | ✅ Live | `blog.rentsignal.de` — Quarto blog, auto-deploys via GitHub Actions. First article "Küche oder Balkon?" published. |
-| SEO strategy | 🔄 In progress | Being developed on Claude.ai. Content calendar + keyword research pending. |
+| SEO strategy | ✅ Complete | `docs/strategy/rentsignal-seo-strategy.md` + tracking setup doc. GA4 (G-85X4K34WMV) + GSC live. 3 articles published. blog-content skill created. |
 | Maps (Leaflet) | 🔄 Partial | Tile rendering + zoom controls work. Choropleth fill not showing (data loads, polygons don't color). PLZ type mismatch fixed server-side, may be frontend caching or rendering issue. |
 
 ### API Keys Status
