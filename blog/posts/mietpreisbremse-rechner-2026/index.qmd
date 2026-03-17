@@ -1,0 +1,241 @@
+---
+title: "Mietpreisbremse Rechner 2026: Ist deine Miete legal?"
+subtitle: "Kostenloser Rechner basierend auf dem qualifizierten Berliner Mietspiegel 2024 und 10.275 analysierten Wohnungen."
+description: "Mietpreisbremse-Rechner für Berlin 2026. Prüfe in 10 Sekunden, ob deine Miete die gesetzliche Obergrenze überschreitet. Basierend auf §556d BGB und dem Berliner Mietspiegel 2024."
+author: "Daniel Redel"
+date: "2026-03-18"
+categories: [Compliance, Tools, Berlin, Mietpreisbremse]
+lang: de
+
+keywords:
+  - Mietpreisbremse Rechner
+  - Mietpreisbremse Berlin 2026
+  - Miete legal prüfen
+  - Mietpreisbremse Rechner kostenlos
+  - §556d BGB
+  - Berliner Mietspiegel 2024
+
+open-graph:
+  title: "Mietpreisbremse Rechner 2026 — Kostenlos prüfen | RentSignal"
+  description: "Ist deine Miete legal? Kostenloser Rechner für Berlin. Ergebnis in 10 Sekunden."
+---
+
+## Das Wichtigste in 30 Sekunden
+
+Die Mietpreisbremse begrenzt die Miete bei Neuvermietung auf **maximal 110% der ortsüblichen Vergleichsmiete** (§556d BGB). In Berlin gilt sie seit 2015 — und wurde bis **2029 verlängert**.
+
+**Prüfe deine Miete jetzt:** [Kostenloser Compliance-Check auf RentSignal →](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=mietpreisbremse-rechner-2026&utm_content=hero)
+
+Keine Anmeldung nötig. Ergebnis in 10 Sekunden.
+
+---
+
+## Was ist die Mietpreisbremse?
+
+Die Mietpreisbremse ist eine gesetzliche Obergrenze für Mieten bei Neuvermietung. Sie wurde 2015 eingeführt und gilt in Gebieten mit angespanntem Wohnungsmarkt — darunter ganz Berlin.
+
+### Die Grundregel
+
+Bei einer Neuvermietung darf die Miete maximal **10% über der ortsüblichen Vergleichsmiete** liegen.
+
+$$
+\text{Höchstmiete} = \text{Vergleichsmiete (Mietspiegel)} \times 1{,}10
+$$
+
+Die Vergleichsmiete wird durch den **qualifizierten Berliner Mietspiegel** bestimmt — eine statistische Erhebung, die alle zwei Jahre aktualisiert wird. Der aktuelle Mietspiegel ist von **2024**.
+
+### Ein Beispiel
+
+Eine 70-m²-Wohnung in Friedrichshain, Baujahr 1965:
+
+| Parameter | Wert |
+|-----------|------|
+| Mietspiegel-Mittelwert | €8,53/m² |
+| + 10% Aufschlag | €0,85/m² |
+| **Gesetzliche Höchstmiete** | **€9,38/m²** |
+| Höchstmiete gesamt | €656,60/Monat |
+
+Wenn der Vermieter €12,00/m² verlangt, liegt die Miete **€2,62/m² über dem Limit** — das sind €183/Monat bzw. **€2.201/Jahr** an potenzieller Rückforderung.
+
+---
+
+## Wie funktioniert der Mietspiegel?
+
+Der Berliner Mietspiegel kategorisiert Wohnungen nach vier Merkmalen:
+
+### 1. Baujahr
+
+| Kategorie | Baujahre |
+|-----------|----------|
+| Altbau (Gründerzeit) | vor 1918 |
+| Zwischenkrieg | 1919–1949 |
+| Nachkrieg | 1950–1964 |
+| Spätmoderne | 1965–1972 |
+| Nachmoderne | 1973–1990 |
+| Wende/Nachwende | 1991–2002 |
+| Neubau (1. Generation) | 2003–2014 |
+| Neubau (ab 2015) | **Mietpreisbremse befreit** |
+
+### 2. Wohnungsgröße
+
+Vier Größenkategorien: unter 40 m², 40–60 m², 60–90 m², über 90 m².
+
+### 3. Wohnlage
+
+Drei Qualitätsstufen: einfach, mittel, gut. Die Wohnlage wird offiziell pro Adresse festgelegt.
+
+### 4. Ausstattung
+
+Der Mietspiegel gibt für jede Kombination eine **Spanne** (unterer und oberer Wert) an. Innerhalb dieser Spanne wird die Miete anhand von Ausstattungsmerkmalen eingeordnet:
+
+- Modernes Bad (+)
+- Einbauküche (+)
+- Parkett/Dielen (+)
+- Moderne Heizung (+)
+- Gute Wärmedämmung (+)
+- Kellerraum (+)
+- Aufzug (+)
+- Balkon (+)
+
+**Der Mietspiegel nutzt 4 Variablen.** Unser Modell nutzt 37 — inklusive Satelliten-Vegetationsindizes, Restaurantdichte und 9 weitere räumliche Features. Der Mietspiegel sagt dir die Spanne. Wir sagen dir, wo du in dieser Spanne stehst.
+
+---
+
+## Die 3 Ausnahmen der Mietpreisbremse
+
+Nicht jede Wohnung unterliegt der Mietpreisbremse. Es gibt **drei gesetzliche Ausnahmen**:
+
+### Ausnahme 1: Neubau (§556f BGB)
+
+Wohnungen, die **nach dem 1. Oktober 2014 erstmals genutzt und vermietet** wurden, sind vollständig befreit. Der Vermieter kann die Miete frei festlegen.
+
+**Achtung:** "Neubau" bedeutet nicht "renoviert". Eine Kernsanierung eines Altbaus ist kein Neubau im Sinne des Gesetzes — es sei denn, sie erfüllt die Kriterien der umfassenden Modernisierung (siehe Ausnahme 3).
+
+### Ausnahme 2: Vormiete (§556e BGB)
+
+Wenn der Vormieter bereits eine Miete über der 110%-Grenze gezahlt hat, darf der Vermieter diese **Vormiete als Untergrenze** nutzen. Die neue Miete muss nicht auf 110% des Mietspiegels sinken.
+
+**Voraussetzung:** Die Vormiete muss im letzten Jahr vor Beendigung des vorigen Mietverhältnisses vereinbart worden sein — und der Vermieter muss dies unaufgefordert offenlegen.
+
+### Ausnahme 3: Umfassende Modernisierung (§556f BGB)
+
+Nach einer umfassenden Modernisierung kann die Wohnung wie ein Neubau behandelt werden. Die Schwelle: **Modernisierungskosten müssen ca. ein Drittel der Neubaukosten** erreichen.
+
+In der Praxis wird diese Ausnahme häufig falsch angewendet — und von Mieterschutzvereinen regelmäßig erfolgreich angefochten.
+
+---
+
+## Was passiert bei Verstoß?
+
+Seit der Verlängerung der Mietpreisbremse und dem Koalitionsvertrag 2025 gelten **verschärfte Regeln**:
+
+1. **Rückforderungsanspruch:** Mieter können die Differenz zur Höchstmiete **rückwirkend ab Rüge** zurückfordern
+2. **Rüge erforderlich:** Der Mieter muss den Vermieter schriftlich auf den Verstoß hinweisen (qualifizierte Rüge nach §556g BGB)
+3. **Bußgeld in Planung:** Der Koalitionsvertrag sieht ein **Bußgeld für Verstöße** vor — Expertengruppe tagt bis Dezember 2026
+
+**Das Risiko für Vermieter:** Nicht nur die Rückzahlung, sondern auch die Rechtsunsicherheit. Ein Mieter kann jederzeit prüfen — und mit Diensten wie Conny oder wenigermiete.de ist die Schwelle dafür niedrig.
+
+**Unsere Empfehlung:** Proaktiv prüfen, bevor der Mieter es tut.
+
+[Compliance-Check durchführen → kostenlos](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=mietpreisbremse-rechner-2026&utm_content=mid-article)
+
+---
+
+## Mietpreisbremse verlängert bis 2029
+
+Im Juni 2025 wurde die Mietpreisbremse **bis zum 31. Dezember 2029 verlängert** — vier Jahre länger als ursprünglich geplant. Im Januar 2026 bestätigte das Bundesverfassungsgericht die Verfassungsmäßigkeit.
+
+**Was sich ändert:**
+- Geltungsbereich ausgeweitet auf 627 Gemeinden (vorher ~400)
+- Koalitionsvertrag sieht Bußgeld bei Verstößen vor
+- Expertengruppe für Mietrechtsreform tagt bis Dezember 2026
+
+**Was bleibt:**
+- 110%-Regel unverändert
+- Drei Ausnahmen bleiben bestehen
+- Mietspiegel bleibt Referenzgröße
+
+---
+
+## So funktioniert unser Rechner
+
+RentSignal prüft deine Miete in drei Schritten:
+
+### Schritt 1: Mietspiegel-Lookup
+
+Anhand von Baujahr, Wohnungsgröße, Bezirk und Ausstattung ermitteln wir die **ortsübliche Vergleichsmiete** nach dem Berliner Mietspiegel 2024.
+
+### Schritt 2: Mietpreisbremse-Berechnung
+
+Wir rechnen den 10%-Aufschlag drauf und prüfen die drei Ausnahmen (Neubau, Vormiete, umfassende Modernisierung). Ergebnis: deine **gesetzliche Höchstmiete in €/m²**.
+
+### Schritt 3: Vergleich mit aktueller Miete
+
+Deine aktuelle Miete vs. die Höchstmiete. Du siehst sofort:
+
+- **Compliant** (grün): Miete liegt im gesetzlichen Rahmen
+- **Non-compliant** (rot): Miete überschreitet die Obergrenze, mit genauer Überzahlung pro Monat und Jahr
+
+**Bonus:** Zusätzlich zeigen wir dir die **Marktmiete** — was deine Wohnung laut unserem ML-Modell tatsächlich wert ist. Oft liegt die Marktmiete deutlich über dem gesetzlichen Maximum. Das ist der Spannungsbereich, den du kennen musst.
+
+---
+
+## Unsere Daten
+
+| Datenbasis | Details |
+|------------|---------|
+| **Wohnungen analysiert** | 10.275 Berliner Mietwohnungen |
+| **Mietspiegel** | Qualifizierter Berliner Mietspiegel 2024 |
+| **ML-Modell** | XGBoost mit 37 Features (R²=0,749) |
+| **Räumliche Daten** | 9 OSM-Features + 9 Sentinel-2-Satellitenindizes |
+| **Methode** | SHAP-Erklärungen für jede Vorhersage |
+
+Jedes Ergebnis kommt mit einer **Feature-Beitragsanalyse** (SHAP Waterfall), die zeigt, warum deine Wohnung genau diesen Preis hat — nicht nur eine Zahl, sondern die Erklärung dahinter.
+
+Unsere Analyse von 10.275 Berliner Wohnungen zeigt: **Der durchschnittliche Abstand zur gesetzlichen Höchstmiete beträgt €1,67/m².** Das sind bei einer durchschnittlichen Wohnung (65 m²) rund **€1.300/Jahr**, die Vermieter über dem Limit liegen.
+
+---
+
+## Häufig gestellte Fragen
+
+### Gilt die Mietpreisbremse für alle Wohnungen in Berlin?
+
+Nein. Neubauten (Erstbezug nach dem 1. Oktober 2014), Wohnungen nach umfassender Modernisierung und Fälle mit höherer Vormiete sind ausgenommen. Alle anderen Wohnungen in Berlin unterliegen der Mietpreisbremse.
+
+### Was ist der Unterschied zwischen Mietspiegel und Mietpreisbremse?
+
+Der **Mietspiegel** ist eine statistische Übersicht der ortsüblichen Vergleichsmieten. Die **Mietpreisbremse** nutzt den Mietspiegel als Basis und addiert 10% — das ergibt die gesetzliche Höchstmiete.
+
+### Kann ich die Miete trotz Mietpreisbremse erhöhen?
+
+Ja — über zwei Wege: (1) §558 BGB: Mieterhöhung auf die Vergleichsmiete (max. 15% in 3 Jahren in Berlin), (2) §559 BGB: Mieterhöhung nach Modernisierung (8% der Kosten pro Jahr, gedeckelt).
+
+### Was kostet der RentSignal Compliance-Check?
+
+Der Basis-Check ist **kostenlos** — keine Anmeldung nötig. Für die vollständige Analyse (Marktmiete, SHAP-Erklärung, Renovierungs-ROI) gibt es den kostenlosen Account mit 3 Einheiten.
+
+### Wie aktuell sind eure Daten?
+
+Unser Mietspiegel ist der qualifizierte Berliner Mietspiegel **2024** (aktuellste Version). Die Marktdaten werden regelmäßig aktualisiert.
+
+---
+
+## Jetzt prüfen
+
+Deine Miete in 10 Sekunden prüfen — kostenlos, ohne Anmeldung:
+
+[→ Mietpreisbremse-Check starten](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=mietpreisbremse-rechner-2026&utm_content=bottom)
+
+Für die vollständige Analyse mit Marktmiete, SHAP-Erklärung und Renovierungs-ROI: [Kostenlosen Account erstellen →](https://rentsignal.de/signup?utm_source=blog&utm_medium=cta&utm_campaign=mietpreisbremse-rechner-2026&utm_content=signup)
+
+---
+
+*Dieser Artikel basiert auf der Compliance-Engine von [RentSignal](https://rentsignal.de) — §556d BGB, qualifizierter Berliner Mietspiegel 2024, mit allen gesetzlichen Ausnahmen und Ausstattungsanpassungen.*
+
+---
+
+::: {.callout-note appearance="simple"}
+## English Summary
+
+The **Mietpreisbremse** (German rent brake) caps new rental contracts at 110% of the local reference rent. In Berlin, it applies to all apartments except new builds (post-October 2014), comprehensive renovations, and cases where the previous rent was already higher. [Check your rent for free →](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=mietpreisbremse-rechner-2026&utm_content=en-summary)
+:::

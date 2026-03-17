@@ -1,0 +1,239 @@
+---
+title: "Berlin Rent Brake Calculator — Check If Your Rent Is Legal (Free)"
+subtitle: "The Mietpreisbremse explained in plain English, with a free calculator for Berlin apartments."
+description: "Free Berlin rent brake calculator. Check if your apartment rent exceeds the legal limit under Germany's Mietpreisbremse law. Based on the official Berlin Mietspiegel 2024."
+author: "Daniel Redel"
+date: "2026-03-18"
+categories: [Compliance, Tools, Berlin, English]
+lang: en
+
+keywords:
+  - Berlin rent brake calculator
+  - Mietpreisbremse English
+  - is my rent legal Berlin
+  - German rent brake explained
+  - Berlin Mietspiegel English
+  - rent too high Berlin
+
+open-graph:
+  title: "Berlin Rent Brake Calculator — Free | RentSignal"
+  description: "Is your Berlin rent legal? Free calculator based on the official Mietspiegel 2024. Result in 10 seconds."
+---
+
+## The Short Version
+
+Germany has a **rent brake law** (*Mietpreisbremse*) that caps rents in tight housing markets. In Berlin, your landlord can charge you at most **110% of the local reference rent**. If your rent exceeds this limit, you can demand a reduction — and reclaim the overpayment.
+
+**Check your rent now:** [Free Compliance Check on RentSignal →](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=berlin-rent-brake-calculator&utm_content=hero)
+
+No signup required. Result in 10 seconds.
+
+---
+
+## What Is the Mietpreisbremse?
+
+The *Mietpreisbremse* (literally: "rent price brake") is a German federal law that limits how much rent a landlord can charge when signing a new lease. It applies in areas with "tight housing markets" — and Berlin qualifies for the entire city.
+
+### The Rule
+
+When renting out an apartment, the rent may not exceed **110% of the local reference rent** (*ortsübliche Vergleichsmiete*).
+
+$$
+\text{Maximum Rent} = \text{Reference Rent (Mietspiegel)} \times 1.10
+$$
+
+The reference rent is determined by the **qualified Berlin Mietspiegel** — an official statistical survey of rents, updated every two years. The current version is from **2024**.
+
+### A Worked Example
+
+A 70 m² apartment in Friedrichshain, built in 1965:
+
+| Parameter | Value |
+|-----------|-------|
+| Mietspiegel midpoint | €8.53/m² |
+| + 10% surcharge | €0.85/m² |
+| **Legal maximum rent** | **€9.38/m²** |
+| Maximum total | €656.60/month |
+
+If the landlord charges €12.00/m², the rent exceeds the limit by **€2.62/m²** — that's €183/month or **€2,201/year** in potential refund claims.
+
+---
+
+## How the Mietspiegel Works
+
+The Berlin Mietspiegel classifies apartments using four criteria:
+
+### 1. Year of Construction
+
+| Category | Years |
+|----------|-------|
+| Pre-war (*Altbau*) | Before 1918 |
+| Interwar | 1919–1949 |
+| Post-war | 1950–1964 |
+| Late modern | 1965–1972 |
+| Post-modern | 1973–1990 |
+| Post-reunification | 1991–2002 |
+| New build (Gen 1) | 2003–2014 |
+| New build (post-2014) | **Exempt from rent brake** |
+
+### 2. Apartment Size
+
+Four brackets: under 40 m², 40–60 m², 60–90 m², over 90 m².
+
+### 3. Location Quality
+
+Three tiers: simple (*einfach*), medium (*mittel*), good (*gut*). Officially assigned per address.
+
+### 4. Equipment
+
+Within each category, the Mietspiegel gives a range. Your apartment's position within that range depends on features like:
+
+- Modern bathroom (+)
+- Built-in kitchen (+)
+- Hardwood floors (+)
+- Modern heating (+)
+- Good insulation (+)
+- Basement storage (+)
+- Elevator (+)
+- Balcony (+)
+
+**The Mietspiegel uses 4 variables.** Our model uses 37 — including satellite vegetation indices, restaurant density, and 9 other spatial features from OpenStreetMap and Sentinel-2 imagery. The Mietspiegel gives you a range. We tell you exactly where you stand within that range — and why.
+
+---
+
+## The 3 Exceptions
+
+Not every apartment is covered by the rent brake. There are **three legal exceptions**:
+
+### Exception 1: New Construction (§556f BGB)
+
+Apartments **first occupied and rented after October 1, 2014** are fully exempt. The landlord can set any rent.
+
+**Important:** "New" doesn't mean "renovated." A gut renovation of an old building is not a new build under the law — unless it qualifies as a comprehensive modernization (see Exception 3).
+
+### Exception 2: Previous Rent (§556e BGB)
+
+If the previous tenant was already paying above the 110% limit, the landlord can maintain that **previous rent as a floor**. The new rent doesn't need to drop to 110%.
+
+**Requirement:** The previous rent must have been agreed upon in the last year before the previous lease ended — and the landlord must disclose this proactively.
+
+### Exception 3: Comprehensive Modernization (§556f BGB)
+
+After a comprehensive modernization, the apartment can be treated like a new build. The threshold: **modernization costs must reach approximately one-third of new construction costs**.
+
+In practice, this exception is frequently misapplied — and regularly challenged successfully by tenant associations.
+
+---
+
+## What Happens If the Rent Is Too High?
+
+If your rent exceeds the legal maximum:
+
+1. **You can reclaim the difference** — retroactively from the date of your formal complaint (*Rüge*)
+2. **A formal complaint is required** — you must notify the landlord in writing (qualified complaint under §556g BGB)
+3. **Fines coming** — the 2025 coalition agreement introduces penalties for violations (expert group meets through December 2026)
+
+Services like **Conny** (wenigermiete.de) make it easy for tenants to check and file claims. **If you're a landlord, it's better to check proactively** — before your tenant does.
+
+[Check your rent now → free, no signup](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=berlin-rent-brake-calculator&utm_content=mid-article)
+
+---
+
+## Extended Through 2029
+
+In June 2025, Germany extended the Mietpreisbremse **through December 31, 2029** — four years longer than originally planned. In January 2026, the Federal Constitutional Court confirmed its constitutionality.
+
+**What changed:**
+- Scope expanded to 627 municipalities (from ~400)
+- Coalition agreement foresees fines for violations
+- Expert group for rent law reform meets through December 2026
+
+**What stayed the same:**
+- 110% rule unchanged
+- All three exceptions remain
+- Mietspiegel remains the reference
+
+---
+
+## How Our Calculator Works
+
+RentSignal checks your rent in three steps:
+
+### Step 1: Mietspiegel Lookup
+
+Based on construction year, apartment size, district, and equipment features, we determine the **local reference rent** using the official Berlin Mietspiegel 2024.
+
+### Step 2: Rent Brake Calculation
+
+We apply the 10% surcharge and check all three exceptions (new build, previous rent, comprehensive modernization). Result: your **legal maximum rent in €/m²**.
+
+### Step 3: Comparison
+
+Your current rent vs. the legal maximum. You see immediately:
+
+- **Compliant** (green): Your rent is within the legal limit
+- **Non-compliant** (red): Your rent exceeds the limit, with exact overpayment per month and year
+
+**Bonus:** We also show the **market rent** — what your apartment is actually worth according to our ML model with 37 features. Often the market rent is significantly above the legal maximum. That's the tension you need to understand.
+
+---
+
+## Our Data
+
+| Data | Details |
+|------|---------|
+| **Apartments analyzed** | 10,275 Berlin rental apartments |
+| **Mietspiegel** | Qualified Berlin Mietspiegel 2024 (latest) |
+| **ML model** | XGBoost with 37 features (R²=0.749) |
+| **Spatial data** | 9 OSM features + 9 Sentinel-2 satellite indices |
+| **Explainability** | SHAP waterfall for every prediction |
+
+Every result comes with a **feature contribution analysis** (SHAP waterfall) that explains why your apartment has exactly this price — not just a number, but the reasoning.
+
+Our analysis of 10,275 Berlin apartments shows: **the average rent exceeds the legal maximum by €1.67/m².** For an average apartment (65 m²), that's roughly **€1,300/year** in potential overpayment.
+
+---
+
+## FAQ
+
+### Does the rent brake apply to all apartments in Berlin?
+
+No. New builds (first occupied after October 1, 2014), comprehensively modernized apartments, and cases with higher previous rent are exempt. All other apartments in Berlin are covered.
+
+### What's the difference between Mietspiegel and Mietpreisbremse?
+
+The **Mietspiegel** is a statistical survey of local reference rents. The **Mietpreisbremse** uses the Mietspiegel as a baseline and adds 10% — that gives you the legal maximum rent.
+
+### Can the landlord still increase rent under the rent brake?
+
+Yes — through two paths: (1) §558 BGB: increase to the reference rent (max 15% in 3 years in Berlin), (2) §559 BGB: increase after modernization (8% of costs per year, capped).
+
+### Is RentSignal free?
+
+The basic compliance check is **free** — no signup needed. For the full analysis (market rent prediction, SHAP explanation, renovation ROI), create a free account with 3 units included.
+
+### I'm a landlord. Should I use this?
+
+Absolutely. It's better to discover a compliance issue yourself than to receive a Conny letter from your tenant. Check proactively, adjust if needed, and document that you've done your due diligence.
+
+---
+
+## Check Your Rent Now
+
+10-second check — free, no signup required:
+
+[→ Start Compliance Check](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=berlin-rent-brake-calculator&utm_content=bottom)
+
+For the full analysis with market rent, SHAP explanation, and renovation ROI: [Create Free Account →](https://rentsignal.de/signup?utm_source=blog&utm_medium=cta&utm_campaign=berlin-rent-brake-calculator&utm_content=signup)
+
+---
+
+*This article is powered by the compliance engine of [RentSignal](https://rentsignal.de) — §556d BGB, qualified Berlin Mietspiegel 2024, with all legal exceptions and equipment adjustments.*
+
+---
+
+::: {.callout-note appearance="simple"}
+## Deutsche Zusammenfassung
+
+Die **Mietpreisbremse** begrenzt die Miete bei Neuvermietung auf maximal 110% der ortsüblichen Vergleichsmiete. In Berlin gilt sie für alle Wohnungen außer Neubauten (Erstbezug nach Oktober 2014), umfassend modernisierte Wohnungen und Fälle mit höherer Vormiete. [Kostenlos prüfen →](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=berlin-rent-brake-calculator&utm_content=de-summary)
+:::

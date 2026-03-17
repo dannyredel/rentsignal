@@ -154,19 +154,35 @@
 - [x] **Blog infrastructure** ✅ 2026-03-17
   - Quarto blog at `blog.rentsignal.de`, GitHub Pages + GitHub Actions auto-deploy
   - First article: "Küche oder Balkon?" published
-- [~] **SEO strategy** — in progress on Claude.ai (keyword research, content calendar)
-- [ ] **SEO content — next blog posts** (~2h each)
-  - "Mietpreisbremse Rechner 2026 — Kostenlos prüfen" (DE)
-  - "Berlin Rent Brake Calculator — Free Check" (EN)
-  - Move SEO strategy docs from Claude.ai to `docs/strategy/SEO-STRATEGY.md`
+- [x] **SEO strategy docs** ✅ 2026-03-17
+  - `docs/strategy/rentsignal-seo-strategy.md` — keywords, 12-week content calendar, link building
+  - `docs/strategy/rentsignal-seo-tracking-setup.md` — GA4, GSC, UTM, schema markup, GDPR
+
+#### SEO Technical Setup
+- [ ] **Google Analytics 4** (~30min)
+  - Create property, add to Quarto blog (`_quarto.yml`) + Lovable app
+  - Cookie consent banner (GDPR)
+- [ ] **Google Search Console** (~20min)
+  - Domain property for `rentsignal.de`, DNS TXT verification
+  - Submit sitemaps (blog + main site)
+- [ ] **robots.txt** for both properties (~10min)
+- [ ] **Request indexing** for landing page + first articles (~10min)
+
+#### SEO Content — 12-Week Calendar
+- [x] **Wk 0:** "Küche oder Balkon?" (data insight) ✅ 2026-03-17
+- [ ] **Wk 1:** "Mietpreisbremse Rechner 2026" (DE, P0) + "Berlin Rent Brake Calculator" (EN, P0)
+- [ ] **Wk 2:** "Mietspiegel Berlin 2024 erklärt" (DE) + "Lohnt sich Küchenrenovierung?" (DE, expanded)
+- [ ] **Wk 3:** "Berlin Mietspiegel Explained" (EN) + "Mietpreisbremse Ausnahmen" (DE)
+- [ ] **Wk 4:** "Mieterhöhung berechnen 2026" (DE) + "§559 Modernisierung" (DE)
+- [ ] **Wk 5:** "Warum der Balkon sich nicht lohnt" (DE, viral) + "Rent Increase Rules" (EN)
+- [ ] **Wk 6:** "How We Predict Rents: 37 Features" (EN, technical) + "CO2 Kostenaufteilung" (DE)
+- [ ] **Wk 7-12:** See `docs/strategy/rentsignal-seo-strategy.md` §2
+
+#### Promotion
 - [ ] **LinkedIn company page + first 5 posts** (~2h)
-  - Data insights from our analysis (restaurant density, balcony ROI, CO2 stats)
 - [ ] **Product Hunt launch** (~1h)
-  - "Rent Intelligence for Germany" listing
-- [ ] **Landlord forum posts** (~1h)
-  - vermieter-forum.com, immobilienscout24.de community
+- [ ] **Landlord forum posts** (vermieter-forum.com) (~1h)
 - [ ] **Newsletter setup (Substack)** (~1h)
-  - "Berlin Rent Intelligence" weekly brief
 
 ### Retention Features
 
