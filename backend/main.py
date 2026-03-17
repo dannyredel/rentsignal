@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routers import (
     address, comply, csv_import, demo, energy, neighborhood,
-    portfolio, predict, renovate, rent_increase, spatial,
+    portfolio, predict, profile, renovate, rent_increase, spatial,
 )
 
 app = FastAPI(
@@ -39,6 +39,7 @@ app.include_router(csv_import.router)
 app.include_router(rent_increase.router)
 app.include_router(energy.router)
 app.include_router(neighborhood.router)
+app.include_router(profile.router)
 
 
 @app.get("/health")
