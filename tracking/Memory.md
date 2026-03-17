@@ -30,7 +30,7 @@
 | Backend API | ✅ Complete | FastAPI with 28 endpoints. All working on Railway. |
 | Backend deployment | ✅ Live | Railway: `https://web-production-f2b2f.up.railway.app` · Python 3.11.15 · Auto-deploys from GitHub `dannyredel/rentsignal` main branch · Supabase env vars set |
 | Lovable prompt | ✅ Complete | `docs/LOVABLE-PROMPT.md` — landing page + 5 dashboard pages + Supabase auth. |
-| Frontend | ✅ Live | Lovable-generated React dashboard at `rentsignal.de`. Portfolio + Unit detail (4 tabs) + Comply + Optimize + Act + Neighborhoods all working with live API. Google OAuth working. Add units form works (predict + comply) but doesn't save to DB yet. |
+| Frontend | ✅ Live | Lovable-generated React dashboard at `rentsignal.de`. Full CRUD with auto-analysis. All 4 unit detail tabs (Optimize/Comply/Act/Spatial) working. Google OAuth + logout. Tier enforcement (unit counter + limits). Empty states. Demo mode link. |
 | Pitch deck | ✅ Content ready | `pitch/PITCH-DECK.md` — Gamma-ready pitch deck content |
 
 ### API Keys Status
@@ -64,7 +64,7 @@
 - Gemini spatial extraction needs prompt iteration — budget 1 hour for prompt engineering
 - Gradium German STT accuracy unknown — have form input as reliable fallback, voice as demo bonus
 - **JWT auth uses decode-without-verification** — Supabase issues ES256 tokens; server decodes without signature check (acceptable since Supabase service role handles DB auth). If security tightens, fetch Supabase JWKS for proper ES256 verification.
-- **Debug/token endpoint still in main.py** — temporary endpoint from JWT debugging, needs to be removed before production
+- **Debug/token endpoint removed** ✅ 2026-03-17
 - **SHAP is pre-computed** — live SHAP computation was too slow on Railway. Pre-computed SHAP values are loaded from file. If model is retrained, must regenerate pre-computed SHAP.
 - **scikit-learn and xgboost versions pinned** — model was trained with scikit-learn 1.6.x and xgboost 3.x. Changing versions will break model deserialization.
 - **Inflation adjustment ×1.378** applied to predictions (2019→2024). Demo apartments still show raw 2019 prices (fix pending).

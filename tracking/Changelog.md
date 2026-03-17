@@ -632,3 +632,47 @@
   2. PLZ display fix
   3. Remove debug endpoint
   4. Continue MVP v1 backlog
+
+---
+
+### 2026-03-17 Session 11: MVP v1 Complete — Full CRUD + Auto-Analysis + Tier Enforcement
+**Duration:** ~3h
+**Type:** Backend features + frontend integration + polish
+
+**Tasks completed:**
+- **Auto-analysis on unit creation:** Built `backend/services/analysis_service.py` — runs predict + comply + renovate on `POST /portfolio/units` and stores results in analyses table with denormalized metrics. Added `POST /portfolio/units/{id}/analyze` for re-running.
+- **Removed debug/token endpoint** from main.py
+- **Database view upgrades (3 migrations):**
+  - 009: Added `rooms` to `units_with_latest_analysis` view
+  - 010: Added `floor`, `building_floors`, `has_kitchen`, `has_balcony`, `has_elevator`, `has_garden`, `has_cellar`, `condition`, `renovate_result` JSONB, and renovate lateral join
+  - All migrations run on Supabase production
+- **View passthrough fix:** Updated `_map_view_to_response` and `UnitResponse` model to include all unit fields + analysis JSONBs (`predict_result`, `comply_result`, `renovate_result`)
+- **GET /profile endpoint:** Returns user's `plan_tier`, limits (`max_units`, `max_predictions_month`), display name, email
+- **Demo endpoint inflation fix:** Applied ×1.378 to all rent/SHAP values. Fixed crash where `shap_top_features` is a dict not a list.
+- **Admin role:** Set Daniel's `plan_tier = 'enterprise'` in Supabase profiles
+- **Frontend polish (via Lovable prompts):**
+  - Empty states for Portfolio, Comply, Optimize, Act ("Welcome to RentSignal" + CTA)
+  - Unit detail page: all 4 tabs working (Optimize with SHAP chart, Comply with Mietspiegel bar, Act with renovation cards, Spatial with neighborhood features + percentiles)
+  - SHAP waterfall chart rendering
+  - Mietspiegel position bar showing correct lower/mid/max values
+  - Satellite indices consolidated to 3 mean cards
+  - Specs panel: Kitchen Yes/No, Floor 2/5 displaying correctly
+  - Logout button (Settings page + header dropdown)
+  - Unit counter: "1 of 3 units (free)" / "Unlimited (enterprise)" from real profile API
+  - Tier enforcement: disabled submit + upgrade CTA when at unit limit
+  - Demo mode: "Try demo data" link on empty portfolio
+  - All pages switched from demo data to real portfolio data
+
+**Artifacts produced:**
+- `backend/services/analysis_service.py` — auto-analysis service
+- `backend/routers/profile.py` — profile/tier endpoint
+- `supabase/migrations/009_view_add_rooms.sql`
+- `supabase/migrations/010_view_add_renovate.sql`
+- Updated: `backend/main.py`, `backend/routers/portfolio.py`, `backend/routers/demo.py`, `backend/models/portfolio.py`
+
+**State at end of session:**
+- **MVP v1 complete** — user can sign up, add units, see auto-analyzed results, hit tier limits
+- All 4 unit detail tabs working with real data
+- Tier enforcement live (Free=3 units, Enterprise=unlimited)
+- Railway deployed and healthy
+- Next: MVP v2 (portfolio map, CSV import UI, settings page, landing page, tier gating UI)
