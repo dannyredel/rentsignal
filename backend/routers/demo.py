@@ -28,9 +28,14 @@ for apt in _DEMO_DATA["apartments"]:
     # SHAP base value
     if apt.get("shap_base_value"):
         apt["shap_base_value"] = round(apt["shap_base_value"] * INFLATION_FACTOR, 2)
-    # SHAP feature values
-    for feat in apt.get("shap_top_features", []):
-        feat["value"] = round(feat["value"] * INFLATION_FACTOR, 4)
+    # SHAP feature values (dict of feature_name → shap_value)
+    shap = apt.get("shap_top_features", {})
+    if isinstance(shap, dict):
+        for k in shap:
+            shap[k] = round(shap[k] * INFLATION_FACTOR, 4)
+    elif isinstance(shap, list):
+        for feat in shap:
+            feat["value"] = round(feat["value"] * INFLATION_FACTOR, 4)
 
 _APARTMENTS = {apt["id"]: apt for apt in _DEMO_DATA["apartments"]}
 
