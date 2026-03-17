@@ -5,10 +5,13 @@ listing:
   id: blog-listing
   contents: posts/*/index.qmd
   sort: "date desc"
-  type: default
+  type: grid
+  grid-columns: 3
   categories: true
   feed: true
-  fields: [title, subtitle, date, author, categories, description, image]
+  fields: [image, title, categories, description, author, date]
+  grid-item-border: true
+  image-height: "200px"
 page-layout: full
 ---
 
