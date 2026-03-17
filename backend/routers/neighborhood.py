@@ -29,6 +29,17 @@ def _get_spatial() -> pd.DataFrame:
 # Otherwise FastAPI matches "compare" as a PLZ path parameter
 
 
+@router.get("/boundaries", name="neighborhood_boundaries")
+async def neighborhood_boundaries():
+    """Berlin PLZ boundary GeoJSON for map rendering."""
+    geojson_path = _ROOT / "data" / "processed" / "berlin_plz_boundaries.geojson"
+    if not geojson_path.exists():
+        return {"type": "FeatureCollection", "features": []}
+    import json as _json
+    with open(geojson_path) as f:
+        return _json.load(f)
+
+
 @router.get("/map", name="neighborhood_map")
 async def neighborhood_map():
     """All Berlin PLZs with summary metrics for frontend map rendering."""
