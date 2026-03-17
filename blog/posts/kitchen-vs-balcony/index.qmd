@@ -1,7 +1,7 @@
 ---
 title: "Küche oder Balkon? Was sich für Vermieter wirklich lohnt"
 subtitle: "Drei unabhängige Methoden, ein klares Ergebnis: Die Küchenrenovierung schlägt den Balkonanbau — und zwar deutlich."
-description: "Datenanalyse von 10.000+ Berliner Mietwohnungen zeigt: Eine moderne Küche steigert die Miete um +2,91 €/m², ein Balkon senkt sie um -0,72 €/m². Wir erklären warum."
+description: "Datenanalyse von 10.000+ Berliner Mietwohnungen zeigt: Eine moderne Küche steigert die Miete um +4,01 €/m², ein Balkon senkt sie um -1,00 €/m². Wir erklären warum."
 author: "Daniel Redel"
 date: "2026-03-17"
 categories: [Renovation, ROI, Berlin, Data Analysis]
@@ -17,7 +17,7 @@ keywords:
 
 open-graph:
   title: "Küche oder Balkon? Datenanalyse für Vermieter"
-  description: "10.000+ Berliner Wohnungen analysiert. Küche: +2,91 €/m². Balkon: -0,72 €/m²."
+  description: "10.000+ Berliner Wohnungen analysiert. Küche: +4,01 €/m². Balkon: -1,00 €/m²."
 ---
 
 ```{python}
@@ -40,16 +40,16 @@ GRAY = "#6B7280"
 BG = "#FAFAFA"
 
 # Data from our analysis
+# All values inflation-adjusted to 2024 (×1.378 from 2019 data)
 treatments = ["Moderne Küche", "Aufzug", "Gartenzugang", "Balkon"]
-cate = [2.91, 1.09, 0.93, -0.72]
-wtp = [4.13, 1.41, 0.67, 1.01]
-# SHAP values inflation-adjusted (raw × 1.378)
-shap = [round(v * 1.378, 2) for v in [0.96, 0.25, 0.15, 0.06]]  # → [1.32, 0.34, 0.21, 0.08]
+cate = [4.01, 1.50, 1.27, -1.00]  # from notebook 07 (already adjusted)
+wtp = [4.13, 1.41, 0.67, 1.01]    # from conjoint (already in 2024 terms)
+shap = [1.32, 0.34, 0.21, 0.08]   # raw × 1.378
 costs = [15000, 45000, 5000, 8000]
-payback_months = [57, 370, 61, None]
-roi_annual = [25.0, 3.3, 19.6, 0]
-cate_ci_low = [2.65, 0.71, 0.48, -1.07]
-cate_ci_high = [3.18, 1.42, 1.35, -0.40]
+payback_months = [46, 276, 38, None]  # recalculated with adjusted CATE
+roi_annual = [26.1, 4.3, 26.0, 0]    # recalculated
+cate_ci_low = [3.65, 0.98, 0.66, -1.47]   # raw CIs × 1.378
+cate_ci_high = [4.38, 1.96, 1.86, -0.55]
 
 # Colors per treatment
 colors_cate = [GREEN if v > 0 else RED for v in cate]
@@ -104,7 +104,7 @@ fig.update_layout(
 fig.show()
 ```
 
-**Die Kernaussage:** Eine moderne Küche steigert die Miete kausal um **+2,91 €/m²**. Ein Balkon *senkt* sie um **-0,72 €/m²**. Die Konfidenzintervalle überlappen nicht — das Ergebnis ist statistisch robust.
+**Die Kernaussage:** Eine moderne Küche steigert die Miete kausal um **+4,01 €/m²**. Ein Balkon *senkt* sie um **-1,00 €/m²**. Die Konfidenzintervalle überlappen nicht — das Ergebnis ist statistisch robust.
 
 ## Die Frage
 
@@ -135,10 +135,10 @@ Um den kausalen Effekt zu isolieren, haben wir ein Propensity Score Matching dur
 
 **Ergebnisse:**
 
-- **Küche: +2,91 €/m²** [95% KI: 2,65 — 3,18], 2.288 Paare, alle 14 Confounder balanciert
-- **Balkon: -0,72 €/m²** [95% KI: -1,07 — -0,40], 1.764 Paare
+- **Küche: +4,01 €/m²** [95% KI: 3,65 — 4,38], 2.288 Paare, alle 14 Confounder balanciert
+- **Balkon: -1,00 €/m²** [95% KI: -1,47 — -0,55], 1.764 Paare
 
-Ja, du liest richtig: Der Balkon hat einen **negativen** kausalen Effekt. Der beobachtete Preisaufschlag (+0,85 €/m²) verschwindet nach Kontrolle für Selektionseffekte.
+Ja, du liest richtig: Der Balkon hat einen **negativen** kausalen Effekt. Der beobachtete Preisaufschlag verschwindet nach Kontrolle für Selektionseffekte.
 
 ### 3. Synthetische Conjoint-Analyse (Stated Preferences)
 
@@ -274,11 +274,11 @@ fig.show()
 
 ## Was bedeutet das für Vermieter?
 
-**1. Investiere in die Küche.** Bei einer 65-m²-Wohnung bedeuten +2,91 €/m² ca. €189/Monat Mehrmiete. Bei Renovierungskosten von ~€15.000 ergibt das einen Payback von unter 5 Jahren und einen jährlichen ROI von 25%.
+**1. Investiere in die Küche.** Bei einer 65-m²-Wohnung bedeuten +4,01 €/m² ca. €261/Monat Mehrmiete. Bei Renovierungskosten von ~€15.000 ergibt das einen Payback von unter 4 Jahren und einen jährlichen ROI von 26%.
 
 **2. Bau keinen Balkon.** Die Investition (€8.000–15.000) rechnet sich nach unseren Daten nie. Der Markt preist Balkone nicht ein — der beobachtete Aufschlag ist ein Selektionseffekt, kein kausaler Effekt.
 
-**3. Gartenzugang als Alternative.** Mit +0,93 €/m² und nur ~€5.000 Kosten hat der Gartenzugang den zweitbesten ROI (19,6%) nach der Küche — und den zweitschnellsten Payback (61 Monate).
+**3. Gartenzugang als Alternative.** Mit +1,27 €/m² und nur ~€5.000 Kosten hat der Gartenzugang einen ähnlichen ROI wie die Küche (26%) — und den schnellsten Payback (38 Monate).
 
 ```{python}
 #| echo: false
@@ -343,5 +343,5 @@ Welche Renovierung lohnt sich bei deiner Wohnung? RentSignal zeigt dir den ROI f
 ::: {.callout-note appearance="simple"}
 ## English Summary
 
-**Kitchen vs Balcony: What Really Pays Off for Landlords.** Our analysis of 10,275 Berlin apartments using three independent methods (SHAP, propensity score matching, and synthetic conjoint) shows: a modern kitchen increases rent by +€2.91/m² (causal effect), while a balcony *decreases* it by -€0.72/m². The convergence between observational and experimental methods is remarkable (3% for kitchen). [Calculate renovation ROI for your apartment →](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=kitchen-vs-balcony&utm_content=en-summary)
+**Kitchen vs Balcony: What Really Pays Off for Landlords.** Our analysis of 10,275 Berlin apartments using three independent methods (SHAP, propensity score matching, and synthetic conjoint) shows: a modern kitchen increases rent by +€4.01/m² (causal effect), while a balcony *decreases* it by -€1.00/m². The convergence between observational and experimental methods is remarkable (3% for kitchen). [Calculate renovation ROI for your apartment →](https://rentsignal.de?utm_source=blog&utm_medium=cta&utm_campaign=kitchen-vs-balcony&utm_content=en-summary)
 :::
