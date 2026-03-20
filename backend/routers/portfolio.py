@@ -322,6 +322,8 @@ def _map_view_to_response(row: dict) -> dict:
         "address": row.get("address"),
         "plz": row.get("plz"),
         "district": row.get("district"),
+        "lat": row.get("lat"),
+        "lon": row.get("lon"),
         "label": row.get("label"),
         "living_space_sqm": row.get("living_space_sqm"),
         "rooms": row.get("rooms", 0),
