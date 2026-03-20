@@ -3,21 +3,24 @@
 
 ---
 
-## Current State (last updated: 2026-03-17, end of Session 11b)
+## Current State (last updated: 2026-03-20)
 
 ### Components Status
 | Component | Status | Notes |
 |-----------|--------|-------|
 | Project brief | ✅ Complete | v2 with spatial layer, dual-method causal, competitive landscape |
-| Prep roadmap | ✅ Complete | 12 tasks across 6 weeks, prioritized with dependencies |
-| Data sources guide | ✅ Complete | Listings, demographics, spatial — all URLs and specs documented |
-| Project structure | ✅ Complete | Folder layout created, matches spec. Git initialized. |
-| CLAUDE.md | ✅ Complete | Session protocol, skills/agents references, architecture overview |
-| Competitive teardown | ✅ Complete | Rentana, Predium, Conny — in `docs/COMPETITIVE-TEARDOWN.md` |
-| Listing data | ✅ Complete | 10,275 clean Berlin listings in `data/processed/listings_clean.parquet` |
-| XGBoost model | ✅ Complete | **v3: R²=0.749, RMSE=2.59 €/m²** (37 features: 19 original + 9 OSM + 9 satellite). count_food_1000m is #1 SHAP (1.71). ndwi_median is top satellite feature (#9, SHAP=0.24). |
-| Conjoint calibration | ✅ Complete | CBC with 75 LLM respondents, 6 Berlin persona segments. Kitchen WTP +€4.13/m² converges with CATE +€4.01/m² (3% diff). Balcony stated/revealed gap. Results in `data/processed/conjoint_results.json`. |
-| Spatial pipeline | ✅ Phases 1 & 2 done | OSM (9 features) + Sentinel-2 (9 features) complete for 190 PLZs. Phase 3 (Gemini) hackathon day. Microsoft Planetary Computer = free Sentinel-2. |
+| Data architecture | ✅ Complete | Relational schema: units + listings + spatial_unit + gemini_image_features. See `docs/technical/DATA-ARCHITECTURE.md` |
+| Listing data | ✅ v2 Complete | **Apify 2026: 8,256 clean units** in `data/processed/units.parquet` + `listings.parquet`. Kaggle 2019 data archived (used for cross-match geocoding only). |
+| XGBoost model | ✅ v4.2 | **R²=0.761, RMSE=3.81 €/m²**, 75 features (structural + NLP + spatial + Gemini image). No inflation hack. Top SHAP: is_tauschwohnung (1.43), condition (1.26), renovation_level (1.06). |
+| Spatial pipeline | ✅ Unit-level | 24 unit-level features (15 OSM + 9 satellite) computed from actual coordinates. POIs cached in `data/processed/osm_pois/`. Noise map (10m GeoTIFF) extracted for 5,844 units. |
+| Gemini image pipeline | ✅ Complete | 6,997 listings processed (96%), 21 features per listing (interior/kitchen/bathroom quality, style, floor type, building exterior). ~$29 cost. 54,866 photos downloaded locally (9.4 GB). |
+| Geocoding | ✅ 99.9% | 5,081 from listings + 770 geocoded (title mining + Kaggle cross-match) + 2,399 centroid fallback. |
+| Conjoint calibration | ✅ Complete | CBC with 75 LLM respondents. Kitchen WTP +€4.13/m² converges with CATE +€4.01/m². Needs re-running on 2026 data. |
+| Compliance engine | ✅ Complete | §556d + §559 BGB. Needs no model changes. |
+| Backend API | ✅ Live (v3) | Railway deployed. **Needs update to serve v4.2 model.** |
+| Frontend | ✅ Live | Lovable React dashboard. Needs SHAP label updates for new features. |
+| Blog | ✅ Live | 3 articles published on blog.rentsignal.de |
+| Portfolio optimization | 📋 Planned | Strategy doc ready (`docs/strategy/portfolio-optimization-pitch.md`). Cross-unit pricing, substitution matrix, "competing with yourself" framing. |
 | Compliance engine | ✅ Complete | §556d + §559 + §559e BGB. Berlin Mietspiegel 2024 lookup, equipment adjustments, 3 exemptions, modernization caps (standard + GEG heating). Bilingual DE/EN. Full docs in `docs/COMPLIANCE-ENGINE.md`. |
 | Matching estimator | ✅ Complete | PSM 1:1 NN matching. Kitchen +2.91, Lift +1.09, Garden +0.93, Balcony -0.72 €/m². All 14/14 confounders balanced. Results in `data/processed/matching_results.json`. |
 | Blog article | ✅ Draft complete | `docs/blog-synthetic-users-validation.md` — "We Ran the Same Experiment Two Ways" for BeeSignal blog |
@@ -61,7 +64,12 @@
 - **The "don't build the balcony" moment** is the demo punchline — always build toward this
 
 ## Known Issues / Gotchas
-- Kaggle ImmoScout24 data is from 2018-2019, not current. Need to address in Q&A: "trained on historical data, architecture is the product, would retrain on current data in production"
+- **Apify small scrape (Mar 17, 568 records) is TEST DATA ONLY** — first-page overlap with big scrape. Do NOT use for training.
+- **v4.2 model trained on 2026 Apify data only** — no Kaggle mixing. No inflation hack.
+- **Implied rent inflation 2019→2026: 1.145×** (not 1.378× as IBB index). The IBB tracks Bestandsmieten, not Angebotsmieten.
+- **41% of listings are Tauschwohnungen** (apartment swaps) — median €10.37/m² vs €19.00/m² for regular listings. `is_tauschwohnung` is SHAP #1 (1.43).
+- **Backend still serves v3 model** — needs deployment update to serve v4.2 with 75-feature set.
+- **Gemini 2.5 Flash requires `thinking_budget=0`** — the thinking model uses output tokens for reasoning, truncating the JSON response.
 - Mietpreisbremse doesn't apply to post-2014 new builds — compliance engine must handle this exception
 - Sentinel-2 ✅ done — summer 2024 scene (Aug 20, 0.6% cloud). Microsoft Planetary Computer is free, no account needed
 - Gemini spatial extraction needs prompt iteration — budget 1 hour for prompt engineering
@@ -69,6 +77,9 @@
 - **JWT auth uses decode-without-verification** — Supabase issues ES256 tokens; server decodes without signature check (acceptable since Supabase service role handles DB auth). If security tightens, fetch Supabase JWKS for proper ES256 verification.
 - **Debug/token endpoint removed** ✅ 2026-03-17
 - **SHAP is pre-computed** — live SHAP computation was too slow on Railway. Pre-computed SHAP values are loaded from file. If model is retrained, must regenerate pre-computed SHAP.
+- **Gemini 2.5 Flash truncation fix:** Must set `thinking_config=types.ThinkingConfig(thinking_budget=0)` — the "thinking" model uses output tokens for internal reasoning, leaving none for the response. This is NOT a billing issue.
+- **Model v4.1 is current best:** R²=0.736, 55 features, trained on 2026 Apify data. Key new features: is_tauschwohnung (SHAP #2), picturecount (SHAP #6).
+- **Gemini image pipeline ready:** notebook 19 (batch) + 19a (test). Multi-photo (6 per listing) with building exterior fields. 21 JSON fields per listing. ~$22 estimated cost for full 7,344 batch.
 - **scikit-learn and xgboost versions pinned** — model was trained with scikit-learn 1.6.x and xgboost 3.x. Changing versions will break model deserialization.
 - **Inflation adjustment ×1.378** applied to predictions (2019→2024). Demo apartments still show raw 2019 prices (fix pending).
 

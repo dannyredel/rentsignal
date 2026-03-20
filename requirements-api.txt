@@ -11,9 +11,10 @@ xgboost>=3.0,<4.0
 shap>=0.50,<1.0
 joblib>=1.4,<2.0
 
-# Data (pandas for spatial CSV lookup + feature prep)
+# Data (pandas for feature prep, scipy for KDTree spatial queries)
 pandas>=2.2,<3.0
 numpy>=1.26,<3.0
+scipy>=1.13,<2.0
 
 # Auth (Supabase JWT validation)
 PyJWT>=2.8,<3.0

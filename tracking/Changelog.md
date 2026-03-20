@@ -3,6 +3,83 @@
 
 ---
 
+### 2026-03-19 Session: Data Architecture + Model v4 + Gemini Pipeline
+**Duration:** ~8h
+**Type:** Data engineering, ML training, multimodal AI pipeline
+
+**What happened:**
+- Designed full relational data architecture (units/listings/spatial tables) → `docs/technical/DATA-ARCHITECTURE.md`
+- Built reusable ingestion pipeline (`data/pipelines/ingestion.py`) with cross-match address recovery
+- Ingested 8,335 Apify 2026 listings → 8,256 clean units (notebook 13)
+- Geocoded missing coordinates: 61.5% → 99.9% coverage via title mining + Kaggle cross-match + PLZ×Ortsteil centroids (notebook 14)
+- Computed 24 unit-level spatial features (15 OSM + 9 satellite) replacing PLZ-level (notebook 15)
+- Created 6 interactive folium maps + bezirk analysis (notebook 16)
+- Trained XGBoost v4.0 (R²=0.708) then v4.1 (R²=0.736) with NLP title features, better missing data, hyperparameter tuning (notebooks 17-18)
+- Built and tested Gemini multimodal image pipeline — 21 features per listing from up to 10 photos (notebooks 19, 19a)
+- Downloaded 54,866 listing photos locally (9.4 GB) for Gemini batch processing
+- Launched Gemini batch (7,291 listings, running overnight)
+
+**Key findings:**
+- Implied rent inflation 2019→2026: 1.145× (not 1.378× as IBB index)
+- count_food_1000m unit median=111 vs PLZ median=20 (5.5× better signal)
+- is_tauschwohnung is SHAP #2 (1.63) — 41% of listings are apartment swaps at €8.62/m² below market
+- picturecount is SHAP #6 (0.47) — zero-effort feature
+- Gemini 2.5 Flash needs thinking_budget=0 to avoid output truncation
+
+**Artifacts produced:**
+- `data/processed/units.parquet` (8,256 rows)
+- `data/processed/listings.parquet` (8,256 rows)
+- `data/processed/spatial_unit.parquet` (8,250 × 24 features)
+- `data/processed/osm_pois/*.json` (10 POI datasets cached)
+- `data/processed/image_index.parquet` (7,291 rows)
+- `data/images/` (54,866 photos, 9.4 GB)
+- `data/pipelines/ingestion.py` (reusable ETL)
+- `models/xgboost_rent_v4.joblib` + shap + encoder (v4.1, R²=0.736)
+- `docs/technical/DATA-ARCHITECTURE.md`
+- Notebooks 13-19a (organized, archive/ for old 01-12)
+
+**State at end of session:**
+- Gemini batch running overnight
+
+### 2026-03-20 Session: Gemini Results + v4.2 Training + External Data + Strategy
+**Duration:** ~4h
+**Type:** ML training, external data integration, product strategy
+
+**What happened:**
+- Parsed Gemini batch results: 6,997/7,291 listings (96% success rate)
+- Trained XGBoost v4.2 with 75 features (structural + NLP + spatial + Gemini image)
+- **R²=0.761** — surpassed v3 (0.749) on noisier 2026 data
+- renovation_level (SHAP #4, 1.06) and interior_quality (SHAP #6, 0.58) are top image features
+- Downloaded Berlin noise map (10m GeoTIFF) — extracted for 5,844 units
+- Downloaded LOR planning district boundaries (542 districts) — spatial joined all units
+- Designed 3-mode prediction UX: URL paste (magic) / manual form / CSV upload
+- Wrote portfolio optimization pitch strategy (`docs/strategy/portfolio-optimization-pitch.md`)
+- Key concepts: "competing with yourself", "substitution matrix", "optimize differentiation not just price"
+- Updated tracking docs, Memory, DATA-SOURCES.md
+
+**Model evolution:**
+```
+v3.0  R²=0.749  │ Kaggle 2019 │ 37 feat │ PLZ spatial
+v4.0  R²=0.708  │ Apify 2026  │ 43 feat │ unit spatial
+v4.1  R²=0.736  │ + NLP+tune  │ 55 feat │ is_tauschwohnung=#1
+v4.2  R²=0.761  │ + Gemini    │ 75 feat │ renovation_level=#4
+```
+
+**Artifacts produced:**
+- `data/processed/gemini_image_features.parquet` (6,997 × 27 columns)
+- `data/processed/external_features.parquet` (8,256 rows, noise + LOR)
+- `data/processed/external/noise/AG_DE_BE_1_Road_LDEN.tif`
+- `data/processed/external/lor_planungsraeume_2021.geojson`
+- `models/xgboost_rent_v4.joblib` + shap + encoder (v4.2)
+- `docs/strategy/portfolio-optimization-pitch.md`
+- Notebooks 19-21
+
+**State at end of session:**
+- v4.2 model saved, needs Railway deployment
+- Next: Deploy v4.2 backend → add photo upload → add URL paste mode
+
+---
+
 ### 2025-03-14 Session 0: Strategic Planning & Project Setup
 **Duration:** ~3h (Claude.ai conversation, not Claude Code)
 **Type:** Planning / pre-development

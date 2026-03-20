@@ -1,17 +1,29 @@
-# MietOptimal — Data Sources Guide
-## For Pre-Hackathon Prep (Claude Code Reference)
+# RentSignal — Data Sources Guide
+
+> Updated 2026-03-20. See also `docs/technical/DATA-ARCHITECTURE.md` for the relational schema.
 
 ---
 
-## 1. Rental Listing Data (for XGBoost model + matching estimator)
+## 1. Rental Listing Data
 
-### 1A. Best Option: Kaggle — ImmoScout24 Germany Apartments
+### 1A. Primary: Apify ImmoScout24 Scrape (2026)
+
+**Source:** Apify `immobilienscout24-scraper` actor
+**Date:** March 18, 2026
+**Records:** 8,335 raw → 8,256 clean Berlin rental listings
+**Fields:** 54 fields in `adTargetingParameters` + `basicInfo.address` (lat/lon) + `basicInfo.pictures` (photo URLs) + `sections` (energy data fallback)
+**Processing:** `data/pipelines/ingestion.py` → `notebooks/13_data_ingestion_pipeline.ipynb`
+**Output:** `data/processed/units.parquet` + `data/processed/listings.parquet`
+**Key stats:** Mean rent €16.09/m², median €14.38/m², 61.5% have lat/lon from listing
+
+### 1B. Legacy: Kaggle — ImmoScout24 Germany Apartments (2018-2019)
 
 **URL:** https://www.kaggle.com/datasets/corrieaar/apartment-rental-offers-in-germany
-**What it is:** Scraped rental offers from ImmoScout24 (Germany's largest real estate portal, ~60% market share). Three snapshots: 2018-09, 2019-05, 2019-10.
-**Fields likely included:** regio (region/city), livingSpace (m²), totalRent (warm), baseRent (Kaltmiete), noRooms, balcony, hasKitchen, cellar, condition, yearConstructed, floor, numberOfFloors, garden, lift, typeOfFlat, geo_plz (postal code), and more.
-**Action:** Download, filter to Berlin (regio1 = "Berlin"), clean. This gives you several thousand Berlin listings.
-**Limitation:** Data is from 2018-2019, not 2025. Fine for model architecture and demo — just adjust price levels by applying a scalar (Berlin rents up ~40-50% since 2019). Alternatively, use as training data and note the vintage in Q&A.
+**What it is:** 268,850 listings Germany-wide, 10,275 Berlin subset after cleaning.
+**Status:** No longer used for model training. Used for:
+- Cross-match geocoding (770 addresses recovered for 2026 listings)
+- Historical rent comparison (implied inflation 1.145×, not 1.378× as IBB index)
+**File:** `data/raw/listings/immo_data.csv`
 
 ### 1B. Alternative: GitHub — Berlin House Prices Prediction
 
@@ -27,14 +39,44 @@
 **Action:** If you have academic affiliation, apply NOW. This is the gold standard dataset. But don't wait for it — use Kaggle as primary, RWI as upgrade path.
 **For the pitch:** Mention this exists: "In production, we'd train on the RWI-GEO-RED dataset with 13 years of geo-coded listing history."
 
-### 1D. Fallback: Scrape current listings
+### 1C. Gemini Image Features (from listing photos)
 
-**Tool:** Python (requests + BeautifulSoup) or Firecrawl
-**Target:** ImmoScout24 Berlin rental listings (immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten)
-**Warning:** ImmoScout actively blocks scrapers. Consider:
-- WG-gesucht.de (less protected, good for shared apartments)
-- Immowelt.de (alternative portal)
-- kleinanzeigen.de (formerly eBay Kleinanzeigen, classifieds)
+**Source:** ImmoScout24 listing photos via Apify scrape → Gemini 2.5 Flash multimodal analysis
+**Records:** 6,997 listings processed (96% of listings with photos)
+**Photos:** 54,866 images downloaded locally (9.4 GB in `data/images/`)
+**Features (21 per listing):**
+- Interior: quality (1-5), kitchen quality (0-5), bathroom quality (0-5), brightness (1-5), renovation level (1-5)
+- Categorical: style, floor type, ceiling height, view type, staging, color warmth
+- Boolean: is_render, is_furnished, visible_kitchen, visible_balcony
+- Building exterior: facade condition, building style, floors visible, green surroundings, commercial ground floor
+**Cost:** ~$29 for full batch (Gemini 2.5 Flash, 10 photos/listing, thinking_budget=0)
+**Processing:** `notebooks/19_gemini_image_features.ipynb` (batch) + `19a_gemini_test.ipynb` (test)
+**Output:** `data/processed/gemini_image_features.parquet`
+**Key finding:** `renovation_level` (r=+0.50) is the strongest single feature correlation with rent. SHAP #4 in v4.2 model.
+
+### 1D. Berlin Noise Map (Umweltatlas)
+
+**Source:** Berlin Strategic Noise Maps 2022 (Strategische Lärmkarten)
+**URL:** `https://gdi.berlin.de/data/ua_stratlaerm_2022/atom/strat_laerm_2022_strasse.zip`
+**Format:** GeoTIFF, 10m resolution, EPSG:25833
+**Files:** `AG_DE_BE_1_Road_LDEN.tif` (24h index), `AG_DE_BE_1_Road_LNight.tif` (night)
+**Coverage:** 5,844/8,250 units (70.8%) — units in quiet areas have no data
+**Processing:** `notebooks/21_external_data_sources.ipynb`
+**License:** Datenlizenz Deutschland - Zero - Version 2.0 (free)
+
+### 1E. LOR Demographics (Berlin Planning Districts)
+
+**Source:** daten.odis-berlin.de — Lebensweltlich orientierte Räume (LOR)
+**Format:** GeoJSON, 542 planning districts (~7,500 residents each)
+**Features:** PLR_ID, PLR_NAME, BEZ, area_km2
+**Processing:** Spatial join in `notebooks/21_external_data_sources.ipynb`
+**Future:** Population statistics (income, demographics) from statistik-berlin-brandenburg.de
+
+### 1F. Future: Scrape current listings (quarterly)
+
+**Tool:** Apify `immobilienscout24-scraper` actor
+**Cadence:** Quarterly scrapes to update training data
+**Pipeline:** `data/pipelines/ingestion.py` → cross-match addresses with all previous scrapes → retrain
 **Action:** Only if Kaggle data is insufficient. Budget 3-4 hours including anti-blocking workarounds.
 
 ### 1E. Fallback of fallback: Generate synthetic listing data

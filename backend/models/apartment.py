@@ -36,6 +36,14 @@ class ApartmentInput(BaseModel):
     # Optional: current rent for gap analysis
     current_rent_per_sqm: Optional[float] = Field(None, alias="current_rent_sqm")
 
+    # Optional: coordinates for unit-level spatial features (v4.2)
+    lat: Optional[float] = Field(None, description="Latitude WGS84 (for unit-level spatial)")
+    lon: Optional[float] = Field(None, description="Longitude WGS84 (for unit-level spatial)")
+
+    # Optional: enrichment features (from photo upload or URL scrape)
+    gemini_features: Optional[dict] = Field(None, description="Gemini image analysis results")
+    nlp_features: Optional[dict] = Field(None, description="NLP title features")
+
     model_config = {"populate_by_name": True}
 
 

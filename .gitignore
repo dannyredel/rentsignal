@@ -6,9 +6,17 @@ __pycache__/
 
 # Data (large raw files — processed gets committed for deployment)
 data/raw/
+data/images/
+data/processed/gemini_cache/
+data/processed/external/
 *.tif
 *.tiff
 *.pbf
+*.parquet
+
+# Exceptions: files Railway deployment needs
+!data/processed/osm_pois/*.json
+!data/processed/satellite_grid.parquet
 
 # Models — committed for API deployment
 # shap_explainer.joblib is 26MB (under GitHub 100MB limit)
