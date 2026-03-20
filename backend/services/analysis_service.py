@@ -71,8 +71,11 @@ def _run_predict(unit: dict) -> dict[str, Any]:
         "status": status,
         "base_value": result["base_value"],
         "shap_top_features": result["shap_top_features"],
+        "prediction_interval_80": result.get("prediction_interval_80"),
+        "prediction_interval_50": result.get("prediction_interval_50"),
         "model_r2": result["model_r2"],
         "model_version": result["model_version"],
+        "enrichment_level": result.get("enrichment_level", "basic"),
     }
     return {
         "result": full_result,
@@ -157,7 +160,7 @@ def run_full_analysis(unit: dict, user_id: str) -> dict[str, Any]:
             "result": predict_data["result"],
             "predicted_rent_sqm": predict_data["predicted_rent_sqm"],
             "rent_gap_pct": predict_data["rent_gap_pct"],
-            "model_version": "v3_spatial",
+            "model_version": predict_data["result"].get("model_version", "v4.2.0"),
         }).execute()
     except Exception as e:
         errors.append({"type": "predict", "error": str(e), "traceback": traceback.format_exc()})
