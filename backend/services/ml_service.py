@@ -424,10 +424,17 @@ def predict(apt: dict, plz: int | None = None,
     if gemini_features:
         enrichment = "full"
 
+    # Prediction intervals (conformal, from model_config)
+    pi = MODEL_CONFIG.get("prediction_intervals", {})
+    hw80 = pi.get("half_width_80", 4.50)
+    hw50 = pi.get("half_width_50", 2.24)
+
     return {
         "predicted_rent_sqm": round(pred, 2),
         "base_value": round(base_value, 2),
         "shap_top_features": top_features,
+        "prediction_interval_80": [round(pred - hw80, 2), round(pred + hw80, 2)],
+        "prediction_interval_50": [round(pred - hw50, 2), round(pred + hw50, 2)],
         "model_r2": MODEL_CONFIG["metrics"]["r2"],
         "model_version": MODEL_CONFIG.get("model_version", "unknown"),
         "enrichment_level": enrichment,

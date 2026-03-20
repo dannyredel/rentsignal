@@ -61,6 +61,8 @@ class PredictionResult(BaseModel):
     status: Optional[str] = None  # UNDERPRICED / OVERPRICED / FAIRLY_PRICED
     base_value: float = Field(..., description="SHAP base value (average rent)")
     shap_top_features: list[SHAPFeature]
+    prediction_interval_80: Optional[list[float]] = Field(None, description="80% prediction interval [lower, upper]")
+    prediction_interval_50: Optional[list[float]] = Field(None, description="50% prediction interval [lower, upper]")
     model_r2: float
     model_version: str
 

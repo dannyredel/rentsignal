@@ -136,6 +136,8 @@ def predict_rent(apt: ApartmentInput):
         status=status,
         base_value=result["base_value"],
         shap_top_features=[SHAPFeature(**f) for f in result["shap_top_features"]],
+        prediction_interval_80=result.get("prediction_interval_80"),
+        prediction_interval_50=result.get("prediction_interval_50"),
         model_r2=result["model_r2"],
         model_version=result["model_version"],
     )
