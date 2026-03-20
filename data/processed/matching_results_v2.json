@@ -1,0 +1,160 @@
+{
+  "method": "Propensity Score Matching (1:1 NN, caliper=0.2-0.25 SD)",
+  "version": "v2",
+  "dataset": "Apify ImmoScout24 Berlin 2026 (regular listings only, excl. Tauschwohnungen)",
+  "n_listings": 4828,
+  "confounders": [
+    "livingSpace",
+    "noRooms",
+    "yearConstructed",
+    "floor",
+    "numberOfFloors",
+    "thermalChar",
+    "sqm_per_room",
+    "dist_cbd_m",
+    "dist_transit_m",
+    "dist_ubahn_m",
+    "dist_park_m",
+    "dist_water_m",
+    "count_food_1000m",
+    "count_restaurant_1000m",
+    "count_cafe_500m",
+    "count_shop_1000m",
+    "ndvi_500m",
+    "ndwi_500m",
+    "ndbi_500m",
+    "interior_quality",
+    "renovation_level",
+    "brightness",
+    "bldg_condition",
+    "building_era",
+    "bezirk",
+    "condition",
+    "interiorQual"
+  ],
+  "n_confounders": 27,
+  "improvements_over_v1": [
+    "2026 data (vs 2019)",
+    "Tauschwohnungen excluded (41% of listings with non-market pricing)",
+    "27 confounders (vs 11 in v1)",
+    "Gemini image features as confounders (renovation_level, interior_quality, brightness)",
+    "Unit-level spatial features as confounders (dist_cbd, food density, NDVI)"
+  ],
+  "classic_treatments": {
+    "hasKitchen": {
+      "att": 3.48,
+      "ci_low": 2.806,
+      "ci_high": 4.198,
+      "se": 0.362,
+      "n_pairs": 714,
+      "raw_premium": 7.695,
+      "type": "renovation"
+    },
+    "balcony": {
+      "att": 1.078,
+      "ci_low": 0.207,
+      "ci_high": 1.968,
+      "se": 0.443,
+      "n_pairs": 657,
+      "raw_premium": 4.064,
+      "type": "renovation"
+    },
+    "lift": {
+      "att": 1.59,
+      "ci_low": 0.749,
+      "ci_high": 2.485,
+      "se": 0.441,
+      "n_pairs": 578,
+      "raw_premium": 6.04,
+      "type": "renovation"
+    },
+    "garden": {
+      "att": 1.36,
+      "ci_low": 0.526,
+      "ci_high": 2.165,
+      "se": 0.414,
+      "n_pairs": 480,
+      "raw_premium": 3.787,
+      "type": "renovation"
+    }
+  },
+  "extended_treatments": {
+    "tx_cellar": {
+      "label": "Cellar",
+      "att": -0.902,
+      "ci_low": -1.557,
+      "ci_high": -0.217,
+      "se": 0.339,
+      "n_pairs": 812,
+      "type": "renovation"
+    },
+    "tx_dielen": {
+      "label": "Dielen Floor",
+      "att": 1.284,
+      "ci_low": 0.171,
+      "ci_high": 2.327,
+      "se": 0.56,
+      "n_pairs": 271,
+      "type": "renovation"
+    },
+    "tx_high_ceiling": {
+      "label": "High Ceiling",
+      "att": 1.969,
+      "ci_low": 0.589,
+      "ci_high": 3.277,
+      "se": 0.668,
+      "n_pairs": 215,
+      "type": "feature_premium"
+    }
+  },
+  "heterogeneous_kitchen": {
+    "unknown": {
+      "att": 4.071,
+      "ci_low": 2.387,
+      "ci_high": 5.678,
+      "n_pairs": 165
+    },
+    "2015_plus": {
+      "att": 0.912,
+      "ci_low": -0.424,
+      "ci_high": 2.177,
+      "n_pairs": 183
+    },
+    "pre_1918": {
+      "att": 1.349,
+      "ci_low": -0.267,
+      "ci_high": 2.883,
+      "n_pairs": 117
+    },
+    "1991_2002": {
+      "att": -0.928,
+      "ci_low": -3.227,
+      "ci_high": 1.641,
+      "n_pairs": 37
+    },
+    "1973_1990": {
+      "att": 2.152,
+      "ci_low": -1.605,
+      "ci_high": 5.908,
+      "n_pairs": 14
+    },
+    "1950_1964": {
+      "att": 4.224,
+      "ci_low": -0.093,
+      "ci_high": 9.64,
+      "n_pairs": 14
+    },
+    "1919_1949": {
+      "att": -2.245,
+      "ci_low": -7.305,
+      "ci_high": 2.204,
+      "n_pairs": 11
+    },
+    "1965_1972": {
+      "att": 5.995,
+      "ci_low": 1.509,
+      "ci_high": 10.534,
+      "n_pairs": 8
+    }
+  }
+}
