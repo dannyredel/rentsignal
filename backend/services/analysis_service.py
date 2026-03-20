@@ -73,6 +73,7 @@ def _run_predict(unit: dict) -> dict[str, Any]:
         "status": status,
         "base_value": result["base_value"],
         "shap_top_features": result["shap_top_features"],
+        "feature_worth": result.get("feature_worth"),
         "prediction_interval_80": result.get("prediction_interval_80"),
         "prediction_interval_50": result.get("prediction_interval_50"),
         "model_r2": result["model_r2"],

@@ -298,6 +298,81 @@ def get_spatial_from_plz(plz: int) -> dict:
 # Feature preparation
 # ---------------------------------------------------------------------------
 
+def _describe_feature_value(feature: str, apt: dict, X_row) -> str:
+    """Describe what the user has for a feature in human language."""
+    # Binary features
+    binary_map = {
+        "hasKitchen": ("Yes", "No"),
+        "balcony": ("Yes", "No"),
+        "lift": ("Yes", "No"),
+        "cellar": ("Yes", "No"),
+        "garden": ("Yes", "No"),
+        "newlyConst": ("Yes", "No"),
+        "is_tauschwohnung": ("Yes (swap)", "No"),
+        "is_furnished": ("Yes", "No"),
+        "is_altbau": ("Yes", "No"),
+        "is_neubau": ("Yes", "No"),
+        "is_renovated": ("Yes", "No"),
+        "is_render": ("Yes", "No"),
+        "has_visible_kitchen": ("Yes", "No"),
+        "has_visible_balcony": ("Yes", "No"),
+        "bldg_green": ("Yes", "No"),
+        "bldg_commercial_gf": ("Yes", "No"),
+    }
+    if feature in binary_map:
+        val = apt.get(feature, 0)
+        yes, no = binary_map[feature]
+        return yes if val else no
+
+    # Numeric features with units
+    numeric_formats = {
+        "livingSpace": "{:.0f} m²",
+        "noRooms": "{:.0f} rooms",
+        "yearConstructed": "{:.0f}",
+        "floor": "Floor {:.0f}",
+        "numberOfFloors": "{:.0f} floors",
+        "thermalChar": "{:.0f} kWh/m²",
+        "sqm_per_room": "{:.0f} m²/room",
+        "picturecount": "{:.0f} photos",
+        "nebenkosten_sqm": "€{:.2f}/m²",
+        "interior_quality": "{:.0f}/5",
+        "kitchen_quality": "{:.0f}/5",
+        "bathroom_quality": "{:.0f}/5",
+        "brightness": "{:.0f}/5",
+        "renovation_level": "{:.0f}/5",
+        "bldg_condition": "{:.0f}/5",
+        "dist_cbd_m": "{:.0f}m to center",
+        "dist_transit_m": "{:.0f}m to transit",
+        "dist_ubahn_m": "{:.0f}m to U-Bahn",
+        "dist_park_m": "{:.0f}m to park",
+        "dist_water_m": "{:.0f}m to water",
+        "count_food_1000m": "{:.0f} venues",
+        "count_food_500m": "{:.0f} venues",
+        "count_restaurant_1000m": "{:.0f} restaurants",
+        "count_cafe_500m": "{:.0f} cafés",
+        "count_shop_1000m": "{:.0f} shops",
+        "count_transit_1000m": "{:.0f} stops",
+    }
+    if feature in numeric_formats:
+        val = apt.get(feature)
+        if val is None:
+            # Try from the feature row
+            try:
+                idx = MODEL_CONFIG["features"].index(feature)
+                val = float(X_row.iloc[0, idx])
+            except (ValueError, IndexError):
+                val = None
+        if val is not None:
+            return numeric_formats[feature].format(val)
+
+    # Categorical
+    val = apt.get(feature)
+    if val is not None:
+        return str(val).replace("_", " ").title()
+
+    return "—"
+
+
 def prepare_features(apt: dict, plz: int | None = None,
                      lat: float | None = None, lon: float | None = None,
                      gemini_features: dict | None = None,
@@ -417,6 +492,26 @@ def predict(apt: dict, plz: int | None = None,
         for f, v in feat_shap[:10]
     ]
 
+    # Layer 2: Feature worth table — SHAP translated into money language
+    living_space = apt.get("livingSpace", 75)
+    feature_worth = []
+    for f, v in feat_shap[:10]:
+        shap_val = round(float(v), 2)
+        monthly = round(shap_val * living_space)
+        # Determine what the user has for this feature
+        has_value = _describe_feature_value(f, apt, X)
+        # Actionability
+        actionable = f in ("hasKitchen", "balcony", "lift", "garden", "cellar",
+                           "newlyConst", "condition", "interiorQual", "thermalChar")
+        feature_worth.append({
+            "feature": f,
+            "label": FEATURE_LABELS.get(f, f),
+            "shap_sqm": shap_val,
+            "monthly_eur": monthly,
+            "you_have": has_value,
+            "actionable": actionable,
+        })
+
     # Enrichment level indicator
     enrichment = "basic"
     if lat is not None and lon is not None:
@@ -433,6 +528,7 @@ def predict(apt: dict, plz: int | None = None,
         "predicted_rent_sqm": round(pred, 2),
         "base_value": round(base_value, 2),
         "shap_top_features": top_features,
+        "feature_worth": feature_worth,
         "prediction_interval_80": [round(pred - hw80, 2), round(pred + hw80, 2)],
         "prediction_interval_50": [round(pred - hw50, 2), round(pred + hw50, 2)],
         "model_r2": MODEL_CONFIG["metrics"]["r2"],
