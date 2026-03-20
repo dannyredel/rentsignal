@@ -47,7 +47,9 @@ def _unit_to_predict_input(unit: dict) -> tuple[dict, int | None]:
 def _run_predict(unit: dict) -> dict[str, Any]:
     """Run prediction and return result dict + denormalized metrics."""
     model_input, plz = _unit_to_predict_input(unit)
-    result = ml_predict(model_input, plz=plz)
+    lat = unit.get("lat")
+    lon = unit.get("lon") or unit.get("lng")
+    result = ml_predict(model_input, plz=plz, lat=lat, lon=lon)
 
     current_rent = unit.get("current_rent_per_sqm")
     gap_sqm = None
