@@ -25,7 +25,7 @@ async def autocomplete(
     Biased toward Berlin results.
     """
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(
                 PHOTON_URL,
                 params={
@@ -37,9 +37,13 @@ async def autocomplete(
                 },
             )
             resp.raise_for_status()
-    except httpx.HTTPStatusError:
+    except httpx.HTTPStatusError as e:
+        import sys
+        print(f"Address autocomplete HTTP error for '{q}': {e}", file=sys.stderr)
         return {"query": q, "results": []}
-    except httpx.RequestError:
+    except httpx.RequestError as e:
+        import sys
+        print(f"Address autocomplete request error for '{q}': {e}", file=sys.stderr)
         return {"query": q, "results": []}
 
     features = resp.json().get("features", [])
