@@ -7,11 +7,12 @@ from fastapi import APIRouter, Query
 
 router = APIRouter(tags=["address"])
 
-PHOTON_URL = "https://photon.komoot.io/api/"
+NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 
 # Berlin bounding box for biasing results
 BERLIN_LAT = 52.52
 BERLIN_LON = 13.405
+BERLIN_VIEWBOX = "13.08,52.34,13.76,52.68"
 
 
 @router.get("/address/autocomplete")
@@ -27,14 +28,17 @@ async def autocomplete(
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(
-                PHOTON_URL,
+                NOMINATIM_URL,
                 params={
-                    "q": q,
-                    "lat": BERLIN_LAT,
-                    "lon": BERLIN_LON,
+                    "q": f"{q}, Berlin",
+                    "format": "jsonv2",
+                    "addressdetails": 1,
                     "limit": limit,
-                    "lang": "de",
+                    "viewbox": BERLIN_VIEWBOX,
+                    "bounded": 1,
+                    "countrycodes": "de",
                 },
+                headers={"User-Agent": "RentSignal/1.0 (contact@rentsignal.de)"},
             )
             resp.raise_for_status()
     except httpx.HTTPStatusError as e:
@@ -46,29 +50,35 @@ async def autocomplete(
         print(f"Address autocomplete request error for '{q}': {e}", file=sys.stderr)
         return {"query": q, "results": []}
 
-    features = resp.json().get("features", [])
-    results = []
-    for f in features:
-        props = f.get("properties", {})
-        coords = f.get("geometry", {}).get("coordinates", [None, None])
+    items = resp.json()
+    if not isinstance(items, list):
+        return {"query": q, "results": []}
 
-        # Only include results with a postcode (filters noise)
-        postcode = props.get("postcode")
+    results = []
+    for item in items:
+        addr = item.get("address", {})
+        postcode = addr.get("postcode")
         if not postcode:
             continue
 
-        results.append(
-            {
-                "display": _format_display(props),
-                "street": props.get("street"),
-                "house_number": props.get("housenumber"),
-                "plz": postcode,
-                "district": props.get("district") or props.get("city"),
-                "state": props.get("state"),
-                "lat": coords[1] if len(coords) > 1 else None,
-                "lon": coords[0] if coords else None,
-            }
-        )
+        street = addr.get("road") or addr.get("pedestrian") or addr.get("neighbourhood")
+        house_number = addr.get("house_number")
+        district = addr.get("suburb") or addr.get("city_district") or addr.get("city")
+
+        display = item.get("display_name", "")
+        # Shorten display: take first 2-3 parts
+        parts = display.split(", ")
+        short_display = ", ".join(parts[:3]) if len(parts) > 3 else display
+
+        results.append({
+            "display": short_display,
+            "street": street,
+            "house_number": house_number,
+            "plz": postcode,
+            "district": district,
+            "lat": float(item["lat"]) if item.get("lat") else None,
+            "lon": float(item["lon"]) if item.get("lon") else None,
+        })
 
     return {"query": q, "results": results}
 
@@ -92,50 +102,52 @@ async def resolve(
         query += f", {plz}"
     query += f", {city}"
 
-    async with httpx.AsyncClient(timeout=5.0) as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         resp = await client.get(
-            PHOTON_URL,
+            NOMINATIM_URL,
             params={
                 "q": query,
-                "lat": BERLIN_LAT,
-                "lon": BERLIN_LON,
+                "format": "jsonv2",
+                "addressdetails": 1,
                 "limit": 1,
-                "lang": "de",
+                "viewbox": BERLIN_VIEWBOX,
+                "bounded": 1,
+                "countrycodes": "de",
             },
+            headers={"User-Agent": "RentSignal/1.0 (contact@rentsignal.de)"},
         )
         resp.raise_for_status()
 
-    features = resp.json().get("features", [])
-    if not features:
+    items = resp.json()
+    if not items:
         return {"resolved": False, "error": "Address not found"}
 
-    f = features[0]
-    props = f.get("properties", {})
-    coords = f.get("geometry", {}).get("coordinates", [None, None])
+    item = items[0]
+    addr = item.get("address", {})
 
     return {
         "resolved": True,
-        "street": props.get("street"),
-        "house_number": props.get("housenumber"),
-        "plz": props.get("postcode"),
-        "district": props.get("district") or props.get("city"),
-        "lat": coords[1] if len(coords) > 1 else None,
-        "lon": coords[0] if coords else None,
-        "building_year_inferred": None,  # TODO: OSM building:start_date tag lookup
+        "street": addr.get("road") or addr.get("pedestrian"),
+        "house_number": addr.get("house_number"),
+        "plz": addr.get("postcode"),
+        "district": addr.get("suburb") or addr.get("city_district") or addr.get("city"),
+        "lat": float(item["lat"]) if item.get("lat") else None,
+        "lon": float(item["lon"]) if item.get("lon") else None,
+        "building_year_inferred": None,
     }
 
 
 def _format_display(props: dict) -> str:
-    """Format a Photon result into a human-readable address string."""
+    """Format address properties into a display string."""
     parts = []
-    street = props.get("street")
+    street = props.get("road") or props.get("street")
     if street:
-        hn = props.get("housenumber", "")
+        hn = props.get("house_number", "")
         parts.append(f"{street} {hn}".strip())
     postcode = props.get("postcode")
-    city = props.get("city") or props.get("district")
+    city = props.get("city") or props.get("suburb")
     if postcode and city:
         parts.append(f"{postcode} {city}")
     elif city:
         parts.append(city)
-    return ", ".join(parts) if parts else props.get("name", "Unknown")
+    return ", ".join(parts) if parts else "Unknown"
