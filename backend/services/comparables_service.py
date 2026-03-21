@@ -166,6 +166,8 @@ def find_comparables(
             "condition": row.get("condition", "unknown"),
             "asking_rent_sqm": round(float(row["rent_sqm"]), 2),
             "asking_rent_total": round(float(row.get("baseRent", row["rent_sqm"] * row["sqm_f"])), 0),
+            "lat": float(row["lat_f"]) if row["lat_f"] != 0 else None,
+            "lon": float(row["lon_f"]) if row["lon_f"] != 0 else None,
             "distance_m": dist_m,
             "similarity_score": round(float(row["similarity_score"]), 2),
         })
