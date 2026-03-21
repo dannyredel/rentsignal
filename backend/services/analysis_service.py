@@ -44,12 +44,13 @@ def _unit_to_predict_input(unit: dict) -> tuple[dict, int | None]:
     return model_input, unit.get("plz")
 
 
-def _run_predict(unit: dict) -> dict[str, Any]:
+def _run_predict(unit: dict, gemini_features: dict = None) -> dict[str, Any]:
     """Run prediction and return result dict + denormalized metrics."""
     model_input, plz = _unit_to_predict_input(unit)
     lat = unit.get("lat")
     lon = unit.get("lon") or unit.get("lng")
-    result = ml_predict(model_input, plz=plz, lat=lat, lon=lon)
+    result = ml_predict(model_input, plz=plz, lat=lat, lon=lon,
+                        gemini_features=gemini_features)
 
     current_rent = unit.get("current_rent_per_sqm")
     gap_sqm = None
@@ -74,6 +75,7 @@ def _run_predict(unit: dict) -> dict[str, Any]:
         "base_value": result["base_value"],
         "shap_top_features": result["shap_top_features"],
         "feature_worth": result.get("feature_worth"),
+        "segment_wtp": result.get("segment_wtp"),
         "prediction_interval_80": result.get("prediction_interval_80"),
         "prediction_interval_50": result.get("prediction_interval_50"),
         "model_r2": result["model_r2"],
@@ -138,12 +140,13 @@ def _run_renovate(unit: dict) -> dict[str, Any]:
     }
 
 
-def run_full_analysis(unit: dict, user_id: str) -> dict[str, Any]:
+def run_full_analysis(unit: dict, user_id: str, gemini_features: dict = None) -> dict[str, Any]:
     """Run predict + comply + renovate on a unit and store in analyses table.
 
     Args:
         unit: dict with unit fields (from Supabase row or UnitCreate)
         user_id: the owning user's ID
+        gemini_features: optional Gemini image features from photo upload
 
     Returns:
         dict with analysis results and any errors
@@ -155,7 +158,7 @@ def run_full_analysis(unit: dict, user_id: str) -> dict[str, Any]:
     # --- Predict ---
     predict_data = None
     try:
-        predict_data = _run_predict(unit)
+        predict_data = _run_predict(unit, gemini_features=gemini_features)
         sb.table("analyses").insert({
             "unit_id": unit_id,
             "user_id": user_id,

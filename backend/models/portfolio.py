@@ -67,6 +67,9 @@ class UnitCreate(BaseModel):
     # Monitoring
     is_monitored: bool = False
 
+    # Optional Gemini image features (from photo upload)
+    gemini_features: Optional[dict] = None
+
     # User notes
     label: Optional[str] = None
     notes: Optional[str] = None

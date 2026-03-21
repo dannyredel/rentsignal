@@ -39,12 +39,15 @@ async def create_unit(data: UnitCreate, user: User = Depends(get_current_user)):
     if not row.get("building_era"):
         row["building_era"] = _year_to_era(row["year_built"])
 
+    # Extract gemini_features before inserting (not a DB column)
+    gemini_features = row.pop("gemini_features", None)
+
     result = sb.table("units").insert(row).execute()
     unit = result.data[0]
 
     # Auto-run predict + comply + renovate and store in analyses table
     try:
-        run_full_analysis(unit, user.user_id)
+        run_full_analysis(unit, user.user_id, gemini_features=gemini_features)
     except Exception as e:
         logger.warning(f"Auto-analysis failed for unit {unit['id']}: {e}")
         # Don't fail the unit creation — analysis can be retried
