@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routers import (
-    address, comply, csv_import, demo, energy, neighborhood,
+    address, comparables, comply, csv_import, demo, energy, neighborhood,
     portfolio, predict, profile, renovate, rent_increase, spatial,
 )
 
@@ -40,6 +40,7 @@ app.include_router(rent_increase.router)
 app.include_router(energy.router)
 app.include_router(neighborhood.router)
 app.include_router(profile.router)
+app.include_router(comparables.router)
 
 
 @app.get("/health")
