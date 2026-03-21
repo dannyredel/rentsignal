@@ -168,12 +168,53 @@ async def calculate_rent_increase(
 # Portfolio-level rent increase calculator
 # ---------------------------------------------------------------------------
 
+# Map modern merged district names to old Bezirk names for Mietspiegel lookup
+_DISTRICT_MAP = {
+    "Charlottenburg-Wilmersdorf": "Charlottenburg",
+    "Friedrichshain-Kreuzberg": "Kreuzberg",
+    "Marzahn-Hellersdorf": "Marzahn",
+    "Steglitz-Zehlendorf": "Steglitz",
+    "Tempelhof-Schöneberg": "Tempelhof",
+    "Treptow-Köpenick": "Treptow",
+    "Mitte": "Mitte",
+    "Neukölln": "Neukölln",
+    "Pankow": "Pankow",
+    "Lichtenberg": "Lichtenberg",
+    "Reinickendorf": "Reinickendorf",
+    "Spandau": "Spandau",
+    # Nominatim sometimes returns suburb names directly
+    "Wilmersdorf": "Wilmersdorf",
+    "Charlottenburg": "Charlottenburg",
+    "Kreuzberg": "Kreuzberg",
+    "Friedrichshain": "Friedrichshain",
+    "Schöneberg": "Schöneberg",
+    "Tempelhof": "Tempelhof",
+    "Steglitz": "Steglitz",
+    "Zehlendorf": "Zehlendorf",
+    "Neukölln": "Neukölln",
+    "Treptow": "Treptow",
+    "Köpenick": "Köpenick",
+    "Marzahn": "Marzahn",
+    "Hellersdorf": "Hellersdorf",
+    "Hohenschönhausen": "Hohenschönhausen",
+    "Lichtenberg": "Lichtenberg",
+    "Weißensee": "Weißensee",
+    "Pankow": "Pankow",
+    "Reinickendorf": "Reinickendorf",
+    "Wedding": "Wedding",
+    "Prenzlauer Berg": "Prenzlauer Berg",
+}
+
+
 def _calc_increase_for_unit(unit: dict) -> dict:
     """Calculate rent increase potential for a single portfolio unit."""
     current_sqm = float(unit.get("current_rent_per_sqm", 0) or 0)
     sqm = float(unit.get("living_space_sqm", 60))
     year = int(unit.get("year_built", 1960) or 1960)
-    district = unit.get("district", "")
+    raw_district = unit.get("district", "")
+
+    # Map to Bezirk name the Mietspiegel expects
+    district = _DISTRICT_MAP.get(raw_district, raw_district)
 
     if current_sqm <= 0:
         return {"unit_id": unit.get("id"), "address": unit.get("address"), "can_increase": False,
