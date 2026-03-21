@@ -152,5 +152,6 @@ async def predict_with_photos(
     result["status"] = status
     result["photos_analyzed"] = n_photos
     result["gemini_features_extracted"] = len(gemini_features)
+    result["gemini_features"] = gemini_features  # Pass back so frontend can include in unit creation
 
     return result
