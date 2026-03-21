@@ -472,9 +472,16 @@ def prepare_features(apt: dict, plz: int | None = None,
 
     # --- Gemini image features (from gemini_features dict or defaults) ---
     gem_src = gemini_features or {}
-    for f in feature_groups.get("gemini_numeric", []):
+    gemini_numeric = feature_groups.get("gemini_numeric", []) or [
+        "interior_quality", "kitchen_quality", "bathroom_quality", "brightness",
+        "renovation_level", "bldg_condition", "rooms_shown", "bldg_floors",
+    ]
+    gemini_binary = feature_groups.get("gemini_binary", []) or [
+        "is_render", "has_visible_kitchen", "has_visible_balcony", "bldg_green", "bldg_commercial_gf",
+    ]
+    for f in gemini_numeric:
         row[f] = gem_src.get(f, _FEATURE_DEFAULTS.get(f, 0))
-    for f in feature_groups.get("gemini_binary", []):
+    for f in gemini_binary:
         row[f] = int(gem_src.get(f, _FEATURE_DEFAULTS.get(f, 0)))
 
     # --- Categorical ---
@@ -486,12 +493,18 @@ def prepare_features(apt: dict, plz: int | None = None,
     row["bezirk"] = apt.get("bezirk", "Mitte")
     row["sizeCategory"] = _size_category(apt.get("livingSpace", 60))
 
-    # Gemini categorical
-    for f in feature_groups.get("gemini_categorical", []):
+    # Gemini categorical — check both feature_groups and categorical_features list
+    gemini_cats = feature_groups.get("gemini_categorical", [])
+    if not gemini_cats:
+        # v4.3+ stores all categoricals in one list — Gemini cats are those in the encoder but not structural
+        structural_cats = {"condition", "interiorQual", "typeOfFlat", "heatingGroup", "building_era", "bezirk", "sizeCategory"}
+        all_cats = set(MODEL_CONFIG.get("categorical_features", []))
+        gemini_cats = [f for f in all_cats - structural_cats if f not in row]
+    for f in gemini_cats:
         row[f] = gem_src.get(f, _FEATURE_DEFAULTS.get(f, "unknown"))
 
     # Encode all categoricals
-    cat_features = feature_groups.get("categorical", [])
+    cat_features = feature_groups.get("categorical", []) or MODEL_CONFIG.get("categorical_features", [])
     cat_values = [str(row.get(f, "unknown")).lower().strip() for f in cat_features]
     cat_encoded = _encoder.transform([cat_values])[0]
     for f, val in zip(cat_features, cat_encoded):
