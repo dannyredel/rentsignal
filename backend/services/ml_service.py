@@ -77,11 +77,31 @@ try:
     _df_sat = pd.read_csv(_ROOT / "data" / "processed" / "spatial_satellite_features.csv")
     _df_spatial_plz = _df_osm.merge(_df_sat, on="plz", how="left")
 
+    # Load rent neighbor lookup for spatial rent features (v4.3)
+    _rent_lookup = None
+    _rent_kdtree = None
+    _plz_median_rents = {}
+    rent_lookup_path = _ROOT / "data" / "processed" / "rent_neighbors_lookup.parquet"
+    plz_median_path = _ROOT / "data" / "processed" / "plz_median_rents.json"
+    if rent_lookup_path.exists():
+        _rent_lookup = pd.read_parquet(rent_lookup_path)
+        _rent_xy = np.column_stack([
+            _rent_lookup["lon"].values * LON_TO_M,
+            _rent_lookup["lat"].values * LAT_TO_M,
+        ])
+        _rent_values = _rent_lookup["rent_sqm"].values
+        _rent_kdtree = cKDTree(_rent_xy)
+        print(f"Rent neighbor lookup loaded: {len(_rent_lookup):,} points", file=sys.stderr)
+    if plz_median_path.exists():
+        with open(plz_median_path) as f:
+            _plz_median_rents = json.load(f)
+
     _ML_READY = True
     print(f"ML service loaded: v{MODEL_CONFIG.get('model_version', '?')}, "
           f"{len(MODEL_CONFIG.get('features', []))} features, "
           f"{len(_kdtrees)} KDTrees, "
-          f"sat_grid={'yes' if _sat_grid is not None else 'no'}", file=sys.stderr)
+          f"sat_grid={'yes' if _sat_grid is not None else 'no'}, "
+          f"rent_neighbors={'yes' if _rent_kdtree is not None else 'no'}", file=sys.stderr)
 
 except Exception as e:
     print(f"WARNING: ML service failed to load: {e}", file=sys.stderr)
@@ -140,6 +160,12 @@ FEATURE_LABELS = {
     "brightness": "Brightness (photo)",
     "renovation_level": "Renovation Level (photo)",
     "bldg_condition": "Building Facade",
+    # Spatial rent features (v4.3)
+    "avg_rent_500m": "Avg Nearby Rent (500m)",
+    "avg_rent_1km": "Avg Nearby Rent (1km)",
+    "median_rent_plz": "PLZ Median Rent",
+    "rent_dispersion_500m": "Rent Dispersion (500m)",
+    "n_listings_500m": "Listings Nearby (500m)",
     "bldg_floors": "Visible Floors",
     "rooms_shown": "Rooms in Photos",
     "is_render": "3D Render",
@@ -278,7 +304,38 @@ def compute_spatial_features(lat: float, lon: float) -> dict:
             for buffer_m in [100, 250, 500]:
                 features[f"{idx_name}_{buffer_m}m"] = 0
 
+    # Spatial rent features (v4.3 — neighbor rents)
+    if _rent_kdtree is not None:
+        # avg_rent_500m
+        indices_500 = _rent_kdtree.query_ball_point(unit_xy[0], r=500)
+        if len(indices_500) > 1:
+            rents_500 = _rent_values[indices_500]
+            features["avg_rent_500m"] = float(np.mean(rents_500))
+            features["rent_dispersion_500m"] = float(np.std(rents_500))
+            features["n_listings_500m"] = len(indices_500)
+        else:
+            features["avg_rent_500m"] = 0
+            features["rent_dispersion_500m"] = 0
+            features["n_listings_500m"] = 0
+
+        # avg_rent_1km
+        indices_1k = _rent_kdtree.query_ball_point(unit_xy[0], r=1000)
+        if len(indices_1k) > 1:
+            features["avg_rent_1km"] = float(np.mean(_rent_values[indices_1k]))
+        else:
+            features["avg_rent_1km"] = 0
+    else:
+        features["avg_rent_500m"] = 0
+        features["avg_rent_1km"] = 0
+        features["rent_dispersion_500m"] = 0
+        features["n_listings_500m"] = 0
+
     return features
+
+
+def compute_rent_plz_median(plz: int) -> float:
+    """Get median rent for a PLZ from pre-computed lookup."""
+    return _plz_median_rents.get(str(plz), 0)
 
 
 def get_spatial_from_plz(plz: int) -> dict:
@@ -448,8 +505,24 @@ def prepare_features(apt: dict, plz: int | None = None,
     else:
         spatial = {}
 
-    for f in feature_groups.get("spatial", []):
-        row[f] = spatial.get(f, 0)
+    for f in MODEL_CONFIG.get("features", []):
+        if f.startswith(("dist_", "count_", "nd", "avg_rent_", "rent_dispersion_", "n_listings_")):
+            if f not in row:
+                row[f] = spatial.get(f, 0)
+
+    # PLZ median rent (v4.3)
+    plz_median = compute_rent_plz_median(plz) if plz else 0
+    row["median_rent_plz"] = plz_median
+
+    # Fallback: if no coords, use PLZ median for rent neighbor features
+    if row.get("avg_rent_500m", 0) == 0 and plz_median > 0:
+        row["avg_rent_500m"] = plz_median
+        row["avg_rent_1km"] = plz_median
+
+    # Fill any remaining missing features with 0
+    for f in MODEL_CONFIG.get("features", []):
+        if f not in row:
+            row[f] = 0
 
     return pd.DataFrame([row])[MODEL_CONFIG["features"]]
 
@@ -524,11 +597,16 @@ def predict(apt: dict, plz: int | None = None,
     hw80 = pi.get("half_width_80", 4.50)
     hw50 = pi.get("half_width_50", 2.24)
 
+    # Layer 3: Segment WTP
+    from backend.services.segment_service import compute_segment_wtp
+    segment_wtp = compute_segment_wtp(apt, pred, living_space)
+
     return {
         "predicted_rent_sqm": round(pred, 2),
         "base_value": round(base_value, 2),
         "shap_top_features": top_features,
         "feature_worth": feature_worth,
+        "segment_wtp": segment_wtp,
         "prediction_interval_80": [round(pred - hw80, 2), round(pred + hw80, 2)],
         "prediction_interval_50": [round(pred - hw50, 2), round(pred + hw50, 2)],
         "model_r2": MODEL_CONFIG["metrics"]["r2"],

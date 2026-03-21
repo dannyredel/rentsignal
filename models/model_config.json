@@ -1,15 +1,5 @@
 {
-  "model_version": "v4.2.0",
-  "trained_at": "2026-03-20T08:59:55.565221",
-  "data_source": "apify_immoscout24_berlin_2026_03",
-  "data_files": {
-    "units": "data/processed/units.parquet",
-    "listings": "data/processed/listings.parquet",
-    "spatial_unit": "data/processed/spatial_unit.parquet",
-    "gemini_image_features": "data/processed/gemini_image_features.parquet"
-  },
-  "inflation_factor": 1.0,
-  "inflation_factor_active": false,
+  "model_version": "v4.3.0",
   "features": [
     "livingSpace",
     "noRooms",
@@ -85,123 +75,33 @@
     "ndwi_500m",
     "ndbi_100m",
     "ndbi_250m",
-    "ndbi_500m"
+    "ndbi_500m",
+    "avg_rent_500m",
+    "avg_rent_1km",
+    "median_rent_plz",
+    "rent_dispersion_500m",
+    "n_listings_500m"
   ],
-  "feature_groups": {
-    "numeric": [
-      "livingSpace",
-      "noRooms",
-      "yearConstructed",
-      "floor",
-      "numberOfFloors",
-      "thermalChar",
-      "sqm_per_room",
-      "nebenkosten_sqm",
-      "picturecount",
-      "interior_quality",
-      "kitchen_quality",
-      "bathroom_quality",
-      "brightness",
-      "renovation_level",
-      "bldg_condition",
-      "bldg_floors",
-      "rooms_shown"
-    ],
-    "binary": [
-      "balcony",
-      "hasKitchen",
-      "lift",
-      "cellar",
-      "garden",
-      "newlyConst",
-      "is_altbau",
-      "is_neubau",
-      "is_furnished",
-      "is_tauschwohnung",
-      "is_renovated",
-      "is_wg",
-      "is_befristet",
-      "has_terrasse",
-      "is_dachgeschoss",
-      "is_render",
-      "has_visible_kitchen",
-      "has_visible_balcony",
-      "bldg_green",
-      "bldg_commercial_gf"
-    ],
-    "categorical": [
-      "condition",
-      "interiorQual",
-      "typeOfFlat",
-      "heatingGroup",
-      "building_era",
-      "bezirk",
-      "sizeCategory",
-      "style",
-      "floor_type",
-      "ceiling_height",
-      "bldg_style",
-      "staging",
-      "view_type",
-      "color_warmth"
-    ],
-    "spatial": [
-      "dist_cbd_m",
-      "dist_transit_m",
-      "dist_ubahn_m",
-      "dist_park_m",
-      "dist_water_m",
-      "dist_school_m",
-      "count_food_500m",
-      "count_food_1000m",
-      "count_restaurant_500m",
-      "count_restaurant_1000m",
-      "count_cafe_500m",
-      "count_shop_500m",
-      "count_shop_1000m",
-      "count_transit_1000m",
-      "count_building_200m",
-      "ndvi_100m",
-      "ndvi_250m",
-      "ndvi_500m",
-      "ndwi_100m",
-      "ndwi_250m",
-      "ndwi_500m",
-      "ndbi_100m",
-      "ndbi_250m",
-      "ndbi_500m"
-    ],
-    "gemini_numeric": [
-      "interior_quality",
-      "kitchen_quality",
-      "bathroom_quality",
-      "brightness",
-      "renovation_level",
-      "bldg_condition",
-      "bldg_floors",
-      "rooms_shown"
-    ],
-    "gemini_binary": [
-      "is_render",
-      "has_visible_kitchen",
-      "has_visible_balcony",
-      "bldg_green",
-      "bldg_commercial_gf"
-    ],
-    "gemini_categorical": [
-      "style",
-      "floor_type",
-      "ceiling_height",
-      "bldg_style",
-      "staging",
-      "view_type",
-      "color_warmth"
-    ]
-  },
-  "spatial_level": "unit",
-  "image_features": true,
-  "image_model": "gemini-2.5-flash",
-  "image_coverage": "6997/8256 (85%)",
+  "n_features": 80,
+  "categorical_features": [
+    "condition",
+    "interiorQual",
+    "typeOfFlat",
+    "heatingGroup",
+    "building_era",
+    "bezirk",
+    "sizeCategory",
+    "style",
+    "floor_type",
+    "ceiling_height",
+    "bldg_style",
+    "staging",
+    "view_type",
+    "color_warmth"
+  ],
+  "target": "rent_sqm",
+  "training_data": "Apify 2026 regular listings only (excl. Tauschwohnungen)",
+  "n_training_samples": 3282,
   "best_params": {
     "subsample": 0.9,
     "reg_lambda": 1.0,
@@ -210,52 +110,31 @@
     "max_depth": 6,
     "learning_rate": 0.03,
     "colsample_bytree": 0.6,
-    "n_estimators": 469
+    "n_estimators": 557
   },
-  "train_size": 6604,
-  "test_size": 1652,
   "metrics": {
-    "r2": 0.7613,
-    "rmse": 3.8053,
-    "mae": 2.7373
+    "r2_regular": 0.8139,
+    "rmse_regular": 3.41,
+    "mae_regular": 2.35,
+    "r2_tausch": -0.6932,
+    "rmse_tausch": 5.49,
+    "mean_bias_regular": 0.062,
+    "mean_bias_all": -1.402,
+    "pi_80_coverage": 0.791,
+    "pi_80_avg_width": 7.63
   },
-  "prediction_intervals": {
-    "method": "conformal_cv_plus",
-    "reference": "Barber et al. 2021",
-    "half_width_50": 2.24,
-    "half_width_80": 4.50,
-    "half_width_90": 6.19,
-    "note": "prediction ± half_width gives the interval. Calibrated on 6604 training samples."
-  },
-  "version_history": {
-    "v3.0": {
-      "r2": 0.7491,
-      "rmse": 2.59,
-      "features": 37,
-      "data": "Kaggle 2019 + PLZ spatial"
-    },
-    "v4.0": {
-      "r2": 0.7083,
-      "rmse": 4.21,
-      "features": 43,
-      "data": "2026 Apify + unit spatial"
-    },
-    "v4.1": {
-      "r2": 0.7361,
-      "rmse": 4.0,
-      "features": 55,
-      "data": "+ NLP title + tuning"
-    },
-    "v4.2": {
-      "r2": 0.7613,
-      "rmse": 3.8053,
-      "features": 75,
-      "data": "+ Gemini image features"
-    }
-  },
-  "artifacts": {
-    "model": "models/xgboost_rent_v4.joblib",
-    "shap_explainer": "models/shap_explainer_v4.joblib",
-    "feature_encoder": "models/feature_encoder_v4.joblib"
-  }
+  "new_features": [
+    "avg_rent_500m",
+    "avg_rent_1km",
+    "median_rent_plz",
+    "rent_dispersion_500m",
+    "n_listings_500m"
+  ],
+  "improvements": [
+    "Spatial rent features: avg_rent_500m, avg_rent_1km, median_rent_plz, rent_dispersion_500m, n_listings_500m",
+    "Trained on regular listings only (excl. 3,428 Tauschwohnungen)",
+    "Mean bias reduced from -2.66 to +0.06",
+    "R2 improved from 0.761 to 0.814"
+  ],
+  "trained_at": "2026-03-21T16:34:26.455014"
 }
