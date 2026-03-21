@@ -41,7 +41,7 @@ async def create_unit(data: UnitCreate, user: User = Depends(get_current_user)):
 
     # Extract gemini_features before inserting (not a DB column)
     gemini_features = row.pop("gemini_features", None)
-    logger.info(f"Unit create: gemini_features={'yes (' + str(len(gemini_features)) + ' keys)' if gemini_features else 'none'}")
+    logger.info(f"Unit create: gemini_features={'yes (' + str(len(gemini_features)) + ' keys: ' + str(list(gemini_features.keys())[:5]) + ')' if gemini_features else 'none'}")
 
     result = sb.table("units").insert(row).execute()
     unit = result.data[0]
