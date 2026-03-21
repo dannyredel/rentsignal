@@ -610,9 +610,13 @@ def predict(apt: dict, plz: int | None = None,
     hw80 = pi.get("half_width_80", 4.50)
     hw50 = pi.get("half_width_50", 2.24)
 
-    # Layer 3: Segment WTP
-    from backend.services.segment_service import compute_segment_wtp
-    segment_wtp = compute_segment_wtp(apt, pred, living_space)
+    # Layer 3: Segment WTP (optional — module may not be deployed yet)
+    segment_wtp = None
+    try:
+        from backend.services.segment_service import compute_segment_wtp
+        segment_wtp = compute_segment_wtp(apt, pred, living_space)
+    except (ImportError, Exception):
+        pass
 
     return {
         "predicted_rent_sqm": round(pred, 2),
@@ -622,7 +626,7 @@ def predict(apt: dict, plz: int | None = None,
         "segment_wtp": segment_wtp,
         "prediction_interval_80": [round(pred - hw80, 2), round(pred + hw80, 2)],
         "prediction_interval_50": [round(pred - hw50, 2), round(pred + hw50, 2)],
-        "model_r2": MODEL_CONFIG["metrics"]["r2"],
+        "model_r2": MODEL_CONFIG.get("metrics", {}).get("r2_regular", MODEL_CONFIG.get("metrics", {}).get("r2", 0)),
         "model_version": MODEL_CONFIG.get("model_version", "unknown"),
         "enrichment_level": enrichment,
     }
