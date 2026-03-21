@@ -24,9 +24,16 @@ try:
     _comps["sqm_f"] = _comps["livingSpace"].astype(float)
     _comps["rooms_f"] = _comps["noRooms"].astype(float)
 
+    # Filter out Tauschwohnungen (swap listings with below-market rents)
+    # Tausch median is ~10.37 €/m² — use 12.0 as threshold to exclude
+    _n_before = len(_comps)
+    _comps = _comps[_comps["rent_sqm"] >= 12.0].reset_index(drop=True)
+    _n_tausch = _n_before - len(_comps)
+
     _COMPS_READY = True
     _SCRAPE_DATE = _comps["observed_date"].max() if "observed_date" in _comps.columns else "2026-03"
-    print(f"Comparables service loaded: {len(_comps):,} listings (scraped {_SCRAPE_DATE})", file=sys.stderr)
+    print(f"Comparables service loaded: {len(_comps):,} market listings "
+          f"({_n_tausch:,} Tauschwohnungen excluded, scraped {_SCRAPE_DATE})", file=sys.stderr)
 
 except Exception as e:
     print(f"WARNING: Comparables service failed to load: {e}", file=sys.stderr)
