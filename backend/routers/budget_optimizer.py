@@ -23,7 +23,7 @@ async def optimize_renovation_budget(
     The comparison between plans shows where differentiation beats duplication.
     """
     sb = get_supabase()
-    resp = sb.table("units").select("*").eq("user_id", user.id).execute()
+    resp = sb.table("units").select("*").eq("user_id", user.user_id).execute()
     portfolio = resp.data or []
 
     if not portfolio:
