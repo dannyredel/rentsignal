@@ -18,6 +18,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from backend.auth import User, get_current_user
+from backend.models.compliance import ComplianceInput
 from backend.services.compliance_service import lookup_mietspiegel
 from backend.supabase_client import get_supabase
 from backend.tier import check_tier
@@ -221,17 +222,21 @@ def _calc_increase_for_unit(unit: dict) -> dict:
                 "reason": "No current rent set"}
 
     try:
-        mietspiegel = lookup_mietspiegel(
-            building_year=year, living_space_sqm=sqm, district=district,
+        compliance_input = ComplianceInput(
+            district=district,
+            living_space_sqm=sqm,
+            building_year=year,
+            current_rent_per_sqm=current_sqm,
             has_fitted_kitchen=unit.get("has_kitchen"),
             has_balcony=unit.get("has_balcony"),
             has_elevator=unit.get("has_elevator"),
         )
-    except Exception:
+        mietspiegel = lookup_mietspiegel(compliance_input)
+    except Exception as e:
         return {"unit_id": unit.get("id"), "address": unit.get("address"), "can_increase": False,
-                "reason": "Mietspiegel lookup failed"}
+                "reason": f"Mietspiegel lookup failed: {str(e)[:50]}"}
 
-    mietspiegel_mid = mietspiegel.get("adjusted_mid", 0)
+    mietspiegel_mid = mietspiegel.adjusted_mid if hasattr(mietspiegel, 'adjusted_mid') else mietspiegel.get("adjusted_mid", 0)
     max_increase = max(0, mietspiegel_mid - current_sqm)
 
     # Kappungsgrenze
