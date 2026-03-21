@@ -5,9 +5,7 @@ from io import BytesIO
 from typing import Optional
 
 from fastapi import APIRouter, File, Form, UploadFile
-from PIL import Image
 
-from backend.services.gemini_service import analyze_photos
 from backend.services.ml_service import predict
 
 router = APIRouter(tags=["predict"])
@@ -83,12 +81,15 @@ async def predict_with_photos(
     (interior quality, kitchen/bathroom quality, floor type, etc.).
     This typically improves prediction accuracy by 5-15%.
     """
-    # 1. Load photos as PIL Images
+    # 1. Load photos as PIL Images (lazy import to avoid startup crash if Pillow missing)
+    from PIL import Image as PILImage
+    from backend.services.gemini_service import analyze_photos
+
     images = []
     for photo in photos[:10]:
         try:
             content = await photo.read()
-            img = Image.open(BytesIO(content))
+            img = PILImage.open(BytesIO(content))
             images.append(img)
         except Exception as e:
             print(f"Failed to load photo {photo.filename}: {e}", file=sys.stderr)

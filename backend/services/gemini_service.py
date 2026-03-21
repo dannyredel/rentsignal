@@ -9,8 +9,6 @@ import os
 import sys
 from io import BytesIO
 
-from PIL import Image
-
 _GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 # Lazy-load the Gemini client
@@ -68,7 +66,7 @@ KEY_MAP = {
 }
 
 
-def analyze_photos(images: list[Image.Image], max_retries: int = 3) -> dict:
+def analyze_photos(images: list, max_retries: int = 3) -> dict:
     """Send photos to Gemini and return structured features.
 
     Args:
