@@ -10,6 +10,7 @@ Rules:
 - Formal written request required (Mieterhöhungsverlangen)
 """
 
+import json
 from datetime import date, timedelta
 from typing import Optional
 
@@ -18,6 +19,7 @@ from pydantic import BaseModel, Field
 
 from backend.auth import User, get_current_user
 from backend.services.compliance_service import lookup_mietspiegel
+from backend.supabase_client import get_supabase
 from backend.tier import check_tier
 
 router = APIRouter(prefix="/rent-increase", tags=["rent-increase"])
@@ -160,3 +162,209 @@ async def calculate_rent_increase(
         earliest_increase_date=earliest_date,
         can_increase_now=can_increase_now,
     )
+
+
+# ---------------------------------------------------------------------------
+# Portfolio-level rent increase calculator
+# ---------------------------------------------------------------------------
+
+def _calc_increase_for_unit(unit: dict) -> dict:
+    """Calculate rent increase potential for a single portfolio unit."""
+    current_sqm = float(unit.get("current_rent_per_sqm", 0) or 0)
+    sqm = float(unit.get("living_space_sqm", 60))
+    year = int(unit.get("year_built", 1960) or 1960)
+    district = unit.get("district", "")
+
+    if current_sqm <= 0:
+        return {"unit_id": unit.get("id"), "address": unit.get("address"), "can_increase": False,
+                "reason": "No current rent set"}
+
+    try:
+        mietspiegel = lookup_mietspiegel(
+            building_year=year, living_space_sqm=sqm, district=district,
+            has_fitted_kitchen=unit.get("has_kitchen"),
+            has_balcony=unit.get("has_balcony"),
+            has_elevator=unit.get("has_elevator"),
+        )
+    except Exception:
+        return {"unit_id": unit.get("id"), "address": unit.get("address"), "can_increase": False,
+                "reason": "Mietspiegel lookup failed"}
+
+    mietspiegel_mid = mietspiegel.get("adjusted_mid", 0)
+    max_increase = max(0, mietspiegel_mid - current_sqm)
+
+    # Kappungsgrenze
+    prior_sqm = float(unit.get("previous_rent_per_sqm", 0) or 0)
+    kappung_max = None
+    if prior_sqm > 0:
+        kappung_max = prior_sqm * (1 + KAPPUNGSGRENZE_PCT)
+        effective_max = min(mietspiegel_mid, kappung_max)
+        max_increase = max(0, effective_max - current_sqm)
+
+    # Timing
+    last_increase = unit.get("last_rent_increase_date")
+    can_now = True
+    earliest = None
+    if last_increase:
+        try:
+            if isinstance(last_increase, str):
+                last_increase = date.fromisoformat(last_increase)
+            earliest = last_increase + timedelta(days=MIN_MONTHS_BETWEEN_INCREASES * 30)
+            can_now = date.today() >= earliest
+        except (ValueError, TypeError):
+            pass
+
+    return {
+        "unit_id": unit.get("id"),
+        "address": unit.get("address", "Unknown"),
+        "plz": str(unit.get("plz", "")),
+        "living_space_sqm": sqm,
+        "current_rent_sqm": current_sqm,
+        "mietspiegel_mid": mietspiegel_mid,
+        "max_increase_sqm": round(max_increase, 2),
+        "max_increase_monthly": round(max_increase * sqm, 2),
+        "max_increase_annual": round(max_increase * sqm * 12, 2),
+        "new_rent_sqm": round(current_sqm + max_increase, 2),
+        "new_rent_monthly": round((current_sqm + max_increase) * sqm, 2),
+        "can_increase": max_increase > 0 and can_now,
+        "can_increase_now": can_now,
+        "earliest_date": earliest.isoformat() if earliest else None,
+        "kappungsgrenze_max": round(kappung_max, 2) if kappung_max else None,
+    }
+
+
+@router.get("/portfolio")
+async def portfolio_rent_increases(user: User = Depends(get_current_user)):
+    """Calculate rent increase potential for all units in portfolio."""
+    sb = get_supabase()
+    resp = sb.table("units").select("*").eq("user_id", user.user_id).execute()
+    units = resp.data or []
+
+    results = [_calc_increase_for_unit(u) for u in units]
+    can_increase = [r for r in results if r.get("can_increase")]
+    total_monthly = sum(r.get("max_increase_monthly", 0) for r in can_increase)
+    total_annual = sum(r.get("max_increase_annual", 0) for r in can_increase)
+
+    return {
+        "units": results,
+        "summary": {
+            "total_units": len(results),
+            "units_can_increase": len(can_increase),
+            "total_monthly_uplift": round(total_monthly, 2),
+            "total_annual_uplift": round(total_annual, 2),
+        },
+    }
+
+
+# ---------------------------------------------------------------------------
+# Letter generation
+# ---------------------------------------------------------------------------
+
+@router.post("/letter/{unit_id}")
+async def generate_rent_increase_letter(
+    unit_id: str,
+    target_rent_sqm: Optional[float] = None,
+    user: User = Depends(get_current_user),
+):
+    """Generate a formal §558a BGB Mieterhöhungsverlangen letter for a unit.
+
+    If target_rent_sqm is not provided, uses the maximum allowed increase.
+    """
+    sb = get_supabase()
+    resp = sb.table("units").select("*").eq("id", unit_id).eq("user_id", user.user_id).execute()
+    if not resp.data:
+        return {"error": "Unit not found"}
+
+    unit = resp.data[0]
+    calc = _calc_increase_for_unit(unit)
+
+    if not calc.get("can_increase"):
+        return {"error": "No rent increase possible", "reason": calc.get("reason", "Unknown")}
+
+    # Use target or max
+    increase_sqm = target_rent_sqm - calc["current_rent_sqm"] if target_rent_sqm else calc["max_increase_sqm"]
+    increase_sqm = min(increase_sqm, calc["max_increase_sqm"])  # can't exceed max
+    new_rent_sqm = calc["current_rent_sqm"] + increase_sqm
+    sqm = calc["living_space_sqm"]
+
+    # Effective dates: §558 requires 2 months notice + end of month
+    today = date.today()
+    # Tenant has until end of 2nd month after receipt to agree
+    consent_deadline = today + timedelta(days=75)  # ~2.5 months
+    # New rent takes effect 3rd month after receipt
+    effective_date = today + timedelta(days=90)  # ~3 months
+
+    letter = {
+        "letter_type": "§558a BGB Mieterhöhungsverlangen",
+        "date": today.isoformat(),
+        "address": unit.get("address", ""),
+        "plz": str(unit.get("plz", "")),
+        "current_rent_sqm": calc["current_rent_sqm"],
+        "current_rent_total": round(calc["current_rent_sqm"] * sqm, 2),
+        "new_rent_sqm": round(new_rent_sqm, 2),
+        "new_rent_total": round(new_rent_sqm * sqm, 2),
+        "increase_sqm": round(increase_sqm, 2),
+        "increase_total": round(increase_sqm * sqm, 2),
+        "increase_pct": round(increase_sqm / calc["current_rent_sqm"] * 100, 1),
+        "mietspiegel_mid": calc["mietspiegel_mid"],
+        "mietspiegel_reference": f"Berliner Mietspiegel 2024, {unit.get('year_built', '?')}, {sqm}m²",
+        "consent_deadline": consent_deadline.isoformat(),
+        "effective_date": effective_date.isoformat(),
+        "living_space_sqm": sqm,
+        "legal_basis": "§558 Abs. 1 BGB i.V.m. §558a Abs. 2 Nr. 1 BGB",
+        "letter_text_de": _generate_letter_de(
+            address=unit.get("address", ""),
+            current_total=round(calc["current_rent_sqm"] * sqm, 2),
+            new_total=round(new_rent_sqm * sqm, 2),
+            increase_total=round(increase_sqm * sqm, 2),
+            mietspiegel_mid=calc["mietspiegel_mid"],
+            sqm=sqm,
+            consent_deadline=consent_deadline,
+            effective_date=effective_date,
+        ),
+        "timeline": [
+            {"step": 1, "date": today.isoformat(), "action": "Send letter to tenant",
+             "detail": "Per Post (Einschreiben empfohlen) oder persönliche Übergabe"},
+            {"step": 2, "date": consent_deadline.isoformat(), "action": "Tenant consent deadline",
+             "detail": "Mieter hat bis Ende des 2. Monats nach Zugang Zeit zuzustimmen"},
+            {"step": 3, "date": effective_date.isoformat(), "action": "New rent takes effect",
+             "detail": "Neue Miete gilt ab Beginn des 3. Monats nach Zugang"},
+        ],
+    }
+
+    return letter
+
+
+def _generate_letter_de(address, current_total, new_total, increase_total,
+                        mietspiegel_mid, sqm, consent_deadline, effective_date):
+    """Generate formal German rent increase letter text."""
+    return f"""Mieterhöhungsverlangen gemäß §558 BGB
+
+Sehr geehrte Mieterin, sehr geehrter Mieter,
+
+hiermit verlange ich die Zustimmung zur Erhöhung der Nettokaltmiete für die Wohnung
+
+    {address}
+
+Die derzeitige Nettokaltmiete beträgt {current_total:.2f} € monatlich.
+
+Ich verlange die Zustimmung zur Erhöhung der Nettokaltmiete auf {new_total:.2f} € monatlich
+(Erhöhung um {increase_total:.2f} €).
+
+Begründung:
+Die verlangte Miete überschreitet nicht die ortsübliche Vergleichsmiete gemäß dem
+Berliner Mietspiegel 2024. Der Mittelwert für vergleichbare Wohnungen ({sqm:.0f} m²)
+beträgt {mietspiegel_mid:.2f} €/m².
+
+Rechtsgrundlage: §558 Abs. 1 BGB i.V.m. §558a Abs. 2 Nr. 1 BGB.
+
+Ich bitte um Ihre Zustimmung bis zum {consent_deadline.strftime('%d.%m.%Y')}.
+Die erhöhte Miete ist ab dem {effective_date.strftime('%d.%m.%Y')} zu entrichten.
+
+Mit freundlichen Grüßen,
+
+[Vermieter/in]
+
+---
+Hinweis: Dieses Schreiben wurde mit RentSignal erstellt. Es ersetzt keine Rechtsberatung.
+Für verbindliche Rechtsauskunft wenden Sie sich bitte an einen Fachanwalt für Mietrecht."""
