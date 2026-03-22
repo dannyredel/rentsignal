@@ -472,6 +472,10 @@ def prepare_features(apt: dict, plz: int | None = None,
 
     # --- Gemini image features (from gemini_features dict or defaults) ---
     gem_src = gemini_features or {}
+    if gem_src:
+        print(f"DEBUG prepare_features: gemini_features has {len(gem_src)} keys, "
+              f"interior_quality={gem_src.get('interior_quality', 'MISSING')}, "
+              f"renovation_level={gem_src.get('renovation_level', 'MISSING')}", file=sys.stderr)
     gemini_numeric = feature_groups.get("gemini_numeric", []) or [
         "interior_quality", "kitchen_quality", "bathroom_quality", "brightness",
         "renovation_level", "bldg_condition", "rooms_shown", "bldg_floors",
